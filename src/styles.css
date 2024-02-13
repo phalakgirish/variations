@@ -1,0 +1,36 @@
+/* styles.css */
+
+.custom-select {
+    border: 1px solid;
+    font-size: 12px;
+    font-family: Arial;
+    color: gray;
+  }
+  .custom-input-group-text {
+    font-size: 12px;
+    font-family: Arial;
+    color: gray;
+    /* padding-left: 10px !important;  */
+  }
+  .custombackground{
+    background-color: white;
+    margin: 1px 1px;
+    border-radius: 5px;
+  }
+  .crlBackground{
+    background: var(--unnamed-color-eee5ff) 0% 0% no-repeat padding-box;
+    width: 32px;
+    padding:10px;
+    border-radius: 52px;
+    /* Layout Properties */
+/* UI Properties
+background: var(--unnamed-color-eee5ff) 0% 0% no-repeat padding-box;
+background: red 0% 0% no-repeat padding-box;
+border-radius: 52px;
+opacity: 2;
+padding: 5px; */
+  }
+
+  .custom-text-end {
+    text-align: right !important;
+  }
