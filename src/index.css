@@ -352,9 +352,24 @@ th
   border-style: none !important;
 }
 .variation-inner .table td{
+  /* background-color:  rgb(231, 239, 254);
+  border-radius: 30px; */
+  padding: 0;
+  
+}
+/* .variation-inner .table th{
   background-color:  rgb(231, 239, 254);
   border-radius: 30px;
   padding: 5px;
+  
+} */
+.tshirt-variant-data
+{
+  background:  rgb(231, 239, 254);
+}
+.variation-inner-table{
+  border-collapse: separate;
+  border-spacing: 10px 10px;
 }
 .variation-inner .table tbody .custom-tbody tr{
   margin-bottom: 5px !important;
@@ -517,4 +532,32 @@ th
   font-weight: 900;
   padding: 10px 0;
   font:normal normal medium 12px/14px Euclid Circular A;;
+}
+
+.upload-excel-div{
+  display: grid;
+  place-content: center;
+  margin: 0 0 20px 0
+}
+
+input[type="file"]{
+  display:none;
+}
+.upload_excel_lable{
+  display: inline-block;
+  background-color:#2b2b5e;
+  color:#fff;
+  padding:4px 15px;
+  user-select: none;
+  cursor: pointer;
+  border-radius: 20px;
+}
+.upload_excel_lable:active{
+  transform: scale(0.9); 
+}
+
+.upload-error{
+  /* width: 50%; */
+  padding: 10px 10px !important;
+  margin: 10px;
 }
