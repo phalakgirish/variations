@@ -9,7 +9,7 @@ export default function verifyotp(datatoPost){
     else if(otptoken !== null || otptoken != '')
     {
         const decode = jwtDecode(otptoken);
-        console.log(decode);
+        // console.log(decode);
 
         if(decode.data.email_id == datatoPost.email_id && decode.data.otp == datatoPost.otp)
         {

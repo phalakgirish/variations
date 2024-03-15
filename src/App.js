@@ -11,6 +11,9 @@ import Signup from "./pages/Signup";
 import Forgetpass from "./pages/Forgetpass";
 import Verifyotp from "./pages/Verifyotp";
 import NewPassword from "./pages/NewPassword";
+import Design1 from "./component/Design1";
+import EditDesign from "./component/EditDesign";
+import '../src/index.css';
 
 
 function App() {
@@ -27,10 +30,13 @@ function App() {
         <Route path="/Home" element={<Home />} />
         <Route path="/TshirtFront" element={<TshirtFront />} />
         <Route path="/Design" element={<Design />} /> 
+        <Route path="/Design1" element={<Design1 />} /> 
         <Route path="/DesignBkp" element={<DesignBkp />} /> 
         <Route path="/Variation" element={<Variation />} /> 
         <Route path="/Export" element={<Export />} /> 
         <Route path="/new-password" element={<NewPassword />} /> 
+        <Route path="/EditDesign" element={<EditDesign />} /> 
+
 
 
         {/* <Route path="/Theme" component={Theme} />

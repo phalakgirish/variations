@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'; 
 
 import { BrowserRouter as Router, Link,useNavigate  } from "react-router-dom";
 import titleimg from '../assets/img/Layer_1-2.svg'
@@ -11,6 +11,7 @@ import KEYS from "../env/env";
 
 function Login(){
   const [showPassword, setShowPassword] = useState(false);
+  const [errmsg,setErrorMsg] = useState(null);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -42,10 +43,12 @@ function Login(){
         {
             // localStorage.removeItem('token');
             navigate('/Home');
+            setErrorMsg(null);
         }
         else
         {
             console.log(val);
+            setErrorMsg(val['msg']);
         }
     })
   }
@@ -104,7 +107,7 @@ function Login(){
                           </div>
                          
                           <input type="checkbox" name="" value="" style={{width: '5%'}} /> Remember for 30 days
-
+                          <br /><p className="text-danger">{(errmsg != null)? errmsg:''}</p>
                         <input className="submit" type="submit" value="Login"  />
                       </form>
                       <div className="text-center mb-3">

@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { HouseDoor, Moon, PersonCircle,ChatDots } from 'react-bootstrap-icons';
-import { BrowserRouter as Router, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Link, useLocation, useAsyncError } from "react-router-dom";
 import Varient from '../assets/img/varient.png'
 import Home from '../assets/img/home_black_24dp.png'
 import Person from '../assets/img/account_circle_black_24dp.png'
 import Feedback from '../assets/img/rate_review_FILL0_wght400_GRAD0_opsz24.png'
+import FeedbackOffCanvas from "./FeedbackOffCanvas";
+import FeedbackScreenShotModal from "./FeedbackScreenShotModal";
 
 
 
 function Sidebar(){
     const { pathname } = useLocation();
 
+    const [show, setShow] = useState(false);
+    const [showScreenShot, setShowScreenShot] = useState(false)
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const handelScreenShotShow = ()=>{
+        setShowScreenShot(true)
+        handleClose();
+    }
+    const handelScreenShotHide = () =>{
+        setShowScreenShot(false)
+        handleShow();
+    }
+
     return(
+        <>
             <div className="sidemenu">
                 <div className="text-center mt-3">
                     <ul className="nav nav-pills flex-column">
@@ -36,14 +54,14 @@ function Sidebar(){
                 
                 <div className="text-center mb-3">
                     <ul className="nav nav-pills flex-column">
-                    <li className="nav-item">
+                    {/* <li className="nav-item">
                         <a href="#" className="nav-link" aria-current="page">
                             <div className="circle-icon">
                                 <Moon size={20} />
                             </div><br/>
                             <span>Theme</span>
                         </a>
-                        </li>
+                        </li> */}
 
                         <li className="nav-item">
                         <a href="#" className="nav-link" aria-current="page">
@@ -54,7 +72,7 @@ function Sidebar(){
                         </a>
                         </li>
 
-                        <li className="nav-item">
+                        <li className="nav-item" onClick={()=>{handleShow()}}>
                         <a href="#" className="nav-link" aria-current="page">
                             <div className="circle-icon">
                                 <img src={Feedback} alt="home"  style={{width: '20px'}}/>
@@ -65,6 +83,11 @@ function Sidebar(){
                     </ul>
                 </div>
             </div>
+
+            {show && <FeedbackOffCanvas key={1} placement={'end'} name={'end'} handleClose = {handleClose} show={show} handelScreenShotShow={handelScreenShotShow}/>}
+            {showScreenShot && <FeedbackScreenShotModal handelScreenShotHide = {handelScreenShotHide} showScreenShot = {showScreenShot}/>}
+
+            </>
       
     );
 }

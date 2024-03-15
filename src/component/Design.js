@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Sidebar from "../component/Sidebar";
 import Button from 'react-bootstrap/Button';
-import { useParams,useLocation } from 'react-router-dom';
+import { useParams,useLocation, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import fronttshirt from '../assets/img/Plain TeeShirt.png';
 // import backtshirt from '../assets/img/t-shirt.png'
+import * as htmlToImage from 'html-to-image';
 
 // import fronttshirt from '../assets/img/Front.svg';
 import backtshirt from '../assets/img/Plain TeeShirt.png';
@@ -19,11 +20,34 @@ import { ChromePicker } from 'react-color';
 
 import { faUndo, faRedo, faSearchPlus, faShirt, faList, faCirclePlus,faImage, faTrash, faUnderline,faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import '../styles.css'
-import { Border } from 'react-bootstrap-icons';
+import '../index.css'
+import { Border, Link } from 'react-bootstrap-icons';
+import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text, Transformer, Shape } from 'react-konva';
+// import Konva from 'konva';
+import useImage from 'use-image';
 
-const fontOptions = [
+var fontOptions = [
     { value: 'Arial', label: 'Arial' },
-    { value: 'Times New Roman', label: 'Times New Roman' },
+    { value: 'Times New Roman', label: 'Times New Roman'},
+    { value: 'Euclid Circular A', label: 'Euclid Circular A'},
+    { value: 'Medium', label: 'Medium'},
+    { value: 'BlinkMacSystemFont', label: 'BlinkMacSystemFont'},
+    { value: 'Segoe UI', label: 'Segoe UI'},
+    { value: 'Ubuntu', label: 'Ubuntu'},
+    { value: 'Cantarell', label: 'Cantarell'},
+    { value: 'Fira Sans', label: 'Fira Sans'},
+    { value: 'Droid Sans', label: 'Droid Sans'},
+    { value: 'Helvetica Neue', label: 'Helvetica Neue'},
+    { value: 'American Captain', label: 'American Captain'},
+    { value: 'Bruce Forever', label: 'Bruce Forever'},
+    { value: 'Freshman', label: 'Freshman'},
+    { value: 'Govrnment Agent BB', label: 'Govrnment Agent BB'},
+    { value: 'Govrnment Agent BB Italic', label: 'Govrnment Agent BB Italic'},
+    { value: 'Jersey M54', label: 'Jersey M54'},
+    { value: 'Rozha One', label: 'Rozha One'},
+    { value: 'Sports Jersey', label: 'Sports Jersey'},
+    { value: 'Sports World', label: 'Sports World'},
+
     // Add more font options as needed
   ];
   const fontSizes = [
@@ -102,49 +126,137 @@ const fontOptions = [
     </div>
   );
 function Design(){
+    // const { state } = useLocation();
+    // var selectedValue
+    // if(state != null)
+    // {
+    //   selectedValue = state.selectedValue;
+    // }
+    // else
+    // {
+    //   selectedValue = localStorage.getItem('tshirtSize');
+    // }
+    var Existingplayernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
+    var Existingplayernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
+    var selectedBGImage = localStorage.getItem('bgImageDetails');
     const { state } = useLocation();
-    const selectedValue = state.selectedValue;
+    console.log(state);
+    
     const [view, setView] = useState('front');
-    const [playerName, setPlayerName] = useState('');
-    const [playerNo, setPlayerNo] = useState('');
+    const [playerName, setPlayerName] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.Name:'Sample text');
+    const [playerNo, setPlayerNo] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.No:'10');
+    const navigate = useNavigate()
 
-    localStorage.setItem('tshirtSize',selectedValue);
+    // localStorage.setItem('tshirtSize',selectedValue);
+
+   
+
+    // console.log(Existingplayernamedetails,Existingplayernumberdetails);
+
+    
+
    
     //Player Number
-    const [textSize,setTextSize]=useState('32');
-    const [fontFamily, setFontFamily] = useState('Arial');
+    const [textSize,setTextSize]=useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.textSize:'32');
+    const [fontFamily, setFontFamily] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.fontFamily:'Arial');
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-    const [textPosition, setTextPosition] = useState({ x: 230, y: 330 }); // Initial position
-    const [textColor, setTextColor] = useState('#808080'); // Default color
+    const [textPosition, setTextPosition] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.textPosition:{ x: 11, y: 280 }); // Initial position
+    const [textColor, setTextColor] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.textColor:'#808080'); // Default color
     const [colorPickerVisible, setColorPickerVisible] = useState(false);
-    const [outlineColor,setOutLineColor]=useState('#00000');
-    const [NotextBorder,setNoTextBorder]=useState('0');
+    const [outlineColor,setOutLineColor]=useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.outlineColor:'#00000');
+    const [NotextBorder,setNoTextBorder]=useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.NotextBorder:'');
     const [outLinecolorPickerVisible, setoutLineColorPickerVisible] = useState(false);
-    const [rotationAngle, setRotationAngle] = useState(0);
+    const [rotationAngle, setRotationAngle] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.rotationAngle:0);
+    const [playerNoWidth,setPlayerNoWidth] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.NoWidth :300)
+    const [NoScale, setNoScale] = useState((Existingplayernumberdetails != null)?Existingplayernumberdetails.NoScale :{x:1,y:1})
     const rotationInputRef = useRef();
+    
+
 
     
     //Player Name
-    const [NametextSize,setNameTextSize]=useState('32');
-    const [NamefontFamily, setNameFontFamily] = useState('Arial');
+    const [NametextSize,setNameTextSize]=useState((Existingplayernamedetails != null)?Existingplayernamedetails.NametextSize:'32');
+    const [NamefontFamily, setNameFontFamily] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.NamefontFamily:'Arial');
     const [NameisDragging, setNameIsDragging] = useState(false);
     const [NamedragStart, setNameDragStart] = useState({ x: 0, y: 0 });
-    const [NametextBorder,setNameTextBorder]=useState('0');
-    const [NametextPosition, setNameTextPosition] = useState({ x:200, y:150 }); // Initial position
-    const [NametextColor, setNameTextColor] = useState('#808080'); // Default color
+    const [NametextBorder,setNameTextBorder]=useState((Existingplayernamedetails != null)?Existingplayernamedetails.NametextBorder:'');
+    const [NametextPosition, setNameTextPosition] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.NametextPosition:{ x:11, y:150 }); // Initial position
+    const [NametextColor, setNameTextColor] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.NametextColor:'#808080'); // Default color
     const [NamecolorPickerVisible, setNameColorPickerVisible] = useState(false);
-    const [NameoutlineColor,setNameOutLineColor]=useState('#00000');
+    const [NameoutlineColor,setNameOutLineColor]=useState((Existingplayernamedetails != null)?Existingplayernamedetails.NameoutlineColor:'#00000');
     const [NameoutLinecolorPickerVisible, setNameoutLineColorPickerVisible] = useState(false);
-    const [NamerotationAngle, setNameRotationAngle] = useState(0);
+    const [NamerotationAngle, setNameRotationAngle] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.NamerotationAngle:0);
+    const [playerNameWidth,setPlayerNameWidth] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.NameWidth :300)
     const NamerotationInputRef = useRef();
+    const [NametextPositionPer,setNametextPositionPer] = useState({x:0,y:0});
+    const [textPositionPer,setTextPositionPer] = useState({x:0,y:0});
+    const [NameScale, setNameScale] = useState((Existingplayernamedetails != null)?Existingplayernamedetails.NameScale :{x:1, y:1})
+
 
     
 
 
-    const [selectedImage, setSelectedImage] = useState(null);
+    // const [selectedImage, setSelectedImage] = useState((selectedBGImage != null)?selectedBGImage:null);
+    const [selectedImage, setSelectedImage] = useState((state != null)?state.selectedImage:null);
+    const[IsNameSelected,setNameSelected] = useState(false);
+    const[IsNoSelected,setNoSelected] = useState(false);
     const canvasRef = useRef(null);
     const canvasRefName =useRef(null);
+    const TextNameRef =useRef(null);
+    const TextNameTranRef =useRef(null);
+    const TextNoRef =useRef(null);
+    const TextNoTranRef =useRef(null);
+    const fontfamilyDropDown = useRef()
+    const DesignImage = useRef();
+
+
+    if(Existingplayernamedetails != null && Existingplayernumberdetails != null)
+    {
+      //Number Details
+      // setPlayerName(Existingplayernamedetails.Name);
+      // setNameTextSize(Existingplayernamedetails.NametextSize);
+      // setNameFontFamily(Existingplayernamedetails.NamefontFamily);
+      // setNameTextPosition(Existingplayernamedetails.NametextPosition);
+      // setNameTextColor(Existingplayernamedetails.NametextColor);
+      // setNameOutLineColor(Existingplayernamedetails.NameoutlineColor);
+      // setNameTextBorder(Existingplayernamedetails.NametextBorder);
+      // setNameRotationAngle(Existingplayernamedetails.NamerotationAngle);
+
+      //Name Details
+      // setPlayerNo(Existingplayernumberdetails.No);
+      // setTextSize(Existingplayernumberdetails.textSize);
+      // setFontFamily(Existingplayernumberdetails.fontFamily);
+      // setTextPosition(Existingplayernumberdetails.textPosition);
+      // setTextColor(Existingplayernumberdetails.textColor);
+      // setOutLineColor(Existingplayernumberdetails.outlineColor);
+      // setNoTextBorder(Existingplayernumberdetails.NotextBorder);
+      // setRotationAngle(Existingplayernumberdetails.rotationAngle);
+      
+
+
+    }
+
+
+
+    const LoadImage = () => {
+        const [image] = useImage(fronttshirt);
+        return <KonvaImage image={image} width={500} height={500}/>;
+      };
+      const LoadBGImage = () => {
+        const [image] = useImage(selectedImage);
+        return <KonvaImage image={image} width={320} height={500} style={{ position: 'absolute', top: 0, left: 280,zIndex:0 }} x={90.5}/>
+        // return <Shape sceneFunc={(context, shape)=>{context.beginPath();
+        //   context.moveTo(77, 8);
+        //   context.quadraticCurveTo(155, 45, 240, 8);
+        //   // context.lineTo(220, 50);
+        //   context.lineTo(320, 33);
+        //   context.lineTo(320, 500);
+        //   context.lineTo(0, 500);
+        //   context.lineTo(0, 33);
+        //   context.closePath();
+        //   context.fillStrokeShape(shape);}} strokeWidth={1} fillPatternImage={image} fillPatternScale={{x:0.65,y:0.7}} style={{ position: 'absolute', top: 0, left: 280,zIndex:0 }} x={90.5}></Shape>;
+      };
    //Player No
     const handleTextColorClick = () => {
         setColorPickerVisible(!colorPickerVisible);
@@ -165,9 +277,15 @@ function Design(){
     };
     const handleTextColorChange = (color) => {
         setTextColor(color.hex);
+        setTimeout(()=>{
+          handleColorPickerClose();
+        },'1000');
     };
     const handleOutlineColorChange=(color)=>{
         setOutLineColor(color.hex)
+        setTimeout(()=>{
+          handleOutlineColorClick();
+        },'1000');
     }
     const handleNoBorderChange = (event) => {
       
@@ -181,7 +299,8 @@ function Design(){
         setFontFamily(selectedOption.target.value);
       };
     const handleMouseDown = (event,type) => {
-      
+
+      console.log(type);
         setDragStart({ x: event.clientX, y: event.clientY });
       console.log(type);
         if (type === 'number') {
@@ -255,9 +374,17 @@ function Design(){
   };
     const handlePlayerNameTextColorChange = (color) => {
         setNameTextColor(color.hex);
+        setTimeout(() => {
+          handlePlayerNameColorPickerClose();
+        }, "1000");
+        
     };
+
     const handlePlayerNameOutlineColorChange=(color)=>{
         setNameOutLineColor(color.hex)
+        setTimeout(() => {
+          handlePlayerNameOutlineColorClick();
+        }, "1000");
     }
    
     const handlePlayerNameFontFamilyChange = (selectedOption) => {
@@ -293,7 +420,9 @@ function Design(){
           const reader = new FileReader();
           reader.onload = () => {
             setSelectedImage(reader.result);
-            localStorage.setItem('bgImageDetails',reader.result)
+            console.log(reader.result);
+            // sessionStorage.setItem('bgImageDetails',reader.result)
+            // localStorage.setItem('bgImageDetails',reader.result)
             localStorage.setItem('bgname',file.name);
           };
           reader.readAsDataURL(file);
@@ -302,115 +431,172 @@ function Design(){
       const handleImageRemove = ()=>{
         setSelectedImage(null);
       }
-    
-      
+
+      const handleNameNumberDetails = async () =>{
+
+        const canvas = canvasRef.current;
+
+        var canvaseNameX = (NametextPosition.x/canvas.attrs.width)*100;
+        var canvaseNameY =  (NametextPosition.y/canvas.attrs.height)*100;
+
+        var canvaseNumberX = (textPosition.x/canvas.attrs.width)*100;
+        var canvaseNumberY =  (textPosition.y/canvas.attrs.height)*100;
+
+        const textName = TextNameRef.current;
+
+        var TextWidthPer= (textName.textWidth/canvas.attrs.width)*100;
+
+
+        setNametextPositionPer({x:canvaseNameX,y:canvaseNameY});
+        setTextPositionPer({x:canvaseNumberX,y:canvaseNumberY});
+
+
+        
+        var playernamedetails = {
+          Name:playerName,
+          NametextSize:NametextSize,
+          NamefontFamily:NamefontFamily,
+          NametextPosition:NametextPosition,
+          NametextColor:NametextColor,
+          NameoutlineColor:NameoutlineColor,
+          // NamerotationAngle:NamerotationAngle,
+          NamerotationAngle:TextNameRef.current.attrs.rotation,
+          NametextBorder:NametextBorder,
+          NametextPositionPer:NametextPositionPer,
+          NametextSizePer:(NametextSize/canvas.attrs.width)*100,
+          NametextBorderPer:(NametextBorder/canvas.attrs.width)*100,
+          TextWidthPer:TextWidthPer,
+          NameWidth:playerNameWidth,
+          NameWidthPer:(playerNameWidth/canvas.attrs.width)*100,
+          NameScale:{x:TextNameRef.current.attrs.scaleX,y:TextNameRef.current.attrs.scaleY}
+        }
+        var playernumberdetails = {
+          No:playerNo,
+          textSize:textSize,
+          fontFamily:fontFamily,
+          textPosition:textPosition,
+          textColor:textColor,
+          outlineColor:outlineColor,
+          // rotationAngle:rotationAngle,
+          rotationAngle:TextNoRef.current.attrs.rotation,
+          NotextBorder:NotextBorder,
+          textPositionPer: textPositionPer,
+          textSizePer:(textSize/canvas.attrs.width)*100,
+          NotextBorderPer:(NotextBorder/canvas.attrs.width)*100,
+          NoWidth:playerNoWidth,
+          NoWidthPer:(playerNoWidth/canvas.attrs.width)*100,
+          NoScale:{x:TextNoRef.current.attrs.scaleX,y:TextNoRef.current.attrs.scaleY}
+        }
+
+        console.log(playernamedetails);
+        console.log(playernumberdetails);
+
+        localStorage.setItem('playernamedetails',JSON.stringify(playernamedetails)); 
+        localStorage.setItem('playernumberdetails',JSON.stringify(playernumberdetails));
+
+        // const dataUrl = await htmlToImage.toPng(DesignImage.current);
+        // const link = document.createElement('a');
+        //         link.href = dataUrl;
+        //         link.download = 'Designimage.png';
+        //         link.click();
+      }
       
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-       
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const tshirtImg = new Image();
-        tshirtImg.src = view === 'front' ? fronttshirt : backtshirt;
-        const outlineSize = 2; // Adjust the outline size as needed
-        //const outlineColor = 'blueviolet'; // Adjust the outline color as needed
-
-        const canvasName = canvasRefName.current;
-        const ctxName = canvas.getContext('2d');
-       
-        ctxName.clearRect(0, 0, canvasName.width, canvasName.height);
-
-        tshirtImg.onload = () => {
-         
-          ctxName.drawImage(tshirtImg, 0, 0, canvasName.width, canvasName.height);
-          ctxName.save();
-          ctxName.translate(NametextPosition.x, NametextPosition.y);
-          ctxName.rotate((NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-      
-          ctxName.font = `${NametextSize}px ${NamefontFamily}`
-          ctxName.fillStyle = NametextColor;
-          ctxName.strokeStyle = NameoutlineColor; // Set the outline color
-          ctxName.lineWidth = NametextBorder; // Set the outline size
-          
-          ctxName.strokeText(playerName, 0, 0);
-          ctxName.fillText(playerName, 0, 0);
-          ctxName.restore();
-          ctxName.save();
-
-            ctx.translate(textPosition.x, textPosition.y);
-            ctx.rotate((rotationAngle * Math.PI) / 180); // Convert degrees to radians
-      
-            ctx.font = `${textSize}px ${fontFamily}`
-            ctx.fillStyle = textColor;
-            ctx.strokeStyle = outlineColor; // Set the outline color
-            ctx.lineWidth = NotextBorder; // Set the outline size
-          
-      ctx.strokeText(playerNo, 0, 0);
-      ctx.fillText(playerNo, 0, 0);
-
-     
-      ctx.restore(); // Restore the canvas state
-
-
-      
-      var playernamedetails = {
-        NametextSize:NametextSize,
-        NamefontFamily:NamefontFamily,
-        NametextPosition:NametextPosition,
-        NametextColor:NametextColor,
-        NameoutlineColor:NameoutlineColor,
-        NamerotationAngle:NamerotationAngle
+      if(IsNameSelected)
+      {
+        console.log(TextNameRef.current);
+        TextNoTranRef.current.nodes([TextNameRef.current]);
       }
-      var playernumberdetails = {textSize:textSize,
-        fontFamily:fontFamily,
-        textPosition:textPosition,
-        textColor:textColor,
-        outlineColor:outlineColor,
-        rotationAngle:rotationAngle
+      
+      if(IsNoSelected)
+      {
+        TextNoTranRef.current.nodes([TextNoRef.current]);
       }
 
-      // console.log(playernamedetails);
-      // console.log(playernumberdetails);
 
-      localStorage.setItem('playernamedetails',JSON.stringify(playernamedetails));
-      localStorage.setItem('playernumberdetails',JSON.stringify(playernumberdetails));
-
-
-        };
-    }, [view, playerNo, textPosition,textColor,textSize,fontFamily,outlineColor,NametextBorder,rotationAngle, playerName, NametextPosition, NametextColor,NametextSize,NamefontFamily,NotextBorder,NameoutlineColor,NamerotationAngle]);
-
-
-  //   useEffect(() => {
-  //     const canvas = canvasRef.current;
-  //     const ctx = canvas.getContext('2d');
-     
-  //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  //     const tshirtImg = new Image();
-  //     tshirtImg.src = view === 'front' ? fronttshirt : backtshirt;
-  //     const outlineSize = 2; // Adjust the outline size as needed
-  //     //const outlineColor = 'blueviolet'; // Adjust the outline color as needed
-
-  //     tshirtImg.onload = () => {
-       
-  //         ctx.drawImage(tshirtImg, 0, 0, canvas.width, canvas.height);
-  //         ctx.save();
-  //         ctx.translate(NametextPosition.x, NametextPosition.y);
-  //         ctx.rotate((NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-    
-  //         ctx.font = `${NametextSize}px ${NamefontFamily}`
-  //         ctx.fillStyle = NametextColor;
-  //         ctx.strokeStyle = NameoutlineColor; // Set the outline color
-  //         ctx.lineWidth = outlineSize; // Set the outline size
+      // setPlayerNameWidth(300);
+      // setPlayerNoWidth(300);
+      handleNameNumberDetails();
         
-  //   ctx.strokeText(playerName, 0, 0);
-  //   ctx.fillText(playerName, 0, 0);
-  //   ctx.restore(); // Restore the canvas state
-  //     };
-  // }, [view, playerName, NametextPosition, NametextColor,NametextSize,NamefontFamily,NameoutlineColor,NamerotationAngle]);
+      // const canvas = canvasRef.current;
+      // var canvaseNameX = (NametextPosition.x/canvas.attrs.width)*100;
+      // var canvaseNameY =  (NametextPosition.y/canvas.attrs.height)*100;
 
-    
+      // var canvaseNumberX = (textPosition.x/canvas.attrs.width)*100;
+      // var canvaseNumberY =  (textPosition.y/canvas.attrs.height)*100;
+
+      // const textName = TextNameRef.current;
+
+      // var TextWidthPer= (textName.textWidth/canvas.attrs.width)*100;
+
+
+      // setNametextPositionPer({x:canvaseNameX,y:canvaseNameY});
+      // setTextPositionPer({x:canvaseNumberX,y:canvaseNumberY});
+
+
+      
+      // var playernamedetails = {
+      //   NametextSize:NametextSize,
+      //   NamefontFamily:NamefontFamily,
+      //   NametextPosition:NametextPosition,
+      //   NametextColor:NametextColor,
+      //   NameoutlineColor:NameoutlineColor,
+      //   NamerotationAngle:NamerotationAngle,
+      //   NametextBorder:NametextBorder,
+      //   NametextPositionPer:NametextPositionPer,
+      //   NametextSizePer:(NametextSize/canvas.attrs.width)*100,
+      //   NametextBorderPer:(NametextBorder/canvas.attrs.width)*100,
+      //   TextWidthPer:TextWidthPer
+
+      // }
+      // var playernumberdetails = {
+      //   textSize:textSize,
+      //   fontFamily:fontFamily,
+      //   textPosition:textPosition,
+      //   textColor:textColor,
+      //   outlineColor:outlineColor,
+      //   rotationAngle:rotationAngle,
+      //   NotextBorder:NotextBorder,
+      //   textPositionPer: textPositionPer,
+      //   textSizePer:(textSize/canvas.attrs.width)*100,
+      //   NotextBorderPer:(NotextBorder/canvas.attrs.width)*100,
+        
+      // }
+
+      // // console.log(playernamedetails);
+      // // console.log(playernumberdetails);
+
+      // localStorage.setItem('playernamedetails',JSON.stringify(playernamedetails));
+      // localStorage.setItem('playernumberdetails',JSON.stringify(playernumberdetails));
+
+
+        
+    }, [view, playerNo, textPosition,textColor,textSize,fontFamily,outlineColor,NametextBorder,rotationAngle, playerName, NametextPosition, NametextColor,NametextSize,NamefontFamily,NotextBorder,NameoutlineColor,NamerotationAngle,IsNameSelected]);
+
+
+    useEffect(()=>{
+      const detectionElement = document.createElement('div');
+    detectionElement.style.fontFamily = 'inherit';
+      document.body.appendChild(detectionElement);
+      const computedFont = window.getComputedStyle(detectionElement).fontFamily;
+      // console.log(typeof computedFont)
+      document.body.removeChild(detectionElement);
+      var SystemFonts = computedFont.split(",");
+
+
+      var fontlistarr = [...fontOptions];
+
+      for(let i in SystemFonts)
+      {
+        var repeatFont = fontlistarr.find((items)=>items.value == ((SystemFonts[i].replace('"','')).replace('"','')).trim());
+        if(repeatFont == undefined)
+        {
+          fontlistarr = [...fontlistarr,{ value: ((SystemFonts[i].replace('"','')).replace('"','')).trim(), label: ((SystemFonts[i].replace('"','')).replace('"','')).trim()}]
+        } 
+      }
+      fontOptions = fontlistarr;
+
+    },[])
 
     return(
       <div id="main-container" className="container-fluid main">
@@ -422,19 +608,19 @@ function Design(){
                     <div className="custom-side">
                       <p className="side-title">Steps</p>
                         
-                        <Form.Select aria-label="Default select example" className="mb-2" value={selectedValue}>
-                            <option>XS 34 (19 x 27 in)</option>
-                            <option>S 36 (20 x 28 in)</option>  
-                            <option>M 38 (21 x 29 in)</option>
-                            <option>L 40 (22 x 30 in)</option>
-                            <option>XL 42 (23 x 31 in)</option>
-                            <option>2XL 44 (24 x 32 in)</option> 
-                            <option>3XL 46 (25 x 33 in)</option>
-                            <option>4XL 48 (26 x 34 in)</option>
-                            <option>5XL 50 (27 x 35 in)</option>
-                            <option>6XL 52 (28 x 35 in)</option>    
-                           
-                        </Form.Select>
+                          {/* <Form.Select aria-label="Default select example" className="mb-2" value={selectedValue}>
+                              <option>XS 34 (19 x 27 in)</option>
+                              <option>S 36 (20 x 28 in)</option>  
+                              <option>M 38 (21 x 29 in)</option>
+                              <option>L 40 (22 x 30 in)</option>
+                              <option>XL 42 (23 x 31 in)</option>
+                              <option>2XL 44 (24 x 32 in)</option> 
+                              <option>3XL 46 (25 x 33 in)</option>
+                              <option>4XL 48 (26 x 34 in)</option>
+                              <option>5XL 50 (27 x 35 in)</option>
+                              <option>6XL 52 (28 x 35 in)</option>    
+                            
+                          </Form.Select> */}
                         {/* <Dropdown className="mb-2">
                             <Dropdown.Toggle id="dropdown-basic">Medium Size 38 (21 x 29)
                             </Dropdown.Toggle>
@@ -569,6 +755,7 @@ function Design(){
             height: '20px',
             background: NametextColor,
             marginLeft: 'auto',
+            border: '1px solid rgb(0,0,0,0.1)'
           }}
         ></div>
         {NamecolorPickerVisible && (
@@ -576,11 +763,13 @@ function Design(){
            
             color={NametextColor}
             onChangeComplete={handlePlayerNameTextColorChange}
-            onClose={handlePlayerNameColorPickerClose}
+            onHide
+            // onBlur={handlePlayerNameColorPickerClose}    
             style={{
                 position: 'absolute',
                 zIndex: '1',
-                marginTop: '10px', // Optional: adjust the margin to position the color picker
+                marginTop: '10px',
+                 // Optional: adjust the margin to position the color picker
               }}
           />
         )}
@@ -627,6 +816,7 @@ function Design(){
       aria-describedby="inputGroup-sizing-default"
       className="text-end"
       style={{ border: '1px solid #CDD5EB', width: '60px', alignItems: 'center' }}
+      placeholder='0'
     />
   </div>
 </div>
@@ -645,11 +835,13 @@ function Design(){
         {/* Additional content in the second column */}
         <div
           onClick={handlePlayerNameOutlineColorClick}
+          // onBlur={handlePlayerNameOutlineColorClick}
           style={{
             width: '20px',
             height: '20px',
             background: NameoutlineColor,
             marginLeft: 'auto',
+            border: '1px solid rgba(0,0,0,0.1)'
           }}
         ></div>
         {NameoutLinecolorPickerVisible && (
@@ -657,7 +849,7 @@ function Design(){
            
             color={NameoutlineColor}
             onChangeComplete={handlePlayerNameOutlineColorChange}
-            onClose={handlePlayerNameOutlineColorClick}
+            // onClose={handlePlayerNameOutlineColorClick}
             style={{
                 position: 'absolute',
                 zIndex: '1',
@@ -794,6 +986,7 @@ function Design(){
             height: '20px',
             background: textColor,
             marginLeft: 'auto',
+            border: '1px solid rgba(0,0,0,0.1)'
           }}
         ></div>
         {colorPickerVisible && (
@@ -801,7 +994,7 @@ function Design(){
            
             color={textColor}
             onChangeComplete={handleTextColorChange}
-            onClose={handleColorPickerClose}
+            // onClose={handleColorPickerClose}
             style={{
                 position: 'absolute',
                 zIndex: '1',
@@ -881,6 +1074,7 @@ function Design(){
       aria-describedby="inputGroup-sizing-default"
       className="text-end"
       style={{ border: '1px solid #CDD5EB', width: '60px', alignItems: 'center' }}
+      placeholder='0'
     />
   </div>
 </div>
@@ -904,6 +1098,7 @@ function Design(){
             height: '20px',
             background: textColor,
             marginLeft: 'auto',
+            border:'1px solid rgba(0,0,0,0.1)'
           }}
         ></div>
         {outLinecolorPickerVisible && (
@@ -911,7 +1106,7 @@ function Design(){
            
             color={outlineColor}
             onChangeComplete={handleOutlineColorChange}
-            onClose={handleColorPickerClose}
+            // onClose={handleColorPickerClose}
             style={{
                 position: 'absolute',
                 zIndex: '1',
@@ -1047,12 +1242,13 @@ function Design(){
                 <div className="col-9">
                     <div className="row tab mt-3">
                         <ul className="d-flex col-6 custom-tabs">
-                            <li className="">Design</li>
-                            <li className="mx-2">Variation</li>
-                            <li className="mx-2">Export</li>
+                            <li className="active" onClick={()=>{handleNameNumberDetails();navigate('/Design',{state:{selectedImage:selectedImage}})}}>Design</li>
+                            <li className="mx-2" onClick={()=>{handleNameNumberDetails();navigate('/Variation',{state:{selectedImage:selectedImage}})}}>Variation</li>
+                            <li className="mx-2" onClick={()=>{handleNameNumberDetails();navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
                         </ul>
                         <div className="col-6 custom-btn">
-                            <Button href='/Variation' className="float-end " variant="primary">
+                            <Button className="float-end " variant="primary" onClick={()=>{handleNameNumberDetails();
+                            navigate('/Variation',{state:{selectedImage:selectedImage}})}}>
                             <FontAwesomeIcon icon={faList} style={{ marginRight: '5px' }} /> Add Variation
                             </Button> 
                        </div>
@@ -1073,44 +1269,60 @@ function Design(){
                                 <span>Zoom</span>
                             </Button> 
                         </div> */}
-                        <div className="col-10 text-center">
-                            <div>
-                            <div style={{ position: 'relative' }}>
+                        <div className="col-10 ">
+                            <div id="container">
+                                
+                            <div style={{ position: 'relative' }} className='tshirt-draw-canvas' ref={DesignImage}>
                               
-        <svg width="380" height="500" xmlns="http://www.w3.org/2000/svg" >
+        <svg className='svg-bg-img' xmlns="http://www.w3.org/2000/svg" ref={canvasRefName}>
          
-          <rect x="40" y="0" width="320" height="500" fill="white" />
-          {selectedImage && <image href={selectedImage} x="40" y="0" width="320" height="500" />}
+          <rect x="0" y="0" width="320" height="500" fill="white" />
+          {/* {selectedImage && <image href={selectedImage}  className='tshirt-bg-img'/>} */}
           {/* {backgroundImage && <image href={backgroundImage} x="40" y="0" width="320" height="500" style={{border:'1px solid red;' }}/>} */}
          
-          <circle cx="200" cy="-123" r="160" fill="white" />
+          <circle cx="160" cy="-123" r="160" fill="white" className='neck-circle'/>
         </svg>
-        <canvas
-          ref={canvasRef}
-          width={500}
-          height={500}
-          onMouseDown={(e) => handleMouseDown(e, 'number')}
-          onMouseUp={handleMouseUp}
-          onMouseMove={handleMouseMove}
-          style={{ position: 'absolute', top: 0, left: 190 }}
-        ></canvas>
 
-        <canvas
-        ref={canvasRefName}
-        width={500}
-        height={500}
-        onMouseDown={(e) => handleMouseDown(e, 'name')}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        style={{ position: 'absolute', top: 0, left: 190}}
-      ></canvas>
- 
-      </div>
-</div>
+        <Stage width={500} height={500} style={{ position: 'absolute', top: 0, left: 190 }}>
+                                    <Layer>
+                                    {selectedImage && <LoadBGImage x={285}/>}
+                                    <LoadImage />
+                                    </Layer>
+                                </Stage>
+                                <Stage width={320} height={500} style={{ position: 'absolute', top: 0, left: 280,zIndex:0 }} ref={canvasRef}>
+                                    <Layer>
+                                        <Text ref={TextNameRef} text={playerName} fontSize={NametextSize} draggable x={NametextPosition.x} y={NametextPosition.y} fill={NametextColor} fontFamily={NamefontFamily} onDragEnd={(e) => {
+                                                                        console.log(e.target);
+                                                                        setNameTextPosition({                                
+                                                                            x: e.target.x(),
+                                                                            y: e.target.y(),
+                                                                        });
+                                                                        }} stroke={NameoutlineColor} strokeWidth={NametextBorder} onClick={(e)=>{setNameSelected(true);setNoSelected(false);}} onTap={(e)=>{setNameSelected(true);setNoSelected(false);}} align='center' width={playerNameWidth} rotation={NamerotationAngle} scaleX={NameScale.x} scaleY={NameScale.y}/>
+                                        {/* {IsNameSelected && <Transformer ref={TextNameTranRef} keepRatio={false} enabledAnchors={[
+                                                              'top-left',
+                                                              'top-right',
+                                                              'bottom-left',
+                                                              'bottom-right',
+                                                            ]}/>} */}
+                                        <Text ref={TextNoRef} text={playerNo} fontSize={textSize} draggable x={textPosition.x} y={textPosition.y} fill={textColor} fontFamily={fontFamily} onDragEnd={(e) => {
+                                                                        console.log(e.target);
+                                                                        setTextPosition({
+                                                                            x: e.target.x(),
+                                                                            y: e.target.y(),
+                                                                        });
+                                                                        }} stroke={outlineColor} strokeWidth={NotextBorder}
+                                                                        onClick={(e)=>{setNoSelected(true);setNameSelected(false);
+                                                                        }} onTap={(e)=>{setNoSelected(true);setNameSelected(false);}} align='center' width={playerNoWidth} rotation={rotationAngle} scaleX={NoScale.x} scaleY={NoScale.y}/>
+                                        <Transformer ref={TextNoTranRef} />
+                                        
+                                    </Layer>
+                                </Stage>
+                            </div>
+                        </div>
 
                            
                         <div className='tsize'>
-                            <div className='mx-auto' style={{ width: '30%' }}>
+                            <div className='tsize-action-div'>
                                 <Form.Group controlId="formFile" className="mb-3 mx-auto">
                                     <InputGroup>
                                     <Form.Control
@@ -1160,7 +1372,9 @@ function Design(){
             </div>
             
         </section>
+        {/* <div ref={fontfamilyDropDown} style={{visibility:'hidden'}}></div> */}
     </div>
+    
     );
 }
 

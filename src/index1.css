@@ -1,0 +1,653 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cantarell&family=Fira+Sans&family=Oxygen&family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap');
+
+@font-face {
+  font-family: "Euclid Circular A";
+  src: url("../src/assets/fonts/Euclid\ Circular\ A\ Regular.ttf");
+}
+
+@font-face {
+  font-family: "Medium";
+  src: url("../src/assets/fonts/medium.otf");
+}
+@font-face {
+  font-family: "Segoe UI";
+  src: url("../src/assets/fonts/Segoe\ UI.ttf");
+}
+@font-face {
+  font-family: "Droid Sans";
+  src: url("../src/assets/fonts/DroidSans.ttf");
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src: url("../src/assets/fonts/HelveticaNeueBlack.otf");
+}
+
+@font-face {
+  font-family: "BlinkMacSystemFont";
+  src: url("../src/assets/fonts/blinkmacsystemfont-regular.ttf");
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  /* font-family: 'Euclid Circular A', 'Medium',
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important; */
+    font-family: "IBM Plex Sans", sans-serif !important;
+    font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+#main-container {
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+a {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+a:hover {
+  text-decoration: none; 
+}
+.custom-link {
+  text-decoration: none; 
+  color: inherit; 
+}
+
+.custom-link:hover {
+  text-decoration: none; 
+}
+.main{
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.nav-pills {
+  display: flex;
+  flex-direction: column;
+  /* margin-top: auto; */
+}
+.nav-pills .nav-link{
+  font-size: small;
+}
+.nav-pills .nav-link.active{
+  color: #000000 !important; 
+  background-color: rgb(242, 246, 254) !important; 
+}
+.nav-pills .nav-link:hover{
+  color: #000000;
+}
+
+.nav-pills .nav-link.active .circle-icon {
+  background-color: #EEE5FF;
+  color: #000000;
+}
+
+/* home css starts  */
+.home{
+  width: 100%;
+  background-color: #fff;
+}
+.home-content h5{
+  margin: 10px;
+}
+.sidemenu{
+  background-color: rgb(242, 246, 254);
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+.sidemenu li{
+ font-weight: 600;
+ font-size: 15px;
+}
+
+.sidemenu li a{
+  color: rgb(0, 0, 0);
+}
+.circle-icon {
+  background-color: #E1E5F2;
+  border: 1px solid #00000000;
+  border-radius: 52px;
+  padding: 5px 10px;
+  display: inline-block;
+}
+.home-inner{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home-col{
+  width: 600px;
+  justify-content: center;
+  padding: 50px;
+  background-color: #F4F6FC;
+  border-radius: 30px;
+}
+.home-col p{
+  font-weight: 500;
+  margin: 15px 0 8px 0;
+}
+
+.tsselect{
+  padding: 25px;
+  border-radius: 20px;
+  background-color: #EEE5FF;
+}
+.tsnselect{
+  padding: 25px;
+  border-radius: 20px;
+  background-color:#F4F6FC;
+}
+
+/* home css ends  */
+
+/* dropdown start  */
+.custom-dropdown.form-select {
+  color: #000000;
+  text-align: center;
+  border: 1px solid #ccc; 
+  border-radius: 22px;
+  font-size: small;
+  
+}
+
+.page-side .form-select{
+  background-color:  #EAEEF8;
+  color: #0D214B;
+  border: none;
+  border-radius: 22px;
+  font-size: small;
+  
+}
+.page-side .form-control{
+  background-color:  #EAEEF8;
+  color: #0D214B;
+  border: none;
+  border-radius: 22px;
+  font-size: small;
+  border-right: none;
+}::placeholder {
+  color: #0D214B;
+}
+
+.page-side .input-group-text
+{
+  background-color:  #EAEEF8;
+  border:  none;
+  border-radius:0 22px 22px 0;
+  border-left: none;
+  /* padding: 0 5px 0 0; */
+  padding: 8.5px 16px 8.5px 1px;
+}
+.form-control:focus {
+  box-shadow: none !important;
+  outline: 0;
+}
+.input-group-text{
+  border-radius: 30px;
+}
+.custom-side{
+  margin-left: 20px;
+  margin-right: 15px;
+}
+.custom-variation-side{
+  margin-left: 20px;
+  margin-right: 15px;
+}
+.custom-variation-side input{
+  width: 100%;
+  border-radius: 22px;
+  background-color: #EAEEF8;
+  font-size: small;
+  border: none;
+}
+.side-title{
+  margin: 20px 10px 10px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #0D214B;
+  text-transform: uppercase;
+  opacity: 0.6;
+
+}
+.accordion{
+  margin-left: 20px;
+  margin-right: 15px;
+}
+.accordion-body{
+  margin-left: 15px;
+  margin-right: 15px;
+}
+.custom-accordion .input-group-text,
+.custom-accordion .form-control{
+  border-radius: 5px;
+  background-color: #fff;
+  border: 0;
+}
+
+.custom-tabs .active{
+  background-color: #EEE5FF;
+  padding: 5px 15px;
+  border-radius: 52px;
+  cursor: pointer;
+}
+
+.custom-tabs li:hover{
+  cursor: pointer;
+}
+
+/* dropdown ends  */
+
+/* tshirt front css start  */
+
+.custom-tabs li{
+  text-decoration: none;
+  list-style: none;
+  padding: 5px 15px;
+  color: #0D214B;
+  font-size: 15px;
+}
+
+.custom-btn .btn{
+  border-radius: 30px;
+  padding: 5px 20px;
+}
+
+.tool-btn .btn{
+  background-color: #EEE5FF;
+  border: none;
+  font-size: 12px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #0D214B;
+  overflow: hidden;
+}
+.tool-btn .btn:hover,
+.tool-btn .btn.active{
+  background-color:#EAEEF8;
+  color: #0D214B;
+  border: none;
+}
+
+.accordion-button,
+.accordion-button:active,
+.accordion-button:hover,
+.accordion-header,
+.custom-accordion {
+  color: #0D214B;
+  background-color: #EAEEF8 !important;
+  box-shadow: none !important;
+  /* border-radius: 30px; */
+}
+.custom-accordion.accordion-item{
+  border-radius: 22px;
+  border: none;
+}
+.accordion-item:first-of-type {
+  border-top: none;
+}
+.accordion-item:first-of-type {
+  border-top-left-radius: 22px !important; 
+  border-top-right-radius: 22px !important; 
+}
+.accordion-item:last-of-type {
+  border-bottom-right-radius: 22px !important;
+  border-bottom-left-radius: 22px !important;
+}
+.custom-accordion .accordion-header {
+  border-radius: 22px;
+  padding: 3px;
+  
+}
+.accordion-button::after{
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  /* background-image: url('../src/assets/img/expand_more.png');  */
+  background-size: 75% auto!important ;
+  background-repeat: no-repeat; 
+  margin-left: 5px;
+}
+.custom-accordion .accordion-body{
+  padding: 10px;
+}
+.accordion-body .form-select{
+  background-color: #fff;
+  border-radius: 5px;
+}
+.custom-accordion .accordion-button {
+  padding: 3px;
+  font-size: small;
+  border: 0;
+  /* border-radius: 30px; */
+}
+.tsize{
+  margin-top: 10px;
+}
+.tsize .form-control{
+  background-color:  #EAEEF8;
+  color: #0D214B;
+  border: none; 
+  border-radius: 22px;
+  font-size: small;
+}
+.tsize .input-group-text
+{
+  background-color:  rgb(231, 239, 254);
+  border-radius: 30px;
+}
+.tsize .form-select{
+  background-color:#EEE5FF;
+  color: #0D214B;
+  border: none; 
+  border-radius: 22px;
+  font-size: small;
+  
+}
+/* tshirt front css ends  */
+.variation-inner{
+  justify-content: center;
+}
+.variation-inner .table{
+   border: none;
+   /* text-align: center; */
+   
+}
+.variation-inner .table th{
+  
+  font: normal normal medium 12px/14px Euclid Circular A;
+  letter-spacing: 0.96px;
+  color: #0D214B;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+.variation-inner .table tbody .custom-tbody,
+.custom-tbody tr,
+td,
+th
+{
+  border: none !important;
+  border-style: none !important;
+}
+.variation-inner .table td{
+  /* background-color:  rgb(231, 239, 254);
+  border-radius: 30px; */
+  padding: 0;
+  
+}
+/* .variation-inner .table th{
+  background-color:  rgb(231, 239, 254);
+  border-radius: 30px;
+  padding: 5px;
+  
+} */
+.tshirt-variant-data
+{
+  background:  rgb(231, 239, 254);
+}
+.variation-inner-table{
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+}
+.variation-inner .table tbody .custom-tbody tr{
+  margin-bottom: 5px !important;
+}
+.variation-inner  select{
+  background-color:  rgb(231, 239, 254);
+  border: 0;
+  width: 60%;
+}
+
+.variation-inner .card{
+
+ background-color: #F9FAFD;
+ border: 2px solid  #EEE5FF;
+ padding: 15px 25px;
+
+}
+.variation-inner .card .card-inner{
+  padding: 10px;
+}
+.side-card p{
+  font-size: 12px;
+  letter-spacing: 0.96px;
+  color: #0D214B;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+ /* Add this CSS to your stylesheet */
+.custom-dropdown {
+  border: none;
+}
+/* .login-container{
+  padding: 0px 50px;
+} */
+.login{
+  padding: 30px;
+  /* text-align: center; */
+  border: 1px solid #D4E1F3;
+  border-radius: 34px;
+
+} 
+.login p{
+  color: #495C6F;
+  text-align: center;
+  font-size: 14px;
+}
+.login button{
+  
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px;
+    border-radius: 30px;
+    background: transparent;
+    border: 1px solid #D4E1F3;
+    font-weight: 500;
+    cursor: pointer;
+}
+.login button img{
+  margin-right: 10px;
+}
+.login input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #D4E1F3;
+  outline: 0;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+::placeholder {
+  color: #495C6F;
+}
+.login .submit{
+  width: 100%;
+  background-color: #8B3CD9;
+  border-radius: 6px;
+  margin:20px 0px;
+  color:#fff;
+}
+
+.login .submit:active{
+  transform: scale(0.9);
+}
+
+.login a.login-a{
+  color: #8B3CD9;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+}
+.login-title{
+  text-align: center;
+}
+.login-title img{
+  width: 400px;
+}
+.login-title p{
+  font-size: 115px;
+  letter-spacing: -2.5px;
+
+}
+.login-tabs{
+  justify-content: center;
+  padding: 0;
+}
+.login-tabs :first-child{
+  background-color: #EEE5FF;
+  padding: 2px 15px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+.login-tabs li{
+  text-decoration: none;
+  list-style: none;
+  letter-spacing: 0px;
+  color: #8B3CD9;
+}
+.or-text{
+  text-align: center;
+  margin: auto;
+  position: relative;
+  margin-bottom: 20px;
+}
+.or-text::before{
+  content: "";
+  width: 40%;
+  height: 2px;
+  display: block;
+  background: #e0e7ef;
+  position: absolute;
+  top: 50%;
+  left: 0;
+ 
+}
+.or-text::after{
+  content: "";
+  width: 40%;
+  height: 2px;
+  display: block;
+  background: #e0e7ef;
+  position: absolute;
+  top: 50%;
+  right: 0;
+ 
+}
+.otp-input-div{
+  display: flex;
+}
+.otp-num-input
+{
+  margin:10px 10px;
+  width: 10px;
+  height: 65px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: 900;
+  padding: 10px 0;
+  font:normal normal medium 12px/14px Euclid Circular A;;
+}
+
+.upload-excel-div{
+  display: grid;
+  place-content: center;
+  margin: 0 0 20px 0
+}
+
+input[type="file"]{
+  display:none;
+}
+.upload_excel_lable{
+  display: inline-block;
+  background-color:#2b2b5e;
+  color:#fff;
+  padding:4px 15px;
+  user-select: none;
+  cursor: pointer;
+  border-radius: 20px;
+}
+.upload_excel_lable:active{
+  transform: scale(0.9); 
+}
+
+.upload-error{
+  /* width: 50%; */
+  padding: 10px 10px !important;
+  margin: 10px;
+}
+
+@media only screen and (min-width:1200px) {
+  .svg-bg-img{
+    padding: 0 0;
+    width: 322px;
+    height: 500px;
+  }
+  .tshirt-bg-img{
+    width: 322px;
+    height: 500px;
+  }
+  .tsize-action-div{
+    width: 750px;
+    padding: 0 140px 0 272px;
+    margin: 35px 0 0 0;
+  }
+  .tshirtcanvas{
+    width:500px;
+    height: 500px;
+  }
+  .tshirt-draw-canvas{
+    padding: 0 0 0 279px;
+  }
+}
+
+
+  @media only screen and (min-width:992px) and (max-width:1199px){
+    .svg-bg-img{
+      padding: 0 0;
+      width: 322px;
+      height: 500px;
+    }
+    .tshirt-bg-img{
+      width: 322px;
+      height: 500px;
+    }
+    .tsize-action-div{
+      width: 750px;
+      padding: 0 140px 0 272px;
+      margin: 35px 0 0 0;
+    }
+    .tshirtcanvas{
+      width:500px;
+      height: 500px;
+    }
+    .tshirt-draw-canvas{
+      padding: 0 0 0 279px;
+    }
+  }
+

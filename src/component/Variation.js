@@ -1,24 +1,28 @@
 import React,{ useRef, useState,useEffect}  from 'react';
 import Sidebar from "../component/Sidebar";
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import sidemenu from '../assets/img/second-age.png';
-import switchImage from '../assets/img/switch_access.png'
-
+import switchImage from '../assets/img/switch_access.png';
+import fronttshirt from '../assets/img/Plain TeeShirt.png';
 import * as XLSX from 'xlsx';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import Accordion from 'react-bootstrap/Accordion';
 import { useForm } from 'react-hook-form';
+import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text, Shape } from 'react-konva';
+import Konva from 'konva';
 
 
 import { faUndo, faRedo, faSearchPlus, faShirt, faList, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import Table from 'react-bootstrap/Table';
+import { Link } from 'react-bootstrap-icons';
+import useImage from 'use-image';
 
 function Variation(){
     var fileRecord = null;
-const [filedata,setFileData] = useState(null);
+    const [filedata,setFileData] = useState(null);
     const[fileStatus,setFileStatus] = useState(false);
     const[errmsg,setErrmsg] = useState(" ");
     const[errFile,setErrFile] = useState(false);
@@ -28,7 +32,8 @@ const [filedata,setFileData] = useState(null);
     const message = useRef();
     const navigate = useNavigate();
     const fileInputField = useRef();
-
+    const { state } = useLocation();
+    console.log(state);
     const [NametextSize,setNameTextSize]=useState('32');
     const [NamefontFamily, setNameFontFamily] = useState('Arial');
     const [tshirtSize,settshirtSize]=useState('M');
@@ -38,6 +43,115 @@ const [filedata,setFileData] = useState(null);
     const [NamerotationAngle, setNameRotationAngle] = useState(0);
     const [NofontFamily,setNofontFamily]=useState('');
     const [BgName,setBgName]=useState('');
+    // var selectedImage = localStorage.getItem('bgImageDetails');
+    var selectedImage = state.selectedImage;
+    
+    const canvasRef = useRef(null);
+
+    const LoadBGImage = () => {
+        const [image] = useImage(selectedImage);
+        // image.width = 320;
+        // image.height = 500;
+        return <KonvaImage image={image} width={220} height={315} style={{ position: 'absolute', top: 0, left: 0,zIndex:0 }} x={56}/>
+
+        // return <Shape sceneFunc={(context, shape)=>{context.beginPath();
+        //     context.moveTo(48, 6);
+        //     context.quadraticCurveTo(100, 27, 153, 5);
+        //     // context.lineTo(220, 50);
+        //     context.lineTo(203, 20);
+        //     context.lineTo(203, 315);
+        //     context.lineTo(0, 500);
+        //     context.lineTo(0, 23);
+        //     context.closePath();
+        //     context.fillStrokeShape(shape);}} strokeWidth={1} fillPatternImage={image} fillPatternScale={{x:0.41,y:0.44}} style={{ position: 'absolute', top: 0, left: 0,zIndex:0 }} x={56}></Shape>;
+
+    }
+
+    const LoadImage = () => {
+        const [image] = useImage(fronttshirt);
+        return <KonvaImage image={image} width={315} height={315}/>;
+      };
+
+    const drawTextOnCanvas = (canvas) => {
+        if (canvas) {
+
+            var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
+            var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
+            //  console.log(playernumberdetails.textColor);
+            // const ctx = canvas.getContext('2d');
+            // // ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //  // Draw background image
+            //  const img = new Image();
+            //  img.src = backgroundImage;
+            //  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            //   // Draw text or other content on top of the background
+            // // Draw name
+            // ctx.textAlign="center";
+            // ctx.font = `${playernamedetails.NametextSize-30}px ${playernamedetails.NamefontFamily}`
+            // ctx.fillStyle = playernamedetails.NametextColor;
+            // ctx.strokeStyle=playernamedetails.NameoutlineColor
+            // ctx.lineWidth = '2'; // Set the outline size
+            // ctx.rotate((playernamedetails.NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
+            // // ctx.fillText(text, playernamedetails.NametextPosition.x-135, playernamedetails.NametextPosition.y-80);
+            // // ctx.fillText(text, 110, (playernamedetails.NametextPosition.y*canvas.height)/100);
+            // ctx.fillText(text, ((playernamedetails.NametextPosition.x)*canvas.width)/100, (playernamedetails.NametextPosition.y*canvas.height)/100);
+
+            //   // Draw number
+            // ctx.font = `${playernumberdetails.textSize}px ${playernumberdetails.fontFamily}`
+            // ctx.fillStyle = playernumberdetails.textColor;
+            // ctx.strokeStyle=playernumberdetails.outlineColor
+            // ctx.lineWidth = '2'; // Set the outline size
+            // ctx.rotate((playernumberdetails.rotationAngle * Math.PI) / 180); // Convert degrees to radians
+            // // ctx.fillText(number, playernumberdetails.textPosition.x-160, playernumberdetails.textPosition.y-100);
+            // // ctx.fillText(number, 110, (playernumberdetails.textPosition.y*canvas.height)/100);
+            // ctx.fillText(number, ((playernumberdetails.textPosition.x)*canvas.width)/100, (playernumberdetails.textPosition.y*canvas.height)/100);
+
+            const stage = canvas;
+            console.log(stage);
+
+            const layer = new Konva.Layer();
+
+            var text1 = new Konva.Text({
+                x:(playernamedetails.NametextPositionPer.x*canvas.attrs.width)/100,
+                y:(playernamedetails.NametextPositionPer.y*canvas.attrs.height)/100,
+                text:playernamedetails.Name,
+                fontSize:((playernamedetails.NametextSizePer*canvas.attrs.width)/100),
+                fontFamily:playernamedetails.NamefontFamily,
+                fill:playernamedetails.NametextColor,
+                stroke:playernamedetails.NameoutlineColor,
+                strokeWidth:(playernamedetails.NametextBorderPer*canvas.attrs.width)/100,
+                align:'center',
+                width:(playernamedetails.NameWidthPer*canvas.attrs.width)/100,
+                rotation:playernamedetails.NamerotationAngle,
+                scaleX:playernamedetails.NameScale.x,
+                scaleY:playernamedetails.NameScale.y  
+            });
+
+            layer.add(text1);
+
+            var text2 = new Konva.Text({
+                x:(playernumberdetails.textPositionPer.x*canvas.attrs.width)/100,
+                y:(playernumberdetails.textPositionPer.y*canvas.attrs.height)/100,
+                text:playernumberdetails.No,
+                fontSize:((playernumberdetails.textSizePer*canvas.attrs.width)/100),
+                fontFamily:playernumberdetails.fontFamily,
+                fill:playernumberdetails.textColor,
+                stroke:playernumberdetails.outlineColor,
+                strokeWidth:(playernumberdetails.NotextBorderPer*canvas.attrs.width)/100,
+                align:'center',
+                width:(playernumberdetails.NoWidthPer*canvas.attrs.width)/100,
+                rotation:playernumberdetails.rotationAngle,
+                scaleX:playernumberdetails.NoScale.x,
+                scaleY:playernumberdetails.NoScale.y  
+            });
+
+            layer.add(text2);
+
+            stage.add(layer);
+
+        }
+    };
+
     useEffect(() => {
         var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
         var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
@@ -49,11 +163,23 @@ const [filedata,setFileData] = useState(null);
         settshirtSize(tshirtSizeSelected);
         setBgName(imgname);
         setNofontFamily(playernumberdetails.fontFamily)
+        drawTextOnCanvas(canvasRef.current);
 
-    }, );
+    });
+    useEffect(()=>{
+        var tshirtDetails = JSON.parse(localStorage.getItem('tshirtDetails'));
+        // console.log(tshirtDetails);
+        if(tshirtDetails != null)
+        {
+            setExcelData(tshirtDetails);
+            setCount(tshirtDetails.length);
+            console.log(tshirtDetails);
+        }
+    },[])
      const [appendingRow,setAppendingRow] = useState([]);
+    const list = [];
     const [count,setCount] = useState(0);
-     const { register, formState: { errors },handleSubmit,unregister } = useForm();
+     const { register, formState: { errors },handleSubmit,unregister,reset } = useForm();
     var selectFile = (ev)=>{
         console.log(ev.target.files[0]);
         if(ev.target.files[0] === undefined || ev.target.files[0] === null)
@@ -90,7 +216,7 @@ const [filedata,setFileData] = useState(null);
                     console.log(worksheet);
                     const data = XLSX.utils.sheet_to_json(worksheet);
                     console.log(data);
-		    setCount(data.length);
+		            setCount(data.length);
                     setExcelData(data);
                 };
             }
@@ -110,15 +236,19 @@ const [filedata,setFileData] = useState(null);
     var addRow = (ev) =>{
         // ev.peventDefault()
         console.log(count);
-        // setAppendingRow([...appendingRow,count+1]);
-        appendingRow.push(count+1);
+        list.push(count+1);
+        setAppendingRow([...appendingRow,list]);
         console.log(appendingRow);
         setCount(count+1);
         
 
     }
 
-    var removeAddedRow = (ev) =>{
+    var removeAddedRow = (ev,val) =>{
+        console.log(val);
+        unregister(`name[${val}]`);
+        unregister(`number[${val}]`);
+        unregister(`size[${val}]`);
         const currentTarget = ev.currentTarget.getAttribute("for");
         console.log(currentTarget);
         document.getElementById(currentTarget).remove();
@@ -142,14 +272,22 @@ const [filedata,setFileData] = useState(null);
     var upload_data = (data)=>{
          // ev.preventDefault();
         // console.log(typeof excelData);
+        localStorage.removeItem('tshirtDetails')
         console.log(data);
         var dataToPost = []
+        var index = 0;
         for(let i in data['name'])
         {
-            dataToPost = [...dataToPost,{name:data['name'][i],number:data['number'][i],size:data['size'][i]}];
+            if(data['name'][i] != "" && data['size'][i] != "")
+            {
+                dataToPost = [...dataToPost,{indexSr:index+1,name:data['name'][i],number:data['number'][i],size:data['size'][i]}];
+                index = index+1
+            }
+            
+
 
         }
-        // console.log(dataToPost);
+        console.log(dataToPost);
         localStorage.setItem('tshirtDetails',JSON.stringify(dataToPost))
     }
     return(
@@ -188,19 +326,28 @@ const [filedata,setFileData] = useState(null);
                         />
                         </div>
                         
-                    <img src={sidemenu} style={{ width: '100%' , textAlign: 'center'}} />
+                    {/* <img src={sidemenu} style={{ width: '100%' , textAlign: 'center'}} /> */}
+                    <div style={{position:'relative'}}>
+                    <Stage width={315} height={315} style={{ position: 'absolute', top: 10, left: 0 }}>
+                                    <Layer>
+                                    {/* <LoadImage /> */}
+                                    {selectedImage && <LoadBGImage x={285}/>}
+                                    </Layer>
+                                </Stage>
+                                <Stage width={220} height={315} style={{ position: 'absolute', top: 10, left: 55,zIndex:0,border:'0px solid #000'}} ref={canvasRef}></Stage>
+                    </div>
                               
                     </div>
                        
                 <div className="col-9">
                     <div className="row tab mt-3">
                         <ul className="d-flex col-6 custom-tabs">
-                            <li className="">Design</li>
-                            <li className="mx-2">Variation</li>
-                            <li className="mx-2">Export</li>
+                            <li className="" onClick={()=>{navigate('/Design',{state:{selectedImage:selectedImage}})}}>Design</li>
+                            <li className="mx-2 active" onClick={()=>{navigate('/Variation',{state:{selectedImage:selectedImage}})}}>Variation</li>
+                            <li className="mx-2" onClick={()=>{navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
                         </ul>
                         <div className="col-6 custom-btn">
-                            <Button href='/Export' className="float-end " variant="primary">
+                            <Button onClick={()=>{navigate('/Export',{state:{selectedImage:selectedImage}})}} className="float-end " variant="primary">
                             <img src={switchImage} alt="home"  style={{width: '25px'}}/> Generate
                             </Button> 
                        </div>
@@ -247,18 +394,18 @@ const [filedata,setFileData] = useState(null);
                                                 {excelData && excelData.map((value,index) =>(
                                                 <tr key={index} id={value['__rowNum__']}>
                                                     
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" value={value['name']} {...register(`name[${index}]`)}/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]" value={value['number']} {...register(`number[${index}]`)}/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" value={value['size']} {...register(`size[${index}]`)}/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" defaultValue={value['name']} {...register(`name[${index}]`)}/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]" defaultValue={value['number']} {...register(`number[${index}]`)}/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" defaultValue={value['size']} {...register(`size[${index}]`)}/></td>
                                                     <td><span for={index} className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeExcelRow(index,value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                 </tr>
                                                 ))}
                                                 {appendingRow && appendingRow.map((val,index)=>(
-                                                    <tr id={val}>
+                                                    <tr id={`row${val}`}>
                                                     <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" {...register(`name[${val}]`)} placeholder='Type here...'/></td>
                                                     <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]"  {...register(`number[${val}]`)} placeholder='00'/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" {...register(`size[${val}]`)} placeholder='Size'/></td>
-                                                    <td key={val}><span for={val} className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeAddedRow(ev)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]"  {...register(`size[${val}]`)} placeholder='Size'/></td>
+                                                    <td key={`row${val}`}><span for={`row${val}`} className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeAddedRow(ev,index)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                 </tr>
                                                 ))}
                                             </tbody>

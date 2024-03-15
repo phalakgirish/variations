@@ -16,13 +16,14 @@ function Home(){
     localStorage.removeItem('playernamedetails')
     localStorage.removeItem('tshirtDetails')
     localStorage.removeItem('playernumberdetails')
+    localStorage.removeItem('tshirtchangedetails')
     const handleSelectChange = (event) => {
         const value = event.target.value;
         setSelectedValue(value);
     
         // Redirect to the "Design" page with the updated selected value
          // Redirect to the "Design" page without changing the URL
-    navigate('/Design', { state: { selectedValue: value } });
+    navigate('/Design', { state: { selectedValue: value,selectedImage:null } });
       };
 
       const handleBackSelectChange = (event) => {
@@ -45,7 +46,7 @@ function Home(){
             </div>
             <div className="container home-inner">
                 <div className="row home-col">
-                    <div className="col-6 tsselect">
+                    <div className="col-6 tsselect" onClick={()=>{navigate('/Design')}}>
                    
                         <img
                             src= {front}
@@ -54,7 +55,7 @@ function Home(){
                         />  
                         
                         <p className="text-center text-dark">Tee Shirt Front Side</p>
-                        <Form.Select aria-label="Default select example" className="mb-2 custom-dropdown" onChange={handleSelectChange}
+                        {/* <Form.Select aria-label="Default select example" className="mb-2 custom-dropdown" onChange={handleSelectChange}
         value={selectedValue}>
                             <option>XS 34 (19 x 27 in)</option>
                             <option>S 36 (20 x 28 in)</option>  
@@ -66,7 +67,7 @@ function Home(){
                             <option>4XL 48 (26 x 34 in)</option>
                             <option>5XL 50 (27 x 35 in)</option>
                             <option>6XL 52 (28 x 35 in)</option>      
-                        </Form.Select>
+                        </Form.Select> */}
                         
                   
                     </div>
@@ -80,7 +81,7 @@ function Home(){
                         />   
                           </Link> 
                         <p className="text-center text-dark">Tee Shirt Front Side</p>
-                        <Form.Select aria-label="Default select example" className="mb-2 custom-dropdown" onChange={handleBackSelectChange} value={selectedValue}>
+                        {/* <Form.Select aria-label="Default select example" className="mb-2 custom-dropdown" onChange={handleBackSelectChange} value={selectedValue}>
                         <option>XS 34 (19 x 27 in)</option>
                             <option>S 36 (20 x 28 in)</option>  
                             <option>M 38 (21 x 29 in)</option>
@@ -91,7 +92,7 @@ function Home(){
                             <option>4XL 48 (26 x 34 in)</option>
                             <option>5XL 50 (27 x 35 in)</option>
                             <option>6XL 52 (28 x 35 in)</option>  
-                        </Form.Select>
+                        </Form.Select> */}
                       
                     </div>
                 </div>

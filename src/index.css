@@ -1,18 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cantarell&family=Fira+Sans&family=Oxygen&family=Ubuntu&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+@font-face {
+  font-family: "Euclid Circular A";
+  src: url("../src/assets/fonts/Euclid\ Circular\ A\ Regular.ttf");
+}
+
+@font-face {
+  font-family: "Medium";
+  src: url("../src/assets/fonts/medium.otf");
+}
+@font-face {
+  font-family: "Segoe UI";
+  src: url("../src/assets/fonts/Segoe\ UI.ttf");
+}
+@font-face {
+  font-family: "Droid Sans";
+  src: url("../src/assets/fonts/DroidSans.ttf");
+}
+
+@font-face {
+  font-family: "Helvetica Neue";
+  src: url("../src/assets/fonts/HelveticaNeueBlack.otf");
+}
+
+@font-face {
+  font-family: "BlinkMacSystemFont";
+  src: url("../src/assets/fonts/blinkmacsystemfont-regular.ttf");
+}
+
+@font-face {
+  font-family: "American Captain";
+  src: url("../src/assets/fonts/American\ Captain.ttf");
+}
+
+@font-face {
+  font-family: "Bruce Forever";
+  src: url("../src/assets/fonts/Bruce\ Forever.ttf");
+}
+
+@font-face {
+  font-family: "Freshman";
+  src: url("../src/assets/fonts/Freshman.ttf");
+}
+
+@font-face {
+  font-family: "Govrnment Agent BB";
+  src: url("../src/assets/fonts/GovtAgentBB.ttf");
+}
+
+@font-face {
+  font-family: "Govrnment Agent BB Italic";
+  src: url("../src/assets/fonts/GovtAgentBB_ital.ttf");
+}
+
+@font-face {
+  font-family: "Jersey M54";
+  src: url("../src/assets/fonts/Jersey\ M54.ttf");
+}
+
+@font-face {
+  font-family: "Rozha One";
+  src: url("../src/assets/fonts/RozhaOne-Regular.otf");
+}
+
+@font-face {
+  font-family: "Sports Jersey";
+  src: url("../src/assets/fonts/sportsjersey.ttf");
+}
+
+@font-face {
+  font-family: "Sports World";
+  src: url("../src/assets/fonts/Sports\ World-Regular.ttf");
+}
+
+
+
 
 body {
   margin: 0;
   padding: 0;
-  font-family: Euclid Circular A, Medium,
+  /* font-family: 'Euclid Circular A', 'Medium',
   -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif !important;
+    sans-serif; */
+    font-family: "IBM Plex Sans", sans-serif !important;  
+    font-style: normal;
+    font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  /* font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace; */
+    font-family: "IBM Plex Sans", sans-serif !important;  
+    font-style: normal;
+    font-weight: 500;
 }
 #main-container {
   margin: 0;
@@ -158,6 +244,7 @@ a:hover {
   border-radius:0 22px 22px 0;
   border-left: none;
   /* padding: 0 5px 0 0; */
+  padding: 8.5px 16px 8.5px 1px;
 }
 .form-control:focus {
   box-shadow: none !important;
@@ -205,10 +292,14 @@ a:hover {
   border: 0;
 }
 
-.custom-tabs :first-child{
+.custom-tabs .active{
   background-color: #EEE5FF;
   padding: 5px 15px;
   border-radius: 52px;
+  cursor: pointer;
+}
+
+.custom-tabs li:hover{
   cursor: pointer;
 }
 
@@ -337,7 +428,10 @@ a:hover {
 }
 .variation-inner .table th{
   
-  font: normal normal medium 12px/14px Euclid Circular A;
+  /* font: normal normal medium 12px/14px Euclid Circular A; */
+  font-family: "IBM Plex Sans", sans-serif !important;  
+  font-weight: 500;
+  /* font-size: 12px; */
   letter-spacing: 0.96px;
   color: #0D214B;
   text-transform: uppercase;
@@ -355,6 +449,9 @@ th
   /* background-color:  rgb(231, 239, 254);
   border-radius: 30px; */
   padding: 0;
+  font-family: "IBM Plex Sans", sans-serif !important;  
+  font-weight: 500;
+  font-size: 12px;
   
 }
 /* .variation-inner .table th{
@@ -490,6 +587,10 @@ th
   list-style: none;
   letter-spacing: 0px;
   color: #8B3CD9;
+  font-family: 'IBM Plex Sans';
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 500;
 }
 .or-text{
   text-align: center;
@@ -561,3 +662,205 @@ input[type="file"]{
   padding: 10px 10px !important;
   margin: 10px;
 }
+
+@media only screen and (min-width:1200px) {
+  .svg-bg-img{
+    padding: 0 0;
+    width: 322px;
+    height: 500px;
+  }
+  .tshirt-bg-img{
+    width: 322px;
+    height: 500px;
+  }
+  .tsize-action-div{
+    width: 750px;
+    padding: 0 140px 0 272px;
+    margin: 35px 0 0 0;
+  }
+  .tshirtcanvas{
+    width:500px;
+    height: 500px;
+  }
+  .tshirt-draw-canvas{
+    padding: 0 0 0 279px;
+  }
+}
+
+
+  @media only screen and (min-width:992px) and (max-width:1199px){
+    .svg-bg-img{
+      padding: 0 0;
+      width: 322px;
+      height: 500px;
+    }
+    .tshirt-bg-img{
+      width: 322px;
+      height: 500px;
+    }
+    .tsize-action-div{
+      width: 750px;
+      padding: 0 140px 0 272px;
+      margin: 35px 0 0 0;
+    }
+    .tshirtcanvas{
+      width:500px;
+      height: 500px;
+    }
+    .tshirt-draw-canvas{
+      padding: 0 0 0 279px;
+    }
+  }
+
+  .FeedBackOffCanvasTitle{
+    font-weight: 500 !important;
+    font-size: 28px !important;
+  }
+  .feedback-input-div{
+    font-weight: 500 !important;
+    font-size: 16px !important;
+  }
+  .feedback-input-textarea{
+    width: 100% !important;
+    border-radius: 10px 10px;
+    font-weight: 500;
+    font-size: 15px !important;
+    padding: 5px 10px;
+    border: 1px solid #D4E1F3;
+  }
+  .feedback-ScreenShot-label{
+    font-weight: 500 !important;
+    font-size: 12px !important;
+  }
+
+  .feedback-ScreenShot-div{
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+  .feedback-Screenshot-capture{
+    border: 1px solid #D4E1F3 !important;
+    font-weight: 500 !important;
+    font-size: 16px !important;
+    color: #495C6F;
+    border-radius: 10px;
+    padding: 45px 80px;
+  }
+  .feedback-Screenshot-capture:hover{
+    cursor: pointer;
+  }
+  .FeedbackOffCanvas{
+    padding: 0 20px;
+  }
+  .feedback-input-type-div{
+    display: flex;
+    place-content: center;
+  }
+  .feedback-type-button{
+    margin: 0 10px;
+    padding: 10px 45px;
+    color: #8B3CD9 !important;
+    font-weight: 500;
+    font-size: 14px !important;
+    background-color: rgba(139,60,217,0.1);
+    border-radius: 5px;
+  }
+  .feedback-type-button:hover{
+    cursor: pointer;
+  }
+  .feedback-type-div{
+    margin: 20px 0;
+  }
+
+  .feedback-send-btn{
+    background-color: #8B3CD9;
+    color: #fff;
+    padding:7px 30px;
+    margin:0 115px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .tabs-header{
+    display: flex;
+    list-style: none;
+    padding-left:0;
+    margin: 0;
+  }
+  .tabs-header li{
+    padding:15px 40px;
+    margin: 0;
+    font-weight: 500;
+    font-size: 15px;
+    border-bottom: 1px solid #D4E1F3;
+    width: 25%;
+    text-align: center;
+    color: rgba(0,0,0,0.5);
+  }
+  .tabs-header li:hover{
+    cursor: pointer;
+  }
+  .tabs-header .active-tab{
+    border-bottom: 2px solid #8B3CD9;
+    color: #000;
+  }
+  .Screen-tab-body .active-tab{
+    display: block;
+  }
+  .Screen-tab-body .inactive-tab{
+    display: none;
+  }
+  .tab-body-div{
+    width: 100%;
+    height: 40vh;
+  }
+  .Screen-tab-div{
+    border:1px solid #D4E1F3;
+    border-radius: 10px;
+    margin-bottom: 50px;
+  }
+  .feedback-screen-shot-action{
+    text-align: center;
+  }
+  .screen-shot-cancel-btn{
+    padding: 10px 50px;
+    background: rgba(139,60,217,0.1);
+    color: rgba(139,60,217);
+    font-weight: 500;
+  }
+  .screen-shot-share-btn{
+    padding: 10px 50px;
+    background: rgba(139,60,217);
+    color: #fff;
+    font-weight: 500;
+  }
+  .act-btn{
+    border: none;
+    margin: 0 10px;
+    border-radius: 5px;
+  }
+
+  .export-variation-search
+  {
+    width: 80%;
+    height: 42px;
+    border-radius: 0 20px 20px 0;
+    border: none; /*'solid #D4E1F3'*/
+    padding: 0 10px;
+    background-color: #EAEEF8;
+    font-size: 14px;
+    color: #0D214B;
+    font-weight: 500;
+  }
+
+  @media only screen and (min-width:3450px){
+    .FeedbackOffCanvas{
+      top: 50vh !important;
+      border-radius: 20px 0 0 20px;
+    }
+    
+  }
+
+  
+  
+

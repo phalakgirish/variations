@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'; 
 import { BrowserRouter as Router, Link,useNavigate  } from "react-router-dom";
@@ -11,22 +11,62 @@ import verifyotp from "../env/verifyotp";
 function Verifyotp(){
 
   const navigate = useNavigate();
+  const digit1 = useRef();
+  const digit2 = useRef();
+  const digit3 = useRef();
+  const digit4 = useRef();
+  const [digit1Value,setDigit1Value] = useState('-');
+  const [digit2Value,setDigit2Value] = useState('-');
+  const [digit3Value,setDigit3Value] = useState('-');
+  const [digit4Value,setDigit4Value] = useState('-');
+
+  var email_id  = localStorage.getItem('users_email');
 
   const { register, formState: { errors },handleSubmit } = useForm();
 
-  var verify_otp = (data) =>{
-    // console.log(data);
+  const handleInputChange1 = (e) =>{
+    if(e.target.value != '')
+    {
+      // setDigit2Value('');
+      digit2.current.focus();
+    } 
+  }
+  const handleInputChange2 = (e) =>{
+    if(e.target.value != '')
+    {
+      // setDigit3Value('');
+      digit3.current.focus();
+    }
+  }
+  const handleInputChange3 = (e) =>{
+    if(e.target.value != '')
+    {
+      // setDigit4Value('');
+      digit4.current.focus();
+    }
+  }
+  const handleInputChange4 = (e) =>{
+    if(e.target.value != '')
+    {
+      
+      digit4.current.blur();
+    }
+  }
 
-    var email_id  = localStorage.getItem('users_email');
+  var verify_otp = (e) =>{
+    // console.log(data);
+    e.preventDefault();
+
+    
 
     var dataToPost = {
         email_id:email_id,
-        otp: data.digit1+data.digit2+data.digit3+data.digit4
+        otp: digit1.current.value+digit2.current.value+digit3.current.value+digit4.current.value
     };
 
-    console.log(dataToPost);
+    // console.log(dataToPost);
     var response = verifyotp(dataToPost);
-    console.log(response);
+    // console.log(response);
 
     if(!response)
     {
@@ -40,6 +80,11 @@ function Verifyotp(){
 
 
   }
+
+  useEffect(()=>{
+    // setDigit1Value('');
+    digit1.current.focus();
+  },[])
   
     return(
       <div id="main-container" className="container-fluid main">
@@ -68,15 +113,16 @@ function Verifyotp(){
                 <div className="col-4">
                     <div className="login">
                       <h3 className="text-center mb-2">Check you email</h3>
-                      <p>We sent you the OTP to user@email.com</p>
+                      <p>We sent you the OTP to {email_id}</p>
                      
-                      <form onSubmit={handleSubmit(verify_otp)}>
+                      <form onSubmit={(e)=>verify_otp(e)}>
                       <p className="text-left mb-1 mt-6">Verify OTP</p>
                         <div className="otp-input-div">
-                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" {...register("digit1")}/>
-                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" {...register("digit2")}/>
-                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" {...register("digit3")}/>
-                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" {...register("digit4")}/>
+                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" ref={digit1} onChange={(e)=>handleInputChange1(e)} />
+                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" ref={digit2} onChange={(e)=>handleInputChange2(e)} />
+                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" ref={digit3} onChange={(e)=>handleInputChange3(e)} />
+                          <input className="otp-num-input" type="text" name="email" maxLength="1" placeholder="-" ref={digit4}
+                          onChange={(e)=>handleInputChange4(e)} />
                         </div>
                         <input className="submit" type="submit" value="Verify OTP"  />
                       </form>

@@ -10,6 +10,7 @@ import KEYS from "../env/env";
 function Forgetpass(){
 
   const navigate = useNavigate();
+  const [errmsg,setErrorMsg] = useState(null);
 
   const { register, formState: { errors },handleSubmit } = useForm();
 
@@ -33,11 +34,13 @@ function Forgetpass(){
           {
               localStorage.setItem('users_email',data.emailid);
               localStorage.setItem('verifyotp',val.token);
+              setErrorMsg(null);
               navigate('/Verifyotp');
           }
           else
           {
               console.log(val);
+              setErrorMsg(val['msg']);
           }
       })
   }
@@ -77,6 +80,7 @@ function Forgetpass(){
                           <input className="mt-4" type="email" name="email" placeholder="Email ID" {...register("emailid", {required:true,pattern:/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i})}/>
                           {errors.emailid?.type === "required" && (<span className="text-danger">Email is required.</span>)}
                           {errors.emailid?.type === "pattern" && (<span className="text-danger">Please enter valid email.</span>)}
+                          <br /><p className="text-danger">{(errmsg != null)? errmsg:''}</p>
                         <input className="submit" type="submit" value="Reset Password"  />
                       </form>
                       <div className="my-4 text-center">

@@ -14,6 +14,7 @@ import KEYS from "../env/env";
 function Signup(){
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [errmsg,setErrorMsg] = useState(null);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -43,11 +44,13 @@ function Signup(){
         if(val.status == true)
         {
             // localStorage.removeItem('token');
+            setErrorMsg(null);
             navigate('/login');
         }
         else
         {
             console.log(val);
+            setErrorMsg(val['msg']);
         }
     })
   }
@@ -105,7 +108,7 @@ function Signup(){
                           />
                           </div>
 
-                          <div style={{ position: 'relative', marginBottom: '20px'}}>
+                          <div style={{ position: 'relative', marginBottom: '15px'}}>
                           <input
                               type={showPassword ? 'text' : 'password'}
                               name="password"
@@ -119,7 +122,7 @@ function Signup(){
                               style={{ position: 'absolute', top: '40%', right: '10px', transform: 'translateY(-50%)', cursor: 'pointer' }}
                           />
                           </div>
-                            {/* <p className="">{message}</p> */}
+                          <p className="text-danger">{(errmsg != null)? errmsg:''}</p>
                             <input className="submit" type="submit" value="Sign Up" />
                       </form>
                       
