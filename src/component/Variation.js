@@ -53,7 +53,7 @@ const [filedata,setFileData] = useState(null);
     }, );
      const [appendingRow,setAppendingRow] = useState([]);
     const [count,setCount] = useState(0);
-     const { register, formState: { errors },handleSubmit } = useForm();
+     const { register, formState: { errors },handleSubmit,unregister } = useForm();
     var selectFile = (ev)=>{
         console.log(ev.target.files[0]);
         if(ev.target.files[0] === undefined || ev.target.files[0] === null)
@@ -67,7 +67,7 @@ const [filedata,setFileData] = useState(null);
             // setFileRecord(ev.target.files[0])
             fileRecord = ev.target.files[0]
             console.log(fileRecord);
-		setFileData(fileRecord)
+		    setFileData(fileRecord)
             
             const fileTypes = ['application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/csv'];
 
@@ -119,26 +119,30 @@ const [filedata,setFileData] = useState(null);
     }
 
     var removeAddedRow = (ev) =>{
-        // appendingRow.remove(index);
-        // var delete_row = this.index.data("key");
-        // console.log(ev);
-        // console.log(delete_row);
+        const currentTarget = ev.currentTarget.getAttribute("for");
+        console.log(currentTarget);
+        document.getElementById(currentTarget).remove();
     };
 
-    var removeExcelRow = (index) =>{
-        // console.log(id);
-        // delete excelData[id];
-        // console.log();
-        // var row
-        // // var spliced = excelData.splice(index,1);
-        // setExcelData(excelData);
+    var removeExcelRow = (index,id) =>{
+        {
+            const list = [...excelData];
+            unregister(`name[${index}]`);
+            unregister(`number[${index}]`);
+            unregister(`size[${index}]`);
+            console.log(list);
+            const result = list.filter(items=>items.__rowNum__ != id)
+            console.log(result);
+            setExcelData((result.length == 0)?null:result);
+
+          }
 
     }
 
     var upload_data = (data)=>{
          // ev.preventDefault();
         // console.log(typeof excelData);
-        // console.log(data);
+        console.log(data);
         var dataToPost = []
         for(let i in data['name'])
         {
@@ -171,12 +175,12 @@ const [filedata,setFileData] = useState(null);
                             readOnly
                         />   
 
-<input
-    className="mb-2 form-control"
-    type="text"
-    placeholder={`Name Font: ${NamefontFamily}`}
-    readOnly
-/>
+                        <input
+                            className="mb-2 form-control"
+                            type="text"
+                            placeholder={`Name Font: ${NamefontFamily}`}
+                            readOnly
+                        />
                         <input className="mb-2 form-control"
                             type="text"
                            
@@ -217,7 +221,7 @@ const [filedata,setFileData] = useState(null);
                         <div className="container mt-5">
                             <div className="row variation-inner">
                                 <div className="col-6">
-<form onSubmit={handleSubmit(upload_data)}>
+                                <form onSubmit={handleSubmit(upload_data)}>
                                    <table responsive="sm" className='table variation-inner-table'>
                                     <thead>
                                         <tr>
@@ -241,26 +245,26 @@ const [filedata,setFileData] = useState(null);
                                         </tr> */}
 
                                                 {excelData && excelData.map((value,index) =>(
-                                                <tr key={index}>
+                                                <tr key={index} id={value['__rowNum__']}>
                                                     
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" defaultValue={value['name']} {...register(`name[${index}]`)}/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]" defaultValue={value['number']} {...register(`number[${index}]`)}/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" defaultValue={value['size']} {...register(`size[${index}]`)}/></td>
-                                                    <td><span className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeExcelRow(index)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" value={value['name']} {...register(`name[${index}]`)}/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]" value={value['number']} {...register(`number[${index}]`)}/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" value={value['size']} {...register(`size[${index}]`)}/></td>
+                                                    <td><span for={index} className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeExcelRow(index,value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                 </tr>
                                                 ))}
                                                 {appendingRow && appendingRow.map((val,index)=>(
-                                                    <tr key={val}>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" {...register(`name[${val}]`)}/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]"  {...register(`number[${val}]`)}/></td>
-                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" {...register(`size[${val}]`)}/></td>
-                                                    <td><span className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeAddedRow(ev)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                    <tr id={val}>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="name[]" {...register(`name[${val}]`)} placeholder='Type here...'/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="number[]"  {...register(`number[${val}]`)} placeholder='00'/></td>
+                                                    <td><input type='text' className="form-control tshirt-variant-data" style={{backgroundColor: 'rgb(231, 239, 254)',borderRadius: '52px'}} name="size[]" {...register(`size[${val}]`)} placeholder='Size'/></td>
+                                                    <td key={val}><span for={val} className="form-control tshirt-variant-data" style={{borderRadius: '52px', border: 'none',color:'#000'}} onClick={(ev)=> removeAddedRow(ev)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                 </tr>
                                                 ))}
                                             </tbody>
                                         </table>
-                                        <Button style={{borderRadius: '30px', backgroundColor: '#9fd3f7', border:'0'}} onClick={()=>addRow()}>Add</Button>
-                                        <Button type='submit' style={{borderRadius: '30px', backgroundColor: '#9fd3f7', border:'0', marginLeft:'20px'}} >Save</Button>
+                                        <Button style={{borderRadius: '30px', backgroundColor: '#0986dc', border:'0'}} onClick={()=>addRow()}>Add</Button>
+                                        <Button type='submit' style={{borderRadius: '30px', backgroundColor: '#0986dc', border:'0', marginLeft:'20px'}} >Save</Button>
                                    </form>
 
                                 </div>
@@ -274,7 +278,7 @@ const [filedata,setFileData] = useState(null);
                                         <p>FILE SIZE</p>
                                         <h6>{(filedata != null)?(filedata['size'] / 1024).toFixed(2) + " KB":''}</h6>
                                         <div className="mx-auto mt-3 text-center">
-                                            <Button style={{backgroundColor: '#050505', borderRadius: '52px', border: 'none'}}>
+                                            <Button style={{backgroundColor: '#050505', borderRadius: '52px', border: 'none'}} onClick={()=>setFileData(null)}>
                                             <FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} />
                                                 Remove file
                                             </Button>

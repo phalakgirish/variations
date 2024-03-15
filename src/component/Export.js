@@ -269,10 +269,11 @@ function Export(){
                         <div className="container mt-5">
                             <div className="row variation-inner">
                                 <div className="col-8">
-                                    <h5>{tshirtdetails.length} Variations Created</h5>
+                                    <h5>{tshirtdetails && tshirtdetails.length} Variations Created</h5>
                                     <div className='my-5 d-flex justify-content-center ' >
+                                    <div className='row'>
                                     {tshirtdetails && tshirtdetails.map((val, index) => (
-                <div key={index} className='col-4 mx-3 alert alert-danger' style={{ position: 'relative' }}>
+                <div key={index} className='col-xl-4 col-4  alert' style={{ position: 'relative' }}>
                     <div className='tshirtimg1'>
                         <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" >
                             <rect x="40" y="0" width="160" height="315" fill="white" />
@@ -293,7 +294,8 @@ function Export(){
                         <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(canvasRef.current[index], `tshirt_${index + 1}.png`,val.size)}> Download </button>
                     </div>
                 </div>
-            ))}     
+            ))}  
+            </div>   
 
                                         {/* <div className='col-4 mx-3 alert alert-danger' style={{ position: 'relative' }}>
                                             <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" >
