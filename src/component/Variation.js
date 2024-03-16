@@ -176,7 +176,7 @@ function Variation(){
             console.log(tshirtDetails);
         }
     },[])
-     const [appendingRow,setAppendingRow] = useState([]);
+     const [appendingRow,setAppendingRow] = useState([""]);
     const list = [];
     const [count,setCount] = useState(0);
      const { register, formState: { errors },handleSubmit,unregister,reset } = useForm();

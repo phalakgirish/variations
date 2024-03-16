@@ -34,7 +34,10 @@ function Sidebar(){
                 <div className="text-center mt-3">
                     <ul className="nav nav-pills flex-column">
                         <li>
+                        <Link to="/Home">
                             <img src={Varient} alt="Varient logo" style={{width: '50px', top:0}} />
+                                                        </Link>
+
                         </li>
                     </ul>
                 </div>
