@@ -195,15 +195,15 @@ a:hover {
   margin: 15px 0 8px 0;
 }
 
-.tsselect{
+.tsselect {
   padding: 25px;
   border-radius: 20px;
-  background-color: #EEE5FF;
+  background-color: #F4F6FC;
+  transition: background-color 0.3s ease; /* Adding transition for smooth effect */
 }
-.tsnselect{
-  padding: 25px;
-  border-radius: 20px;
-  background-color:#F4F6FC;
+
+.tsselect:hover {
+  background-color: #EEE5FF;
 }
 
 /* home css ends  */

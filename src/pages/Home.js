@@ -71,7 +71,7 @@ function Home(){
                         
                   
                     </div>
-                    <div className="col-6 tsnselect">
+                    <div className="col-6 tsselect">
                     <Link to="/TshirtFront" className="custom-link">
 
                         <img
