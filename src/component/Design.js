@@ -209,7 +209,7 @@ function Design() {
   const TextNoTranRef = useRef(null);
   const fontfamilyDropDown = useRef()
   const DesignImage = useRef();
-  const [activeAccordionItem, setActiveAccordionItem] = useState('');
+  const [activeAccordionItem, setActiveAccordionItem] = useState("");
 
 
   if (Existingplayernamedetails != null && Existingplayernumberdetails != null) {
@@ -276,16 +276,16 @@ function Design() {
     setTextSize(event.target.value);
   };
   const handleTextColorChange = (color) => {
-    setTextColor(color.hex);
-    setTimeout(() => {
-      handleColorPickerClose();
-    }, '1000');
+    setTextColor(color.target.value);
+    // setTimeout(() => {
+    //   handleColorPickerClose();
+    // }, '1000');
   };
   const handleOutlineColorChange = (color) => {
-    setOutLineColor(color.hex)
-    setTimeout(() => {
-      handleOutlineColorClick();
-    }, '1000');
+    setOutLineColor(color.target.value)
+    // setTimeout(() => {
+    //   handleOutlineColorClick();
+    // }, '1000');
   }
   const handleNoBorderChange = (event) => {
 
@@ -373,18 +373,18 @@ function Design() {
     setNameTextBorder(event.target.value);
   };
   const handlePlayerNameTextColorChange = (color) => {
-    setNameTextColor(color.hex);
-    setTimeout(() => {
-      handlePlayerNameColorPickerClose();
-    }, "1000");
+    setNameTextColor(color.target.value);
+    // setTimeout(() => {
+    //   handlePlayerNameColorPickerClose();
+    // }, "1000");
 
   };
 
   const handlePlayerNameOutlineColorChange = (color) => {
-    setNameOutLineColor(color.hex)
-    setTimeout(() => {
-      handlePlayerNameOutlineColorClick();
-    }, "1000");
+    setNameOutLineColor(color.target.value)
+    // setTimeout(() => {
+    //   handlePlayerNameOutlineColorClick();
+    // }, "1000");
   }
 
   const handlePlayerNameFontFamilyChange = (selectedOption) => {
@@ -515,7 +515,11 @@ function Design() {
     //         link.click();
   }
 
+  const handleMouseKeyUp = (e)=>{
+    console.log(e);
+  }
   useEffect(() => {
+    document.addEventListener('mouseup',handleMouseKeyUp())
     if (IsNameSelected) {
       console.log(TextNameRef.current);
       TextNoTranRef.current.nodes([TextNameRef.current]);
@@ -607,7 +611,7 @@ function Design() {
     fontOptions = fontlistarr;
 
   }, [])
-  // console.log(activeAccordionItem);
+  console.log(typeof activeAccordionItem);
 
   const navigateToVariation = () => {
     const playerNamedetails = localStorage.getItem('playernamedetails');
@@ -626,7 +630,9 @@ function Design() {
       }
     }
   };
-
+const addVariation =()=>{
+  alert('Add Variation');
+}
   return (
     <div id="main-container" className="container-fluid main">
 
@@ -700,7 +706,7 @@ function Design() {
               </Form.Group>
 
             </div>
-            <Accordion defaultActiveKey={`"${activeAccordionItem}"`}>
+            <Accordion defaultActiveKey={activeAccordionItem}>
               <Accordion.Item eventKey="1" className="mb-2 custom-accordion">
                 <Accordion.Header className='mx-2'>Player Name</Accordion.Header>
                 <Accordion.Body>
@@ -775,9 +781,9 @@ function Design() {
                         </InputGroup.Text>
 
                       </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
+                      <div className="col-9 d-flex align-items-center justify-content-end" >
                         {/* Additional content in the second column */}
-                        <div
+                        {/* <div
                           onClick={handlePlayerNameTextColorClick}
                           style={{
                             width: '20px',
@@ -786,22 +792,16 @@ function Design() {
                             marginLeft: 'auto',
                             border: '1px solid rgb(0,0,0,0.1)'
                           }}
-                        ></div>
-                        {NamecolorPickerVisible && (
-                          <ChromePicker
-
-                            color={NametextColor}
-                            onChangeComplete={handlePlayerNameTextColorChange}
-                            onHide
-                            // onBlur={handlePlayerNameColorPickerClose}    
-                            style={{
-                              position: 'absolute',
-                              zIndex: '1',
-                              marginTop: '10px',
-                              // Optional: adjust the margin to position the color picker
-                            }}
-                          />
-                        )}
+                        ></div> */}
+                          
+                          <Form.Control
+                          type="color"
+                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          id="exampleColorInput"
+                          defaultValue={NametextColor}
+                          onChange={(e)=>{handlePlayerNameTextColorChange(e)}}
+                          onBlur={handlePlayerNameTextColorClick} // Close the color picker on blur
+                        />
                       </div>
                     </div>
                     <div className="mb-2 row custombackground">
@@ -862,30 +862,16 @@ function Design() {
                       </div>
                       <div className="col-9 d-flex align-items-center justify-content-end">
                         {/* Additional content in the second column */}
-                        <div
-                          onClick={handlePlayerNameOutlineColorClick}
-                          // onBlur={handlePlayerNameOutlineColorClick}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            background: NameoutlineColor,
-                            marginLeft: 'auto',
-                            border: '1px solid rgba(0,0,0,0.1)'
-                          }}
-                        ></div>
-                        {NameoutLinecolorPickerVisible && (
-                          <ChromePicker
-
-                            color={NameoutlineColor}
-                            onChangeComplete={handlePlayerNameOutlineColorChange}
-                            // onClose={handlePlayerNameOutlineColorClick}
-                            style={{
-                              position: 'absolute',
-                              zIndex: '1',
-                              marginTop: '10px', // Optional: adjust the margin to position the color picker
-                            }}
-                          />
-                        )}
+                        
+                           
+                          <Form.Control
+                          type="color"
+                          id="exampleColorInput"
+                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          defaultValue={NameoutlineColor}
+                          onChange={(e)=>{handlePlayerNameOutlineColorChange(e)}}
+                          onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
+                        />
                       </div>
                     </div>
                     <div className="mb-2 row custombackground">
@@ -1008,29 +994,16 @@ function Design() {
                       </div>
                       <div className="col-9 d-flex align-items-center justify-content-end">
                         {/* Additional content in the second column */}
-                        <div
-                          onClick={handleTextColorClick}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            background: textColor,
-                            marginLeft: 'auto',
-                            border: '1px solid rgba(0,0,0,0.1)'
-                          }}
-                        ></div>
-                        {colorPickerVisible && (
-                          <ChromePicker
-
-                            color={textColor}
-                            onChangeComplete={handleTextColorChange}
-                            // onClose={handleColorPickerClose}
-                            style={{
-                              position: 'absolute',
-                              zIndex: '1',
-                              marginTop: '10px', // Optional: adjust the margin to position the color picker
-                            }}
-                          />
-                        )}
+                      
+                         <Form.Control
+                          type="color"
+                          id="exampleColorInput"
+                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          defaultValue={textColor}
+                          onChange={(e)=>{handleTextColorChange(e)}}
+                          onBlur={handleTextColorClick} // Close the color picker on blur
+                        />
+                        
                       </div>
                     </div>
                     {/* <div className="mb-2 row custombackground">
@@ -1120,29 +1093,15 @@ function Design() {
                       </div>
                       <div className="col-9 d-flex align-items-center justify-content-end">
                         {/* Additional content in the second column */}
-                        <div
-                          onClick={handleOutlineColorClick}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            background: textColor,
-                            marginLeft: 'auto',
-                            border: '1px solid rgba(0,0,0,0.1)'
-                          }}
-                        ></div>
-                        {outLinecolorPickerVisible && (
-                          <ChromePicker
-
-                            color={outlineColor}
-                            onChangeComplete={handleOutlineColorChange}
-                            // onClose={handleColorPickerClose}
-                            style={{
-                              position: 'absolute',
-                              zIndex: '1',
-                              marginTop: '10px', // Optional: adjust the margin to position the color picker
-                            }}
-                          />
-                        )}
+                    
+                           <Form.Control
+                          type="color"
+                          id="exampleColorInput"
+                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          defaultValue={outlineColor}
+                          onChange={(e)=>{handleOutlineColorChange(e)}}
+                          onBlur={handleOutlineColorClick} // Close the color picker on blur
+                        />
                       </div>
                     </div>
                     <div className="mb-2 row custombackground">
@@ -1273,7 +1232,7 @@ function Design() {
               <ul className="d-flex col-6 custom-tabs">
                 <li className="active" onClick={() => { handleNameNumberDetails(); navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
                 <li className="mx-2" onClick={navigateToVariation}>Variation</li>
-                <li className="mx-2" onClick={() => { handleNameNumberDetails(); navigate('/Export', { state: { selectedImage: selectedImage } }) }}>Export</li>
+                <li className="mx-2" onClick={() => { handleNameNumberDetails(); addVariation()}}>Export</li>
               </ul>
               <div className="col-6 custom-btn">
                 <Button className="float-end" variant="primary" onClick={navigateToVariation}>

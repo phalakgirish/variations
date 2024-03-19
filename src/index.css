@@ -493,9 +493,23 @@ th
   font-size: 12px;
   letter-spacing: 0.96px;
   color: #0D214B;
-  text-transform: uppercase;
   opacity: 0.5;
 }
+.dwcard{
+
+  font-size: 15px;
+  letter-spacing: 0.96px;
+  color: #0D214B;
+  opacity: 0.7;
+}
+.exceldw{
+  color: #f1f1f1;
+  text-decoration: none;
+}
+.hidden {
+  visibility: hidden;
+}
+
  /* Add this CSS to your stylesheet */
 .custom-dropdown {
   border: none;
