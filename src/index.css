@@ -195,15 +195,15 @@ a:hover {
   margin: 15px 0 8px 0;
 }
 
-.tsselect{
+.tsselect {
   padding: 25px;
   border-radius: 20px;
-  background-color: #EEE5FF;
+  background-color: #F4F6FC;
+  transition: background-color 0.3s ease; /* Adding transition for smooth effect */
 }
-.tsnselect{
-  padding: 25px;
-  border-radius: 20px;
-  background-color:#F4F6FC;
+
+.tsselect:hover {
+  background-color: #EEE5FF;
 }
 
 /* home css ends  */
@@ -409,12 +409,14 @@ a:hover {
   background-color:  rgb(231, 239, 254);
   border-radius: 30px;
 }
-.tsize .form-select{
+.tsize .form-label{
   background-color:#EEE5FF;
   color: #0D214B;
   border: none; 
   border-radius: 22px;
-  font-size: small;
+  font-size: 12px;
+  padding: 10px;
+  margin: 0 !important;
   
 }
 /* tshirt front css ends  */
@@ -491,9 +493,23 @@ th
   font-size: 12px;
   letter-spacing: 0.96px;
   color: #0D214B;
-  text-transform: uppercase;
   opacity: 0.5;
 }
+.dwcard{
+
+  font-size: 15px;
+  letter-spacing: 0.96px;
+  color: #0D214B;
+  opacity: 0.7;
+}
+.exceldw{
+  color: #f1f1f1;
+  text-decoration: none;
+}
+.hidden {
+  visibility: hidden;
+}
+
  /* Add this CSS to your stylesheet */
 .custom-dropdown {
   border: none;

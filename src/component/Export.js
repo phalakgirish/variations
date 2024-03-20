@@ -627,13 +627,13 @@ function Export(){
                                     <div className='row'>
                                     {tshirtdetails && tshirtdetails.map((val, index) => (
                                         
-                <div key={index} className='col-xl-3 col-3' style={{ position: 'relative',paddingLeft:'10px',marginBottom:'15px'}}>
+                <div key={index} className='col-xl-3 col-3' style={{ position: 'relative',paddingLeft:'10px',marginBottom:'25px'}}>
                     <div className='tshirtimg1' ref={(ref) => {
                     if (ref) downladImage.current[val.indexSr] = ref;
                 }}>
                         <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" style={{borderRadius:"10px"}}>
                             {/* <rect x="40" y="0" width="160" height="315" fill="white" /> */}
-                            {selectedImage && <image href={selectedImage} width="220" height="315" />}
+                            {selectedImage && <image href={selectedImage} width="220" height="315" preserveAspectRatio="xMidYMid slice" />}
                             {/* <circle cx="110" cy="-55" r="73" fill="white" /> */}
                         </svg>
                         {/* <canvas

@@ -34,7 +34,10 @@ function Sidebar(){
                 <div className="text-center mt-3">
                     <ul className="nav nav-pills flex-column">
                         <li>
+                        <Link to="/Home">
                             <img src={Varient} alt="Varient logo" style={{width: '50px', top:0}} />
+                                                        </Link>
+
                         </li>
                     </ul>
                 </div>
@@ -73,12 +76,10 @@ function Sidebar(){
                         </li>
 
                         <li className="nav-item" onClick={()=>{handleShow()}}>
-                        <a href="#" className="nav-link" aria-current="page">
                             <div className="circle-icon">
                                 <img src={Feedback} alt="home"  style={{width: '20px'}}/>
                             </div><br/>
                             <span>Leave Feedback</span>
-                        </a>
                         </li>
                     </ul>
                 </div>
