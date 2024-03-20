@@ -611,7 +611,7 @@ function Design() {
     fontOptions = fontlistarr;
 
   }, [])
-  console.log(typeof activeAccordionItem);
+  // console.log(typeof activeAccordionItem);
 
   const navigateToVariation = () => {
     const playerNamedetails = localStorage.getItem('playernamedetails');
