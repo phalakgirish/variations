@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect,useLayoutEffect } from 'react';
 import Sidebar from "../component/Sidebar";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
@@ -193,6 +193,7 @@ function Variation() {
     const [count, setCount] = useState(0);
     const { register, formState: { errors }, handleSubmit, unregister, reset } = useForm();
     var selectFile = (ev) => {
+        console.time('selectFile'); // Start measuring rendering time
         console.log(ev.target.files[0]);
         if (ev.target.files[0] === undefined || ev.target.files[0] === null) {
             setFileStatus(false);
@@ -239,6 +240,7 @@ function Variation() {
 
 
                     }
+                    console.timeEnd('selectFile'); // End measuring rendering time
                     console.log(dataToPost);
                     localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
                 };
@@ -246,6 +248,7 @@ function Variation() {
             else {
                 setExcelFileType(false);
                 setExcelData(null);
+                console.timeEnd('selectFile'); // End measuring rendering time
                 message.current.className = 'alert alert-danger upload-error';
                 setErrmsg('Please Select Only Excel File Types.');
             }
@@ -254,7 +257,14 @@ function Variation() {
 
         }
     }
-
+    useLayoutEffect(() => {
+        const startTime = new Date();
+        return () => {
+            const endTime = new Date();
+            const timeRendered = endTime - startTime;
+            console.log(typeof timeRendered); // Expect this to be a positive number
+        };
+    }, []);
     var addRow = (ev) => {
         // ev.preventDefault();
         console.log(count);
