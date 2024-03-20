@@ -869,6 +869,13 @@ input[type="file"]{
     font-weight: 500;
   }
 
+  .show-accordian .accordion-collapse{
+    display: block !important;
+  }
+  .hide-accordian .accordion-collapse{
+    display: none !important;
+  }
+
   @media only screen and (min-width:3450px){
     .FeedbackOffCanvas{
       top: 50vh !important;

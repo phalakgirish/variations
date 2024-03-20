@@ -623,7 +623,7 @@ function Export(){
                                             <input ref={inputSearch} type='text' placeholder='Search all files' className='export-variation-search' onChange={()=>{handelInputsearch();}} disabled/>
                                         </div>
                                     </div>
-                                    <div className='my-5 d-flex justify-content-center ' >
+                                    <div className='my-5  justify-content-center ' >
                                     <div className='row'>
                                     {tshirtdetails && tshirtdetails.map((val, index) => (
                                         

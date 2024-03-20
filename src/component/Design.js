@@ -519,7 +519,7 @@ function Design() {
     console.log(e);
   }
   useEffect(() => {
-    document.addEventListener('mouseup',handleMouseKeyUp())
+    // document.addEventListener('mouseup',handleMouseKeyUp())
     if (IsNameSelected) {
       console.log(TextNameRef.current);
       TextNoTranRef.current.nodes([TextNameRef.current]);
@@ -620,6 +620,7 @@ function Design() {
     // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
     if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
       // Navigate to Variation page
+      handleNameNumberDetails();
       navigate('/Variation', { state: { selectedImage: selectedImage } });
     } else {
       // Display error messages based on conditions
@@ -707,9 +708,9 @@ const addVariation =()=>{
 
             </div>
             <Accordion defaultActiveKey={activeAccordionItem}>
-              <Accordion.Item eventKey="1" className="mb-2 custom-accordion">
-                <Accordion.Header className='mx-2'>Player Name</Accordion.Header>
-                <Accordion.Body>
+              <Accordion.Item eventKey="1" className={(activeAccordionItem !== '1')?"mb-2 custom-accordion":"mb-2 custom-accordion show-accordian"}>
+                <Accordion.Header className='mx-2 show'>Player Name</Accordion.Header>
+                <Accordion.Body >
                   <Form>
                     <FontAwesomeIcon icon="" />
                     <div className="mb-2 row custombackground">
@@ -906,7 +907,7 @@ const addVariation =()=>{
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item eventKey="2" className="mb-2 custom-accordion">
+              <Accordion.Item eventKey="2" className={(activeAccordionItem !== '2')?"mb-2 custom-accordion":"mb-2 custom-accordion show-accordian"}>
                 <Accordion.Header className='mx-2'>Player Number font</Accordion.Header>
                 <Accordion.Body>
                   <Form>
