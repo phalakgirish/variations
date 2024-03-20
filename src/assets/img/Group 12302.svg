@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.704" height="71.704" viewBox="0 0 71.704 71.704">
+  <defs>
+    <radialGradient id="radial-gradient" cx="0.516" cy="0.103" r="1.505" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#6c20f7"/>
+      <stop offset="0.637" stop-color="#a97dfa"/>
+      <stop offset="1" stop-color="#a97dfa"/>
+    </radialGradient>
+  </defs>
+  <g id="Group_12302" data-name="Group 12302" transform="translate(-879.115 -4531.671)">
+    <rect id="Rectangle_9930" data-name="Rectangle 9930" width="71.704" height="71.704" rx="19" transform="translate(879.115 4531.671)" fill="url(#radial-gradient)"/>
+    <g id="Group_12207" data-name="Group 12207" transform="translate(796.948 4548.285)">
+      <path id="Path_18542" data-name="Path 18542" d="M339.447,45.66H330.4a.317.317,0,0,0-.315.315v9.051a.316.316,0,0,0,.315.315h9.051a.312.312,0,0,0,.315-.315V45.975a.312.312,0,0,0-.315-.315Z" transform="translate(-213.953 -31.262)" fill="#fff"/>
+      <path id="Path_18543" data-name="Path 18543" d="M316.765,13.143a.311.311,0,0,0,.438.069l7.323-5.32a.312.312,0,0,0,.069-.438L319.279.127A.313.313,0,0,0,319.09,0a.318.318,0,0,0-.252.054l-7.323,5.32a.312.312,0,0,0-.129.221.289.289,0,0,0,.06.218l5.32,7.323Z" transform="translate(-201.152 0)" fill="#fff"/>
+      <path id="Path_18544" data-name="Path 18544" d="M317.214,79.989a.312.312,0,0,0-.438.069l-5.32,7.323a.312.312,0,0,0,.069.442l7.323,5.32a.313.313,0,0,0,.221.057.306.306,0,0,0,.218-.129l5.32-7.323a.312.312,0,0,0-.069-.438Z" transform="translate(-201.16 -54.723)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
