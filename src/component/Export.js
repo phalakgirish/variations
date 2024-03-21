@@ -51,12 +51,14 @@ function Export() {
     var stagediv = useRef();
     var inputSearch = useRef();
     var ResizeImagediv = useRef();
+    const ImgDivRef = useRef([]);
 
 
     var tshirtchangedetails = JSON.parse(localStorage.getItem('tshirtchangedetails'));
 
 
-    const drawTextOnCanvas = (text, number, canvas, index) => {
+    const drawTextOnCanvas = (text, number,canvas,index) => {
+        // console.log(canvas);
         if (canvas) {
 
             var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
@@ -104,10 +106,10 @@ function Export() {
             // ctx.fillText(number, ((playernumberdetails.textPosition.x)*canvas.width)/100, (playernumberdetails.textPosition.y*canvas.height)/100);
 
             const stage = canvas;
-            console.log(stage);
-
+            // console.log(stage);
+            //  stage.children = [];
             const layer = new Konva.Layer();
-
+            //  console.log(layer);
             // var image = new Konva.Image({
             //     x:0,
             //     y:0,
@@ -132,7 +134,7 @@ function Export() {
                 scaleX: playernamedetails.NameScale.x,
                 scaleY: playernamedetails.NameScale.y
             });
-
+            
             layer.add(text1);
 
             var text2 = new Konva.Text({
@@ -152,8 +154,15 @@ function Export() {
             });
 
             layer.add(text2);
-
+            // console.log(text1);
+            // console.log(text2);
+            // layer.children.push(text1);
+            // layer.children.push(text2);
+            // console.log(layer.children);
+            // console.log(layer);
             stage.add(layer);
+            // stage.children.push(layer);
+            // console.log(stage);
         }
     };
 
@@ -560,19 +569,56 @@ function Export() {
     const handelInputsearch = () => {
 
         console.log(inputSearch.current.value);
-        if (inputSearch.current.value != '') {
+        if(inputSearch.current.value != '')
+        {   
+            // canvasRef.current= [];
             var excelData = JSON.parse(localStorage.getItem('tshirtDetails'));
-            var filterData = excelData.filter((item, index) => item.name.includes(inputSearch.current.value) || item.number.includes(inputSearch.current.value))
-            // console.log(filterData);
-            setTshirtDetails(filterData);
-            // console.log(tshirtdetails);
+            // console.log(excelData);
+            // var filterData = excelData.filter((item,index)=>(item.name === inputSearch.current.value || item.number === parseInt(inputSearch.current.value)))
+            var searchvalue = inputSearch.current.value;
+            var filterData = excelData.filter((item,index)=>(item.name.toLowerCase().includes(searchvalue.toLowerCase()) || item.number.toString().includes(inputSearch.current.value)))
+            console.log(filterData);
+            // setTshirtDetails(filterData);
+            for(let val of excelData)
+            {
+                if(filterData.length > 0)
+                {
+                    // console.log(ImgDivRef.current[filterData[0].indexSr]);
+                        var searchdata = filterData.filter(item => item.indexSr == val.indexSr)
+                        // console.log(dts);
+                        // console.log(val.indexSr);
+                        // if(dts.indexSr !== val.indexSr)
+                        if(searchdata.length == 0)
+                        {
+                            ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3 hideimage'
+                            // console.log(ImgDivRef.current[val.indexSr]);
+                        }
+                        else
+                        {
+                            ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3'
+                        }  
+                }
+                else
+                {
+                    ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3 hideimage'
+                }
+            }
+            
+            
         }
         else {
 
             var filterData = JSON.parse(localStorage.getItem('tshirtDetails'))
             console.log(filterData);
-
-            setTshirtDetails(filterData);
+            for(let val of filterData)
+            {
+                    // console.log(ImgDivRef.current[filterData[0].indexSr]);
+                    // console.log(val.indexSr);
+                    ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3'
+                        // console.log(ImgDivRef.current[val.indexSr]);
+            }
+            
+            // setTshirtDetails(filterData);
             // console.log(tshirtdetails);
 
         }
@@ -597,40 +643,42 @@ function Export() {
 
                         </div>
 
-                        <div className="row mt-5">
-                            <div className="col-12 text-center">
-                                <h4>Variation Completed - Unleash the Power of Personalisation</h4>
-                                <p>With a simple click of the "Create" button, watch as our software auto-generates<br /> a myriad of variations, effortlessly incorporating the selected fonts and Player
-                                    <br /> details, Experience the power of automation and unleash your creativity.</p>
-                                <Button className="px-3 py-1" style={{ borderRadius: '30px' }} onClick={downloadImage}>
-                                    <img src={download} alt="home" style={{ width: '20px' }} />Download All </Button>
-                            </div>
-                            <div className="container mt-5">
-                                <div className="row variation-inner">
-                                    <div className="col-xl-9" style={{ backgroundColor: '#F9FAFD', paddingLeft: "30px", paddingTop: "10px" }}>
-                                        <div className='row mt-4'>
-                                            <h5 style={{ width: '30%' }}>{tshirtdetails && tshirtdetails.length} Variations Created</h5>
-                                            <div className='' style={{ width: '40%', alignItems: 'right' }}>
-                                            </div>
-                                            <div className='' style={{ width: '30%', alignItems: 'right', display: 'flex' }}>
-                                                <div style={{ width: '12%', padding: '10px 5px 0 5px', backgroundColor: '#EAEEF8', borderRadius: "20px 0 0 20px" }}><FontAwesomeIcon icon={faMagnifyingGlass} className='mx-2' /></div>
-                                                <input ref={inputSearch} type='text' placeholder='Search all files' className='export-variation-search' onChange={() => { handelInputsearch(); }} disabled />
-                                            </div>
+                    <div className="row mt-5">
+                    <div className="col-12 text-center">
+                           <h4>Variation Completed - Unleash the Power of Personalisation</h4>
+                           <p>With a simple click of the "Create" button, watch as our software auto-generates<br/> a myriad of variations, effortlessly incorporating the selected fonts and Player
+                           <br/> details, Experience the power of automation and unleash your creativity.</p>
+                            <Button className="px-3 py-1" style={{borderRadius: '30px'}} onClick={downloadImage}> Download All </Button>
+                        </div>
+                        <div className="container mt-5">
+                            <div className="row variation-inner">
+                                <div className="col-xl-9" style={{backgroundColor:'#F9FAFD',paddingLeft:"30px",paddingTop:"10px"}}>
+                                    <div className='row mt-4'>
+                                        <h5 style={{width:'30%'}}>{tshirtdetails && tshirtdetails.length} Variations Created</h5>
+                                        <div className='' style={{width:'40%',alignItems:'right'}}>
                                         </div>
-                                        <div className='my-5  justify-content-center ' >
-                                            <div className='row'>
-                                                {tshirtdetails && tshirtdetails.map((val, index) => (
-
-                                                    <div key={index} className='col-xl-3 col-3' style={{ position: 'relative', paddingLeft: '10px', marginBottom: '25px' }}>
-                                                        <div className='tshirtimg1' ref={(ref) => {
-                                                            if (ref) downladImage.current[val.indexSr] = ref;
-                                                        }}>
-                                                            <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" style={{ borderRadius: "10px" }}>
-                                                                {/* <rect x="40" y="0" width="160" height="315" fill="white" /> */}
-                                                                {selectedImage && <image href={selectedImage} width="220" height="315" preserveAspectRatio="xMidYMid slice" />}
-                                                                {/* <circle cx="110" cy="-55" r="73" fill="white" /> */}
-                                                            </svg>
-                                                            {/* <canvas
+                                        <div className='' style={{width:'30%',alignItems:'right',display:'flex'}}>
+                                            <div style={{width:'12%',padding:'10px 5px 0 5px',backgroundColor:'#EAEEF8',borderRadius:"20px 0 0 20px"}}><FontAwesomeIcon icon={faMagnifyingGlass} className='mx-2' /></div>
+                                            <input ref={inputSearch} type='text' placeholder='Search all files' className='export-variation-search' onChange={()=>{handelInputsearch();}}/>
+                                        </div>
+                                    </div>
+                                    <div className='my-5  justify-content-center ' >
+                                    <div className='row'>
+                                    {tshirtdetails && tshirtdetails.map((val, index) => (
+                                        
+                <div key={index} className='col-xl-3 col-3' style={{ position: 'relative',paddingLeft:'10px',marginBottom:'25px'}}
+                ref={(ref) => {
+                    if (ref) ImgDivRef.current[val.indexSr] = ref;
+                }}>
+                    <div className='tshirtimg1' ref={(ref) => {
+                    if (ref) downladImage.current[val.indexSr] = ref;
+                }}>
+                        <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" style={{borderRadius:"10px"}}>
+                            {/* <rect x="40" y="0" width="160" height="315" fill="white" /> */}
+                            {selectedImage && <image href={selectedImage} width="220" height="315" preserveAspectRatio="xMidYMid slice" />}
+                            {/* <circle cx="110" cy="-55" r="73" fill="white" /> */}
+                        </svg>
+                        {/* <canvas
                             ref={(ref) => {
                                 if (ref) canvasRef.current[index] = ref;
                             }}

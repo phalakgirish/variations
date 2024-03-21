@@ -476,7 +476,7 @@ th
 .variation-inner  select{
   background-color:  rgb(231, 239, 254);
   border: 0;
-  width: 60%;
+  /* width: 60%; */
 }
 
 .variation-inner .card{
@@ -679,6 +679,10 @@ input[type="file"]{
   margin: 10px;
 }
 
+.hideimage{
+  display:none !important;
+}
+
 @media only screen and (min-width:1200px) {
   .svg-bg-img{
     padding: 0 0;
@@ -691,7 +695,7 @@ input[type="file"]{
   }
   .tsize-action-div{
     width: 750px;
-    padding: 0 140px 0 272px;
+    padding: 0 95px 0 335px;
     margin: 35px 0 0 0;
   }
   .tshirtcanvas{
@@ -700,6 +704,17 @@ input[type="file"]{
   }
   .tshirt-draw-canvas{
     padding: 0 0 0 279px;
+  }
+  /* .Action-btn-div{
+    padding: 0 0 0 300px;
+  } */
+  .undo-redo-btn{
+      padding:17px;
+      background-color: #e1daed !important;
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      margin:5px 0 !important;
+      color: #0D214B !important;
   }
 }
 
@@ -716,7 +731,7 @@ input[type="file"]{
     }
     .tsize-action-div{
       width: 750px;
-      padding: 0 140px 0 272px;
+      padding: 0 95px 0 335px;
       margin: 35px 0 0 0;
     }
     .tshirtcanvas{
@@ -725,6 +740,12 @@ input[type="file"]{
     }
     .tshirt-draw-canvas{
       padding: 0 0 0 279px;
+    }
+    /* .Action-btn-div{
+      padding: 0 0 0 300px;
+    } */
+    .undo-redo-btn{
+
     }
   }
 

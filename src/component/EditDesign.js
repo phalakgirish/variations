@@ -204,7 +204,7 @@ function EditDesign(){
     const TextNameTranRef =useRef(null);
     const TextNoRef =useRef(null);
     const TextNoTranRef =useRef(null);
-
+    const [activeAccordionItem, setActiveAccordionItem] = useState("");
 
 
     const LoadImage = () => {
@@ -234,16 +234,16 @@ function EditDesign(){
         setTextSize(event.target.value);
     };
     const handleTextColorChange = (color) => {
-        setTextColor(color.hex);
-        setTimeout(()=>{
-          handleColorPickerClose();
-        },'1000');
+      setTextColor(color.target.value);
+        // setTimeout(()=>{
+        //   handleColorPickerClose();
+        // },'1000');
     };
     const handleOutlineColorChange=(color)=>{
-        setOutLineColor(color.hex)
-        setTimeout(()=>{
-          handleOutlineColorClick();
-        },'1000');
+      setOutLineColor(color.target.value)
+        // setTimeout(()=>{
+        //   handleOutlineColorClick();
+        // },'1000');
     }
     const handleNoBorderChange = (event) => {
       
@@ -331,18 +331,18 @@ function EditDesign(){
       setNameTextBorder(event.target.value);
   };
     const handlePlayerNameTextColorChange = (color) => {
-        setNameTextColor(color.hex);
-        setTimeout(() => {
-          handlePlayerNameColorPickerClose();
-        }, "1000");
+      setNameTextColor(color.target.value);
+        // setTimeout(() => {
+        //   handlePlayerNameColorPickerClose();
+        // }, "1000");
         
     };
 
     const handlePlayerNameOutlineColorChange=(color)=>{
-        setNameOutLineColor(color.hex)
-        setTimeout(() => {
-          handlePlayerNameOutlineColorClick();
-        }, "1000");
+      setNameOutLineColor(color.target.value)
+        // setTimeout(() => {
+        //   handlePlayerNameOutlineColorClick();
+        // }, "1000");
     }
    
     const handlePlayerNameFontFamilyChange = (selectedOption) => {
@@ -387,6 +387,21 @@ function EditDesign(){
       const handleImageRemove = ()=>{
         setSelectedImage(null);
       }
+
+      const handleNameClick = () => {
+        setNameSelected(true);
+        setNoSelected(false);
+        setActiveAccordionItem("1");
+        console.log('accordion 1');// Open accordion item with eventkey 1
+      };
+    
+      // Function to handle click or tap on number text
+      const handleNumberClick = () => {
+        setNoSelected(true);
+        setNameSelected(false);
+        setActiveAccordionItem("2");
+        console.log('accordion 2');// Open accordion item with eventkey 2
+      };
 
       const handleNameNumberDetails = () =>{
             var tshirtchangedetails = JSON.parse(localStorage.getItem('tshirtchangedetails'));
@@ -509,6 +524,28 @@ function EditDesign(){
 
     },[])
 
+    const navigateToVariation = () => {
+      const playerNamedetails = localStorage.getItem('playernamedetails');
+      const bgName = localStorage.getItem('bgname');
+  
+      // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
+      if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
+        // Navigate to Variation page
+        handleNameNumberDetails();
+        navigate('/Variation', { state: { selectedImage: selectedImage } });
+      } else {
+        // Display error messages based on conditions
+        if (!playerNamedetails || JSON.parse(playerNamedetails).Name === 'Sample text') {
+          alert('Please enter Name');
+        } else if (!bgName) {
+          alert('Please add image');
+        }
+      }
+    };
+  const addVariation =()=>{
+    alert('Add Variation');
+  }
+
     return(
       <div id="main-container" className="container-fluid main">
 
@@ -582,8 +619,8 @@ function EditDesign(){
       </Form.Group>
 
                         </div>
-                        <Accordion defaultActiveKey="1">
-                            <Accordion.Item eventKey="1" className="mb-2 custom-accordion">
+                        <Accordion defaultActiveKey={activeAccordionItem}>
+                            <Accordion.Item eventKey="1" className={(activeAccordionItem !== '1')?"mb-2 custom-accordion":"mb-2 custom-accordion show-accordian"}>
                                 <Accordion.Header className='mx-2'>Player Name</Accordion.Header>
                                 <Accordion.Body>
                                     <Form>
@@ -659,7 +696,7 @@ function EditDesign(){
       </div>
       <div className="col-9 d-flex align-items-center justify-content-end">
         {/* Additional content in the second column */}
-        <div
+        {/* <div
           onClick={handlePlayerNameTextColorClick}
           style={{
             width: '20px',
@@ -683,7 +720,15 @@ function EditDesign(){
                  // Optional: adjust the margin to position the color picker
               }}
           />
-        )}
+        )} */}
+        <Form.Control
+          type="color"
+          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+          id="exampleColorInput"
+          defaultValue={NametextColor}
+          onChange={(e)=>{handlePlayerNameTextColorChange(e)}}
+          onBlur={handlePlayerNameTextColorClick} // Close the color picker on blur
+        />
       </div>
     </div>
     <div className="mb-2 row custombackground">
@@ -743,30 +788,14 @@ function EditDesign(){
       </div>
       <div className="col-9 d-flex align-items-center justify-content-end">
         {/* Additional content in the second column */}
-        <div
-          onClick={handlePlayerNameOutlineColorClick}
-          // onBlur={handlePlayerNameOutlineColorClick}
-          style={{
-            width: '20px',
-            height: '20px',
-            background: NameoutlineColor,
-            marginLeft: 'auto',
-            border: '1px solid rgba(0,0,0,0.1)'
-          }}
-        ></div>
-        {NameoutLinecolorPickerVisible && (
-          <ChromePicker
-           
-            color={NameoutlineColor}
-            onChangeComplete={handlePlayerNameOutlineColorChange}
-            // onClose={handlePlayerNameOutlineColorClick}
-            style={{
-                position: 'absolute',
-                zIndex: '1',
-                marginTop: '10px', // Optional: adjust the margin to position the color picker
-              }}
-          />
-        )}
+        <Form.Control
+          type="color"
+          id="exampleColorInput"
+          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+          defaultValue={NameoutlineColor}
+          onChange={(e)=>{handlePlayerNameOutlineColorChange(e)}}
+          onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
+        />
       </div>
     </div>
     <div className="mb-2 row custombackground">
@@ -801,7 +830,7 @@ function EditDesign(){
                                 </Accordion.Body>
                             </Accordion.Item>
 
-                            <Accordion.Item eventKey="2" className="mb-2 custom-accordion">
+                            <Accordion.Item eventKey="2" className={(activeAccordionItem !== '2')?"mb-2 custom-accordion":"mb-2 custom-accordion show-accordian"}>
                                 <Accordion.Header className='mx-2'>Player Number font</Accordion.Header>
                                 <Accordion.Body>
                                     <Form>
@@ -889,29 +918,14 @@ function EditDesign(){
       </div>
       <div className="col-9 d-flex align-items-center justify-content-end">
         {/* Additional content in the second column */}
-        <div
-          onClick={handleTextColorClick}
-          style={{
-            width: '20px',
-            height: '20px',
-            background: textColor,
-            marginLeft: 'auto',
-            border: '1px solid rgba(0,0,0,0.1)'
-          }}
-        ></div>
-        {colorPickerVisible && (
-          <ChromePicker
-           
-            color={textColor}
-            onChangeComplete={handleTextColorChange}
-            // onClose={handleColorPickerClose}
-            style={{
-                position: 'absolute',
-                zIndex: '1',
-                marginTop: '10px', // Optional: adjust the margin to position the color picker
-              }}
-          />
-        )}
+        <Form.Control
+          type="color"
+          id="exampleColorInput"
+          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+          defaultValue={textColor}
+          onChange={(e)=>{handleTextColorChange(e)}}
+          onBlur={handleTextColorClick} // Close the color picker on blur
+        />
       </div>
     </div>
     {/* <div className="mb-2 row custombackground">
@@ -1000,29 +1014,14 @@ function EditDesign(){
       </div>
       <div className="col-9 d-flex align-items-center justify-content-end">
         {/* Additional content in the second column */}
-        <div
-          onClick={handleOutlineColorClick}
-          style={{
-            width: '20px',
-            height: '20px',
-            background: textColor,
-            marginLeft: 'auto',
-            border:'1px solid rgba(0,0,0,0.1)'
-          }}
-        ></div>
-        {outLinecolorPickerVisible && (
-          <ChromePicker
-           
-            color={outlineColor}
-            onChangeComplete={handleOutlineColorChange}
-            // onClose={handleColorPickerClose}
-            style={{
-                position: 'absolute',
-                zIndex: '1',
-                marginTop: '10px', // Optional: adjust the margin to position the color picker
-              }}
-          />
-        )}
+        <Form.Control
+          type="color"
+          id="exampleColorInput"
+          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+          defaultValue={outlineColor}
+          onChange={(e)=>{handleOutlineColorChange(e)}}
+          onBlur={handleOutlineColorClick} // Close the color picker on blur
+        />
       </div>
     </div>
     <div className="mb-2 row custombackground">
@@ -1152,8 +1151,8 @@ function EditDesign(){
                     <div className="row tab mt-3">
                         <ul className="d-flex col-6 custom-tabs">
                             <li className="active" onClick={()=>{handleNameNumberDetails();navigate('/Design',{state:{selectedImage:selectedImage}})}}>Design</li>
-                            <li className="mx-2" onClick={()=>{handleNameNumberDetails();navigate('/Variation',{state:{selectedImage:selectedImage}})}}>Variation</li>
-                            <li className="mx-2" onClick={()=>{handleNameNumberDetails();navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
+                            <li className="mx-2" onClick={navigateToVariation}>Variation</li>
+                            <li className="mx-2" onClick={()=>{handleNameNumberDetails(); addVariation(); navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
                         </ul>
                         <div className="col-6 custom-btn">
                             <Button  className="float-end " variant="primary" onClick={()=>{ handleNameNumberDetails();
@@ -1206,7 +1205,7 @@ function EditDesign(){
                                                                             x: e.target.x(),
                                                                             y: e.target.y(),
                                                                         });
-                                                                        }} stroke={NameoutlineColor} strokeWidth={NametextBorder} onClick={(e)=>{setNameSelected(true);setNoSelected(false);}} onTap={(e)=>{setNameSelected(true);setNoSelected(false);}} align='center' width={playerNameWidth} rotation={NamerotationAngle} scaleX={NameScale.x} scaleY={NameScale.y}/>
+                                                                        }} stroke={NameoutlineColor} strokeWidth={NametextBorder} onClick={(e)=>{handleNameClick()}} onTap={(e)=>{handleNameClick()}} align='center' width={playerNameWidth} rotation={NamerotationAngle} scaleX={NameScale.x} scaleY={NameScale.y}/>
                                         {/* {IsNameSelected &&<Transformer ref={TextNameTranRef} keepRatio={false} enabledAnchors={[
           'top-left',
           'top-right',
@@ -1220,8 +1219,8 @@ function EditDesign(){
                                                                             y: e.target.y(),
                                                                         });
                                                                         }} stroke={outlineColor} strokeWidth={NotextBorder}
-                                                                        onClick={(e)=>{setNoSelected(true);setNameSelected(false);
-                                                                        }} onTap={(e)=>{setNoSelected(true);setNameSelected(false);}}
+                                                                        onClick={(e)=>{handleNumberClick()
+                                                                        }} onTap={(e)=>{handleNumberClick()}}
                                                                         align='center' width={playerNoWidth} rotation={rotationAngle}
                                                                         scaleX={NoScale.x} scaleY={NoScale.y}/>
                                         <Transformer ref={TextNoTranRef} />
