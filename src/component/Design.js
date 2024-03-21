@@ -543,7 +543,7 @@ function Design() {
     //         link.click();
   }
 
-  const handleMouseKeyUp = (e)=>{
+  const handleMouseKeyUp = (e) => {
     console.log(e);
   }
 
@@ -940,10 +940,10 @@ const addVariation =()=>{
                             border: '1px solid rgb(0,0,0,0.1)'
                           }}
                         ></div> */}
-                          
-                          <Form.Control
+
+                        <Form.Control
                           type="color"
-                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
                           id="exampleColorInput"
                           value={NametextColor}
                           onChange={(e)=>{handlePlayerNameTextColorChange(e)}}
@@ -951,7 +951,7 @@ const addVariation =()=>{
                         />
                       </div>
                     </div>
-                    <div className="mb-2 row custombackground">
+                    <div className="mb-4 row custombackground">
                       <div className="col-9 d-flex align-items-center order-1">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
@@ -1009,14 +1009,14 @@ const addVariation =()=>{
                       </div>
                       <div className="col-9 d-flex align-items-center justify-content-end">
                         {/* Additional content in the second column */}
-                        
-                           
-                          <Form.Control
+
+
+                        <Form.Control
                           type="color"
                           id="exampleColorInput"
-                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
                           defaultValue={NameoutlineColor}
-                          onChange={(e)=>{handlePlayerNameOutlineColorChange(e)}}
+                          onChange={(e) => { handlePlayerNameOutlineColorChange(e) }}
                           onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
                         />
                       </div>
@@ -1141,16 +1141,16 @@ const addVariation =()=>{
                       </div>
                       <div className="col-9 d-flex align-items-center justify-content-end">
                         {/* Additional content in the second column */}
-                      
-                         <Form.Control
+
+                        <Form.Control
                           type="color"
                           id="exampleColorInput"
-                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
                           defaultValue={textColor}
-                          onChange={(e)=>{handleTextColorChange(e)}}
+                          onChange={(e) => { handleTextColorChange(e) }}
                           onBlur={handleTextColorClick} // Close the color picker on blur
                         />
-                        
+
                       </div>
                     </div>
                     {/* <div className="mb-2 row custombackground">
@@ -1182,7 +1182,7 @@ const addVariation =()=>{
   </div>
  
 </div> */}
-                    <div className="mb-2 row custombackground">
+                    <div className="mb-4 row custombackground">
                       <div className="col-9 d-flex align-items-center order-1">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
@@ -1240,13 +1240,13 @@ const addVariation =()=>{
                       </div>
                       <div className="col-9 d-flex align-items-center justify-content-end">
                         {/* Additional content in the second column */}
-                    
-                           <Form.Control
+
+                        <Form.Control
                           type="color"
                           id="exampleColorInput"
-                          style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
+                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
                           defaultValue={outlineColor}
-                          onChange={(e)=>{handleOutlineColorChange(e)}}
+                          onChange={(e) => { handleOutlineColorChange(e) }}
                           onBlur={handleOutlineColorClick} // Close the color picker on blur
                         />
                       </div>
@@ -1455,6 +1455,16 @@ const addVariation =()=>{
 
                       </Layer>
                     </Stage>
+                    <div style={{ position: 'absolute', top: 70, right: 200 }}>
+                      <div style={{ marginBottom: 60, display: 'inline-block', marginLeft:40}}>
+                        <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
+                      </div><br />
+                      <div style={{ marginBottom: 120, display: 'inline-block' ,marginLeft:30}}>
+                        <div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">2</div><span>&nbsp; Add Name</span>
+                      </div><br />
+                      <div style={{ marginBottom: 10, display: 'inline-block',marginRight:80 }}>
+                        <div style={{ width: 180, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">3</div><span>&nbsp; Add Number</span>
+                      </div></div>
                   </div>
                   
                 </div>
@@ -1488,7 +1498,7 @@ const addVariation =()=>{
                     </Form.Group>
 
                     <Form.Label className="m-2">
-                      Back Side - Medium Size 38 (21 x 29) (1824 x 2620 Px)
+                      Expected Image Pixels (1824 x 2620 Px)
 
                     </Form.Label>
                   </div>

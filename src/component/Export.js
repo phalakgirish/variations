@@ -14,7 +14,7 @@ import * as htmlToImage from 'html-to-image';
 import Resizer from "react-image-file-resizer";
 import html2canvas from 'html2canvas';
 import { getImageSize } from 'react-image-size';
-import { faUndo, faRedo, faSearchPlus, faShirt, faList, faCirclePlus,faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faUndo, faRedo, faSearchPlus, faShirt, faList, faCirclePlus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import Table from 'react-bootstrap/Table';
 import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text } from 'react-konva';
 import Konva from 'konva';
@@ -22,29 +22,29 @@ import useImage from 'use-image';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-bootstrap-icons';
 import '../index.css';
+import download from '../assets/img/file_download_black_24dp.svg'
+function Export() {
 
-function Export(){
-
-    const [tshirtvariation,setTshirtvariation] = useState();
-    const [tshirtdetails,setTshirtDetails] = useState(JSON.parse(localStorage.getItem('tshirtDetails')));
+    const [tshirtvariation, setTshirtvariation] = useState();
+    const [tshirtdetails, setTshirtDetails] = useState(JSON.parse(localStorage.getItem('tshirtDetails')));
     // var selectedImage = localStorage.getItem('bgImageDetails');
     const { state } = useLocation();
     var selectedImage = state.selectedImage;
 
-    
+
     // var [imagebg] = useImage(selectedImage)
     var [imagebg] = useImage(state.selectedImage)
     // console.log(tshirtdetails);
     const tshirtimg = useRef();
-    const navigate  = useNavigate();
-    
-     
-//    var backgroundImg=localStorage.getItem('bgImageDetails');
-   var backgroundImg=state.selectedImage;
+    const navigate = useNavigate();
 
-   
+
+    //    var backgroundImg=localStorage.getItem('bgImageDetails');
+    var backgroundImg = state.selectedImage;
+
+
     const backgroundImage = backgroundImg; // Replace with your background image URL
-   
+
     const canvasRef = useRef([]);
     const canvasRefName = useRef([]);
     const downladImage = useRef([]);
@@ -53,7 +53,7 @@ function Export(){
     var ResizeImagediv = useRef();
     const ImgDivRef = useRef([]);
 
-    
+
     var tshirtchangedetails = JSON.parse(localStorage.getItem('tshirtchangedetails'));
 
 
@@ -64,20 +64,18 @@ function Export(){
             var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
             var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
 
-             var changedData =[]
+            var changedData = []
 
-             if(tshirtchangedetails != null)
-             {
-                changedData = tshirtchangedetails.filter((item)=>item.indexSr == index);
+            if (tshirtchangedetails != null) {
+                changedData = tshirtchangedetails.filter((item) => item.indexSr == index);
                 console.log(changedData);
-                if(changedData.length != 0)
-                {
+                if (changedData.length != 0) {
                     playernamedetails = changedData[0].playernamedetails;
                     playernumberdetails = changedData[0].playernumberdetails;
 
-                    console.log(playernamedetails,playernumberdetails);
+                    console.log(playernamedetails, playernumberdetails);
                 }
-             }
+            }
             //  console.log(playernumberdetails.textColor);
             // const ctx = canvas.getContext('2d');
             // // ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -122,37 +120,37 @@ function Export(){
             // layer.add(image);
 
             var text1 = new Konva.Text({
-                x:(playernamedetails.NametextPositionPer.x*canvas.attrs.width)/100,
-                y:(playernamedetails.NametextPositionPer.y*canvas.attrs.height)/100,
-                text:text,
-                fontSize:((playernamedetails.NametextSizePer*canvas.attrs.width)/100),
-                fontFamily:playernamedetails.NamefontFamily,
-                fill:playernamedetails.NametextColor,
-                stroke:playernamedetails.NameoutlineColor,
-                strokeWidth:(playernamedetails.NametextBorderPer*canvas.attrs.width)/100,
-                align:'center',
-                width:(playernamedetails.NameWidthPer*canvas.attrs.width)/100,
-                rotation:playernamedetails.NamerotationAngle,
-                scaleX:playernamedetails.NameScale.x,
-                scaleY:playernamedetails.NameScale.y 
+                x: (playernamedetails.NametextPositionPer.x * canvas.attrs.width) / 100,
+                y: (playernamedetails.NametextPositionPer.y * canvas.attrs.height) / 100,
+                text: text,
+                fontSize: ((playernamedetails.NametextSizePer * canvas.attrs.width) / 100),
+                fontFamily: playernamedetails.NamefontFamily,
+                fill: playernamedetails.NametextColor,
+                stroke: playernamedetails.NameoutlineColor,
+                strokeWidth: (playernamedetails.NametextBorderPer * canvas.attrs.width) / 100,
+                align: 'center',
+                width: (playernamedetails.NameWidthPer * canvas.attrs.width) / 100,
+                rotation: playernamedetails.NamerotationAngle,
+                scaleX: playernamedetails.NameScale.x,
+                scaleY: playernamedetails.NameScale.y
             });
             
             layer.add(text1);
 
             var text2 = new Konva.Text({
-                x:(playernumberdetails.textPositionPer.x*canvas.attrs.width)/100,
-                y:(playernumberdetails.textPositionPer.y*canvas.attrs.height)/100,
-                text:number,
-                fontSize:((playernumberdetails.textSizePer*canvas.attrs.width)/100),
-                fontFamily:playernumberdetails.fontFamily,
-                fill:playernumberdetails.textColor,
-                stroke:playernumberdetails.outlineColor,
-                strokeWidth:(playernumberdetails.NotextBorderPer*canvas.attrs.width)/100,
-                align:'center',
-                width:(playernumberdetails.NoWidthPer*canvas.attrs.width)/100,
-                rotation:playernumberdetails.rotationAngles,
-                scaleX:playernumberdetails.NoScale.x,
-                scaleY:playernumberdetails.NoScale.y
+                x: (playernumberdetails.textPositionPer.x * canvas.attrs.width) / 100,
+                y: (playernumberdetails.textPositionPer.y * canvas.attrs.height) / 100,
+                text: number,
+                fontSize: ((playernumberdetails.textSizePer * canvas.attrs.width) / 100),
+                fontFamily: playernumberdetails.fontFamily,
+                fill: playernumberdetails.textColor,
+                stroke: playernumberdetails.outlineColor,
+                strokeWidth: (playernumberdetails.NotextBorderPer * canvas.attrs.width) / 100,
+                align: 'center',
+                width: (playernumberdetails.NoWidthPer * canvas.attrs.width) / 100,
+                rotation: playernumberdetails.rotationAngles,
+                scaleX: playernumberdetails.NoScale.x,
+                scaleY: playernumberdetails.NoScale.y
             });
 
             layer.add(text2);
@@ -174,7 +172,7 @@ function Export(){
         if (tshirtdetails) {
             tshirtdetails.forEach((val, index) => {
                 console.log(val);
-                drawTextOnCanvas(val.name, val.number, canvasRef.current[val.indexSr],val.indexSr);
+                drawTextOnCanvas(val.name, val.number, canvasRef.current[val.indexSr], val.indexSr);
                 // drawTextOnCanvas(`${val.name}`, canvasRef.current[index]);
                 // drawTextOnCanvas(`${val.number}`, canvasRef.current[index]);
             });
@@ -195,12 +193,12 @@ function Export(){
         //     // Add more sizes as needed
         // };
         // const dataUrl = await htmlToImage.toPng(tshirtimg.current);
-        
+
         // const resizedDataUrl = await resizeImage(dataUrl, dimensions[tshirtSize].width, dimensions[tshirtSize].height);
         // // for(let i in divimg)
         // // {
         //     // console.log(divimg[i]);
-          
+
         //     // console.log(dataUrl);
         //      //download image
         //      const link = document.createElement('a');
@@ -209,17 +207,16 @@ function Export(){
         //      link.click();
         // }
 
-       
+
         // var count = tshirtimg.current.length;
         // console.log(count);
 
-        for(let i in tshirtdetails)
-        {   
-            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`,tshirtdetails[i].size,tshirtdetails[i].indexSr,i);
+        for (let i in tshirtdetails) {
+            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i);
         }
-      }
+    }
 
-      const resizeImage = (dataUrl, width, height) => {
+    const resizeImage = (dataUrl, width, height) => {
         return new Promise((resolve) => {
             const img = new Image();
             img.src = dataUrl;
@@ -234,30 +231,28 @@ function Export(){
         });
     };
     const [bgimage] = useImage(backgroundImg);
-    const drawResizeStage = (indexSr,index,width,height)=>{
-        console.log(index,width,height);
+    const drawResizeStage = (indexSr, index, width, height) => {
+        console.log(index, width, height);
         var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
         var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
-        var changedData =[]
+        var changedData = []
 
-             if(tshirtchangedetails != null)
-             {
-                changedData = tshirtchangedetails.filter((item)=>item.indexSr == indexSr);
-                console.log(changedData);
-                if(changedData.length != 0)
-                {
-                    playernamedetails = changedData[0].playernamedetails;
-                    playernumberdetails = changedData[0].playernumberdetails;
+        if (tshirtchangedetails != null) {
+            changedData = tshirtchangedetails.filter((item) => item.indexSr == indexSr);
+            console.log(changedData);
+            if (changedData.length != 0) {
+                playernamedetails = changedData[0].playernamedetails;
+                playernumberdetails = changedData[0].playernumberdetails;
 
-                    console.log(playernamedetails,playernumberdetails);
-                }
-             }
+                console.log(playernamedetails, playernumberdetails);
+            }
+        }
 
         const LoadImage = () => {
             const [image] = useImage(backgroundImg);
-            return <KonvaImage image={image} width={width} height={height}/>;
-          };
-       
+            return <KonvaImage image={image} width={width} height={height} />;
+        };
+
         // return(
         //     <>
         //     <Stage width={width} height={height}>
@@ -298,7 +293,7 @@ function Export(){
         // return(resizecanvas.toDataURL('image/png'))
 
 
-        
+
         // var stage = new Konva.Stage({
         //     container:'stagediv',
         //     width:width,
@@ -307,55 +302,55 @@ function Export(){
         // })
         // var convertedwidth = width;
         // var convertedheight = height;
-        var convertedwidth = ((width*100)/24);
-        var convertedheight = ((height*100)/24);
-        stagediv.current.attrs.width=convertedwidth;
-        stagediv.current.attrs.height=convertedheight;
+        var convertedwidth = ((width * 100) / 24);
+        var convertedheight = ((height * 100) / 24);
+        stagediv.current.attrs.width = convertedwidth;
+        stagediv.current.attrs.height = convertedheight;
         console.log(stagediv);
         var stage = stagediv.current
         //https://codepen.io/AudreyRBC/pen/MzmLYx 
         //http://www.javascripter.net/faq/hex2cmyk.htm
-        var layer=new Konva.Layer();
+        var layer = new Konva.Layer();
         var image = new Konva.Image({
-            x:0,
-            y:0,
-            image:bgimage,
-            width:convertedwidth,
-            height:convertedheight
+            x: 0,
+            y: 0,
+            image: bgimage,
+            width: convertedwidth,
+            height: convertedheight
         })
         layer.add(image);
 
         var text1 = new Konva.Text({
-                x:(playernamedetails.NametextPositionPer.x*convertedwidth)/100,
-                y:(playernamedetails.NametextPositionPer.y*convertedheight)/100,
-                text:tshirtdetails[index].name,
-                fontSize:((playernamedetails.NametextSizePer*convertedwidth)/100),
-                fontFamily:playernamedetails.NamefontFamily,
-                fill:playernamedetails.NametextColor,
-                stroke:playernamedetails.NameoutlineColor,
-                strokeWidth:(playernamedetails.NametextBorderPer*convertedwidth)/100,
-                align:'center',
-                width:(playernamedetails.NameWidthPer*convertedwidth)/100,
-                rotation:playernamedetails.NamerotationAngle,
-                scaleX:playernamedetails.NameScale.x,
-                scaleY:playernamedetails.NameScale.y  
+            x: (playernamedetails.NametextPositionPer.x * convertedwidth) / 100,
+            y: (playernamedetails.NametextPositionPer.y * convertedheight) / 100,
+            text: tshirtdetails[index].name,
+            fontSize: ((playernamedetails.NametextSizePer * convertedwidth) / 100),
+            fontFamily: playernamedetails.NamefontFamily,
+            fill: playernamedetails.NametextColor,
+            stroke: playernamedetails.NameoutlineColor,
+            strokeWidth: (playernamedetails.NametextBorderPer * convertedwidth) / 100,
+            align: 'center',
+            width: (playernamedetails.NameWidthPer * convertedwidth) / 100,
+            rotation: playernamedetails.NamerotationAngle,
+            scaleX: playernamedetails.NameScale.x,
+            scaleY: playernamedetails.NameScale.y
         })
 
         layer.add(text1);
         var text2 = new Konva.Text({
-            x:(playernumberdetails.textPositionPer.x*convertedwidth)/100,
-            y:(playernumberdetails.textPositionPer.y*convertedheight)/100,
-            text:tshirtdetails[index].number,
-            fontSize:((playernumberdetails.textSizePer*convertedwidth)/100),
-            fontFamily:playernumberdetails.fontFamily,
-            fill:playernumberdetails.textColor,
-            stroke:playernumberdetails.outlineColor,
-            strokeWidth:(playernumberdetails.NotextBorderPer*convertedwidth)/100,
-            align:'center',
-            width:(playernumberdetails.NoWidthPer*convertedwidth)/100,
-            rotation:playernumberdetails.rotationAngles,
-            scaleX:playernumberdetails.NoScale.x,
-            scaleY:playernumberdetails.NoScale.y
+            x: (playernumberdetails.textPositionPer.x * convertedwidth) / 100,
+            y: (playernumberdetails.textPositionPer.y * convertedheight) / 100,
+            text: tshirtdetails[index].number,
+            fontSize: ((playernumberdetails.textSizePer * convertedwidth) / 100),
+            fontFamily: playernumberdetails.fontFamily,
+            fill: playernumberdetails.textColor,
+            stroke: playernumberdetails.outlineColor,
+            strokeWidth: (playernumberdetails.NotextBorderPer * convertedwidth) / 100,
+            align: 'center',
+            width: (playernumberdetails.NoWidthPer * convertedwidth) / 100,
+            rotation: playernumberdetails.rotationAngles,
+            scaleX: playernumberdetails.NoScale.x,
+            scaleY: playernumberdetails.NoScale.y
         })
 
         layer.add(text2);
@@ -363,17 +358,17 @@ function Export(){
 
 
         return (stagediv.current);
-        
-       
-        
+
+
+
     }
 
 
-    
 
-    const handleDownload = async (canvas, fileName,size,indexSr,index) => {
+
+    const handleDownload = async (canvas, fileName, size, indexSr, index) => {
         // console.log(stagediv);
-        
+
         // var canvasHtml = await html2canvas(stagediv.current,{scale:3});
         // const dataUrl = canvasHtml.toDataURL();
         // const dataUrl = await htmlToImage.toPng(canvas,{ cacheBust: false });
@@ -404,9 +399,9 @@ function Export(){
             '6XL': { width: 2016.96, height: 2592.72 },//671.04 1268.28
         };
 
-         
 
-         var stageRsize = drawResizeStage(indexSr,index,dimensions[tshirtSize].width,dimensions[tshirtSize].height);
+
+        var stageRsize = drawResizeStage(indexSr, index, dimensions[tshirtSize].width, dimensions[tshirtSize].height);
         // console.log(stageRsize.toDataURL());
 
 
@@ -417,24 +412,24 @@ function Export(){
         // console.log(dimensions1);
         // var callback = (error,data,response) =>{}
 
-        const generateImage = async (canvas,stageRsize,fileName) => {
+        const generateImage = async (canvas, stageRsize, fileName) => {
             // Use html2canvas to capture the content and convert it to an image
             // console.log(image);
             // console.log(stagediv.current);
             await html2canvas(canvas, {
-              scale: 3, // Set scale to 3 to achieve 300 DPI (300/72)
+                scale: 3, // Set scale to 3 to achieve 300 DPI (300/72)
             }).then((canvas) => {
-              // Convert canvas to base64 data URL
-            //   console.log(canvas);
-              const imgData = canvas.toDataURL('image/jpeg', 1.0);
-              console.log(imgData);
-              // Create a link to download the image
-              const link = document.createElement('a');
-              link.download = fileName;
-              link.href = imgData;
-              link.click();
+                // Convert canvas to base64 data URL
+                //   console.log(canvas);
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                console.log(imgData);
+                // Create a link to download the image
+                const link = document.createElement('a');
+                link.download = fileName;
+                link.href = imgData;
+                link.click();
             });
-          };
+        };
 
         //   const image = document.createElement('img');
         //     image.src = stageDataURL
@@ -449,12 +444,12 @@ function Export(){
         // console.log(apiInstance);
         // console.log(stageRsize.current);
 
-        
+
         // const link = document.createElement('a');
         //         link.href = stageDataURL;
         //         link.download = fileName;
         //         link.click();
-    
+
         // resizeImage(dataUrl, dimensions[tshirtSize].width, dimensions[tshirtSize].height)
         //     .then(resizedDataUrl => {
         //         const link = document.createElement('a');
@@ -463,17 +458,17 @@ function Export(){
         //         link.click();
         //     });
 
-        const resizeImage =  (stageDataURL, maxWidth, maxHeight,fileName) => {
+        const resizeImage = (stageDataURL, maxWidth, maxHeight, fileName) => {
             // return new Promise((resolve) => {
-              let img = new Image()
-              img.src = stageDataURL
-              img.onload = async () => {
+            let img = new Image()
+            img.src = stageDataURL
+            img.onload = async () => {
                 let canvas = document.createElement('canvas')
                 const MAX_WIDTH = maxWidth
                 const MAX_HEIGHT = maxHeight
                 let width = img.width
                 let height = img.height
-          
+
                 // if (width > height) {
                 //   if (width > MAX_WIDTH) {
                 //     height *= MAX_WIDTH / width
@@ -486,8 +481,8 @@ function Export(){
                 //   }
                 // }
 
-                var dpiWidth = (width/96)*300;
-                var dpiheight = (height/96)*300
+                var dpiWidth = (width / 96) * 300;
+                var dpiheight = (height / 96) * 300
                 // canvas.width = width 
                 // canvas.height = height
 
@@ -495,7 +490,7 @@ function Export(){
                 const aspectRatio = img.width / img.height;
                 const targetWidth = 1440;
                 const targetHeight = targetWidth / aspectRatio;
-          
+
                 // Set the size of the canvas
                 canvas.width = targetWidth;
                 canvas.height = targetHeight;
@@ -510,14 +505,14 @@ function Export(){
                 // var canvasHtml = html2canvas(canvas,{scale:3});
                 // const dataUrl = await htmlToImage.toPng(canvas,{ cacheBust: false,scale:3 });
                 const link = document.createElement('a');
-                link.href =  canvas.toDataURL('image/jpeg',1.0);
+                link.href = canvas.toDataURL('image/jpeg', 1.0);
                 link.download = fileName;
                 link.click();
-              }
+            }
             // })
-          }
+        }
 
-          resizeImage(stageDataURL,dimensions[tshirtSize].width,dimensions[tshirtSize].height,fileName);
+        resizeImage(stageDataURL, dimensions[tshirtSize].width, dimensions[tshirtSize].height, fileName);
         //   console.log(imagedataurl);
         //         const link = document.createElement('a');
         //         link.href = imagedataurl;
@@ -529,24 +524,24 @@ function Export(){
 
     };
 
-     useEffect(()=>{
-        
+    useEffect(() => {
+
         // var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
         // var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
         // console.log(playernamedetails);
         // console.log(playernumberdetails);
         // const canvas = canvasRefName.current;
         // const ctx = canvas.getContext('2d');
-       
+
         // ctx.clearRect(0, 0, canvas.width, canvas.height);
         // ctx.translate(playernamedetails.NametextPosition.x-135, playernamedetails.NametextPosition.y);
         // ctx.rotate((playernamedetails.NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-      
+
         // ctx.font = `${playernamedetails.NametextSize-20}px ${playernamedetails.NamefontFamily}`
         // ctx.fillStyle = playernamedetails.NametextColor;
         // ctx.strokeStyle = playernamedetails.NameoutlineColor; // Set the outline color
         // ctx.lineWidth = playernamedetails.outlineSize; // Set the outline size
-          
+
         // ctx.strokeText(tshirtdetails[0].name, 0, 0);
         // ctx.fillText(tshirtdetails[0].name, 0, 0);
         // ctx.restore();
@@ -558,21 +553,21 @@ function Export(){
         // ctxnumber.clearRect(0, 0, canvas.width, canvas.height);
         // ctxnumber.translate(playernumberdetails.textPosition.x-160, playernumberdetails.textPosition.y-100);
         // ctxnumber.rotate((playernumberdetails.rotationAngle * Math.PI) / 180); // Convert degrees to radians
-      
+
         // ctxnumber.font = `${playernumberdetails.textSize}px ${playernumberdetails.fontFamily}`
         // ctxnumber.fillStyle = playernumberdetails.textColor;
         // ctxnumber.strokeStyle = playernumberdetails.outlineColor; // Set the outline color
         // // ctxnumber.lineWidth = playernumberdetails.outlineSize; // Set the outline size
-          
+
         // ctxnumber.strokeText(tshirtdetails[0].number, 0, 0);
         // ctxnumber.fillText(tshirtdetails[0].number, 0, 0);
         // ctxnumber.restore();
         // ctxnumber.save();
 
-      });
+    });
 
-      const handelInputsearch = ()=>{
-        
+    const handelInputsearch = () => {
+
         console.log(inputSearch.current.value);
         if(inputSearch.current.value != '')
         {   
@@ -611,9 +606,8 @@ function Export(){
             
             
         }
-        else
-        {
-            
+        else {
+
             var filterData = JSON.parse(localStorage.getItem('tshirtDetails'))
             console.log(filterData);
             for(let val of filterData)
@@ -626,28 +620,28 @@ function Export(){
             
             // setTshirtDetails(filterData);
             // console.log(tshirtdetails);
-            
+
         }
-        
-      }
+
+    }
 
 
-   
-    return(
+
+    return (
         <div id="main-container" className="container-fluid main">
 
-        <Sidebar></Sidebar>
-        <section className="home" style={{maxHeight:'100vh',overflowY:'scroll'}}>
-            <div className="row mx-2">
-                <div className="col-12">
-                    <div className="row tab mt-3">
-                        <ul className="d-flex col-6 custom-tabs">
-                            <li className="" onClick={()=>{navigate('/Design',{state:{selectedImage:selectedImage}})}}>Design</li>
-                            <li className="mx-2" onClick={()=>{navigate('/Variation',{state:{selectedImage:selectedImage}})}}>Variation</li>
-                            <li className="mx-2 active" onClick={()=>{navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
-                        </ul>
-                        
-                    </div>
+            <Sidebar></Sidebar>
+            <section className="home" style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
+                <div className="row mx-2">
+                    <div className="col-12">
+                        <div className="row tab mt-3">
+                            <ul className="d-flex col-6 custom-tabs">
+                                <li className="" onClick={() => { navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
+                                <li className="mx-2" onClick={() => { navigate('/Variation', { state: { selectedImage: selectedImage } }) }}>Variation</li>
+                                <li className="mx-2 active" onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }}>Export</li>
+                            </ul>
+
+                        </div>
 
                     <div className="row mt-5">
                     <div className="col-12 text-center">
@@ -692,23 +686,23 @@ function Export(){
                             height={315}
                             style={{ position: 'absolute', top: 16, left: 16 }}
                         ></canvas> */}
-                        <Stage  ref={(ref) => {
-                                if (ref) canvasRef.current[val.indexSr] = ref;
-                            }}
-                            width={220} 
-                            height={315}
-                            style={{ position: 'absolute', top: 0, left: 10,border:'0px solid #000',borderRadius:"10px" }}></Stage>
-                    </div>
-                    <div className='mt-3'>
-                        <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={()=>{navigate('/EditDesign',{ state: { indexSr: val.indexSr,selectedImage:selectedImage } })}}> Edit</button>
-                        <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.name}_${val.number}.jpeg`,val.size,val.indexSr,index)}> Download </button>
-                    </div>
-                </div>
-            ))}  
-            </div>   
-            
+                                                            <Stage ref={(ref) => {
+                                                                if (ref) canvasRef.current[val.indexSr] = ref;
+                                                            }}
+                                                                width={220}
+                                                                height={315}
+                                                                style={{ position: 'absolute', top: 0, left: 10, border: '0px solid #000', borderRadius: "10px" }}></Stage>
+                                                        </div>
+                                                        <div className='mt-3'>
+                                                            <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => { navigate('/EditDesign', { state: { indexSr: val.indexSr, selectedImage: selectedImage } }) }}> Edit</button>
+                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index)}> Download </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
 
-                                        {/* <div className='col-4 mx-3 alert alert-danger' style={{ position: 'relative' }}>
+
+                                            {/* <div className='col-4 mx-3 alert alert-danger' style={{ position: 'relative' }}>
                                             <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" >
                                                     <rect x="40" y="0" width="160" height="315" fill="white" />
                                                     {selectedImage && <image href={selectedImage} x="0" y="0" width="220" height="315"/>}
@@ -733,21 +727,21 @@ function Export(){
                                             </div>
                                             
                                         </div> */}
-                                            
-                                    </div>
-                                </div>
 
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div id="stagediv" className='container' style={{visibility:'hidden',display:'none'}} ref={ResizeImagediv}>
-                <Stage ref={stagediv}></Stage>
-            </div>
-            
-        </section>
-    </div>
+                <div id="stagediv" className='container' style={{ visibility: 'hidden', display: 'none' }} ref={ResizeImagediv}>
+                    <Stage ref={stagediv}></Stage>
+                </div>
+
+            </section>
+        </div>
     );
 }
 

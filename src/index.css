@@ -896,6 +896,17 @@ input[type="file"]{
   .hide-accordian .accordion-collapse{
     display: none !important;
   }
+  .rounded-div {
+    width: 20px; /* Twice the radius for the diameter */
+    height: 20px; /* Twice the radius for the diameter */
+    border-radius: 50%; /* Make it round */
+    background-color: black;
+    color: white;
+    text-align: center;
+    line-height: 20px; /* To vertically center the text */
+    display: inline-block; /* To make it appear in line with other elements */
+    margin-right: 5px; /* Add some space between the line and the rounded div */
+}
 
   @media only screen and (min-width:3450px){
     .FeedbackOffCanvas{
