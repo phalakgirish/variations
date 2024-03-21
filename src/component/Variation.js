@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import sidemenu from '../assets/img/second-age.png';
-import switchImage from '../assets/img/switch_access.png';
+import switchImage from '../assets/img/switch_access_shortcut_black_24dp.svg';
 import fronttshirt from '../assets/img/Plain TeeShirt.png';
 import * as XLSX from 'xlsx';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -43,8 +43,13 @@ function Variation() {
     const [NamerotationAngle, setNameRotationAngle] = useState(0);
     const [NofontFamily, setNofontFamily] = useState('');
     const [BgName, setBgName] = useState('');
+    const [RemovedRow, setremovedRow] = useState([]);
+    const [renderingTime, setRenderingTime] = useState(null);
     // var selectedImage = localStorage.getItem('bgImageDetails');
     var selectedImage = state.selectedImage;
+    const NameRef = useRef([]);
+    const NumberRef = useRef([]);
+    const SizeRef = useRef([]);
 
     const dimensions = {                         // 24     66              
         'XS': { width: 1386.96, height: 1945.72 },//455.04 674.28
@@ -185,15 +190,19 @@ function Variation() {
         if (tshirtDetails != null) {
             setExcelData(tshirtDetails);
             setCount(tshirtDetails.length);
+            setVariationCount(tshirtDetails.length);
             console.log(tshirtDetails);
         }
     }, [])
     const [appendingRow, setAppendingRow] = useState([]);
     const list = [];
     const [count, setCount] = useState(0);
+    const [variationcount, setVariationCount] = useState(0);
+
     const { register, formState: { errors }, handleSubmit, unregister, reset } = useForm();
     var selectFile = (ev) => {
         console.time('selectFile'); // Start measuring rendering time
+        const startTime = performance.now(); // Define startTime
         console.log(ev.target.files[0]);
         if (ev.target.files[0] === undefined || ev.target.files[0] === null) {
             setFileStatus(false);
@@ -227,6 +236,8 @@ function Variation() {
                     const data = XLSX.utils.sheet_to_json(worksheet);
                     console.log(data);
                     setCount(data.length);
+                    setVariationCount(data.length);
+                    setAppendingRow([]);
                     setExcelData(data);
                     var dataToPost = []
                     var index = 0;
@@ -240,7 +251,12 @@ function Variation() {
 
 
                     }
-                    console.timeEnd('selectFile'); // End measuring rendering time
+                    const endTime = performance.now();
+                    const elapsedMilliseconds = endTime - startTime;
+                    const elapsedSeconds = elapsedMilliseconds / 1000;
+                    setRenderingTime(elapsedSeconds);
+
+                    console.timeEnd('selectFile');
                     console.log(dataToPost);
                     localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
                 };
@@ -251,6 +267,7 @@ function Variation() {
                 console.timeEnd('selectFile'); // End measuring rendering time
                 message.current.className = 'alert alert-danger upload-error';
                 setErrmsg('Please Select Only Excel File Types.');
+                console.timeEnd('selectFile');
             }
 
 
@@ -268,54 +285,73 @@ function Variation() {
     var addRow = (ev) => {
         // ev.preventDefault();
         console.log(count);
+        console.log();
         const updatedList = [...appendingRow, count + 1];
         setAppendingRow(updatedList);
         console.log(updatedList);
         setCount(count => count + 1);
+        setVariationCount(variationcount => variationcount + 1);
+
     }
 
 
     var removeAddedRow = (ev, val) => {
         console.log(val);
-        unregister(`name[${val}]`);
-        unregister(`number[${val}]`);
-        unregister(`size[${val}]`);
+        var removed_row = [...RemovedRow, parseInt(val)]
+        setremovedRow(removed_row);
         const currentTarget = ev.currentTarget.getAttribute("for");
         console.log(currentTarget);
         document.getElementById(currentTarget).remove();
+        setVariationCount(variationcount => variationcount - 1);
     };
 
     var removeExcelRow = (index, id) => {
         {
             const list = [...excelData];
-            unregister(`name[${index}]`);
-            unregister(`number[${index}]`);
-            unregister(`size[${index}]`);
+            var removed_row = [...RemovedRow, parseInt(id)]
+            setremovedRow(removed_row);
             console.log(list);
-            const result = list.filter(items => items.__rowNum__ != id)
+            console.log(id);
+            const result1 = list.filter(items => items.__rowNum__ != id);
+            const result = result1.filter(items => items.indexSr != id);
             console.log(result);
             setExcelData((result.length == 0) ? null : result);
+            setVariationCount(variationcount => variationcount - 1);
 
         }
 
     }
 
-    var upload_data = (data) => {
-        // ev.preventDefault();
+    var upload_data = (e) => {
+        e.preventDefault();
         // console.log(typeof excelData);
         localStorage.removeItem('tshirtDetails')
-        console.log(data);
-        var dataToPost = []
-        var index = 0;
-        for (let i in data['name']) {
-            if (data['name'][i] != "" && data['size'][i] != "") {
-                dataToPost = [...dataToPost, { indexSr: index + 1, name: data['name'][i], number: data['number'][i], size: data['size'][i] }];
-                index = index + 1
+        console.log(NameRef.current);
+        var dataToPost = [];
+        console.log(RemovedRow);
+        for (let i in NameRef.current) {
+            console.log(i);
+            var indexNo = RemovedRow.indexOf(parseInt(i));
+            console.log(indexNo);
+            if (i != 0 && indexNo == -1) {
+                if (NameRef.current[i].value != "" && SizeRef.current[i].value != "") {
+                    dataToPost = [...dataToPost, { indexSr: i, name: NameRef.current[i].value, number: NumberRef.current[i].value, size: SizeRef.current[i].value }];
+                    //    index = index + 1
+                }
             }
-
-
-
         }
+        // console.log(data);
+        // var dataToPost = []
+        // var index = 0;
+        // for (let i in data['name']) {
+        //     if (data['name'][i] != "" && data['size'][i] != "") {
+        //         dataToPost = [...dataToPost, { indexSr: index + 1, name: data['name'][i], number: data['number'][i], size: data['size'][i] }];
+        //         index = index + 1
+        //     }
+
+
+
+        // }
         console.log(dataToPost);
         localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
     }
@@ -412,13 +448,21 @@ function Variation() {
                                         </div>
                                     </div>
                                     <div className="col-6">
-                                        <form onSubmit={handleSubmit(upload_data)}>
+                                        <form>
+                                            
+
                                             <table responsive="sm" className='table variation-inner-table'>
+
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
+                                                        <th style={{ width: '25%' }}>Name</th>
                                                         <th style={{ width: '10%' }}>Number</th>
-                                                        <th>Size</th>
+                                                        <th style={{ width: '25%' }}>Size</th>
+                                                        <div  style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <Button style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0' }} onClick={() => addRow()}>Add</Button>
+                                                <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0', marginLeft: '20px' }} onClick={(e) => upload_data(e)} >Save</Button>
+
+                                            </div>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="custom-tbody">
@@ -438,18 +482,30 @@ function Variation() {
                                                     {excelData && excelData.map((value, index) => (
                                                         <tr key={index} id={value['__rowNum__']}>
 
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" defaultValue={value['name']} {...register(`name[${index}]`)} /></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" defaultValue={value['number']} {...register(`number[${index}]`)} /></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" defaultValue={value['size']} {...register(`size[${index}]`)} /></td>
-                                                            <td><span for={index} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(index, value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" defaultValue={value['name']} ref={(ref) => {
+                                                                if (ref) NameRef.current[index + 1] = ref;
+                                                            }} /></td>
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" defaultValue={value['number']} ref={(ref) => {
+                                                                if (ref) NumberRef.current[index + 1] = ref;
+                                                            }} /></td>
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" defaultValue={value['size']} ref={(ref) => {
+                                                                if (ref) SizeRef.current[index + 1] = ref;
+                                                            }} /></td>
+                                                            <td><span for={index} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(index + 1, (value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                         </tr>
                                                     ))}
                                                     {appendingRow.map((val, index) => (
                                                         <tr id={`row${val}`} key={`row${val}`}>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" {...register(`name[${val}]`)} placeholder='Type here...' /></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]"  {...register(`number[${val}]`)} placeholder='00' /></td>
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" placeholder='Type here...' ref={(ref) => {
+                                                                if (ref) NameRef.current[val] = ref;
+                                                            }} /></td>
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
+                                                                if (ref) NumberRef.current[val] = ref;
+                                                            }} /></td>
                                                             <td>
-                                                                <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name={`size[${val}]`} {...register(`size[${val}]`)}>
+                                                                <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name={`size[${val}]`} ref={(ref) => {
+                                                                    if (ref) SizeRef.current[val] = ref;
+                                                                }}>
                                                                     {Object.keys(dimensions).map((size, index) => (
                                                                         <option key={index} value={size}>
                                                                             {size}
@@ -457,13 +513,11 @@ function Variation() {
                                                                     ))}
                                                                 </select>
                                                             </td>
-                                                            <td key={`row${val}`}><span for={`row${val}`} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeAddedRow(ev, index)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                            <td key={`row${val}`}><span for={`row${val}`} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeAddedRow(ev, val)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
-                                            <Button style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0' }} onClick={() => addRow()}>Add</Button>
-                                            <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0', marginLeft: '20px' }} >Save</Button>
                                         </form>
 
                                     </div>
@@ -486,9 +540,10 @@ function Variation() {
 
                                         <div className='mt-4'>
                                             <p>TOTAL</p>
-                                            <h6>{count} Variations</h6>
+                                            <h6>{variationcount} Variations</h6>
                                             <p>RENDERING TIME</p>
-                                            <h6>1.2 Min Approx</h6>
+
+                                            {renderingTime && <h6> {renderingTime.toFixed(2)} seconds</h6>}
                                         </div>
                                     </div>
 

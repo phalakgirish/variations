@@ -519,7 +519,7 @@ function Design() {
     console.log(e);
   }
   useEffect(() => {
-    document.addEventListener('mouseup', handleMouseKeyUp())
+    // document.addEventListener('mouseup',handleMouseKeyUp())
     if (IsNameSelected) {
       console.log(TextNameRef.current);
       TextNoTranRef.current.nodes([TextNameRef.current]);
@@ -620,6 +620,7 @@ function Design() {
     // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
     if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
       // Navigate to Variation page
+      handleNameNumberDetails();
       navigate('/Variation', { state: { selectedImage: selectedImage } });
     } else {
       // Display error messages based on conditions
@@ -707,9 +708,9 @@ function Design() {
 
             </div>
             <Accordion defaultActiveKey={activeAccordionItem}>
-              <Accordion.Item eventKey="1" className="mb-2 custom-accordion">
-                <Accordion.Header className='mx-2'>Player Name</Accordion.Header>
-                <Accordion.Body>
+              <Accordion.Item eventKey="1" className={(activeAccordionItem !== '1') ? "mb-2 custom-accordion" : "mb-2 custom-accordion show-accordian"}>
+                <Accordion.Header className='mx-2 show'>Player Name</Accordion.Header>
+                <Accordion.Body >
                   <Form>
                     <FontAwesomeIcon icon="" />
                     <div className="mb-2 row custombackground">
@@ -804,7 +805,7 @@ function Design() {
                         />
                       </div>
                     </div>
-                    <div className="mb-2 row custombackground">
+                    <div className="mb-4 row custombackground">
                       <div className="col-9 d-flex align-items-center order-1">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
@@ -906,7 +907,7 @@ function Design() {
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item eventKey="2" className="mb-2 custom-accordion">
+              <Accordion.Item eventKey="2" className={(activeAccordionItem !== '2') ? "mb-2 custom-accordion" : "mb-2 custom-accordion show-accordian"}>
                 <Accordion.Header className='mx-2'>Player Number font</Accordion.Header>
                 <Accordion.Body>
                   <Form>
@@ -1035,7 +1036,7 @@ function Design() {
   </div>
  
 </div> */}
-                    <div className="mb-2 row custombackground">
+                    <div className="mb-4 row custombackground">
                       <div className="col-9 d-flex align-items-center order-1">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
@@ -1305,14 +1306,16 @@ function Design() {
 
                       </Layer>
                     </Stage>
-
-
-                    {/* Labels */}
                     <div style={{ position: 'absolute', top: 70, right: 200 }}>
-                      <div style={{ marginBottom: 10, display: 'inline-block' }}><div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div>Add Tee Shirt Design</div><br></br>
-                      <div style={{ marginBottom: 10, marginTop: 50, display: 'inline-block' }}><div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div>Add Name</div><br></br>
-                      <div style={{ marginBottom: 10, marginTop: 100, display: 'inline-block' }}><div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div>Add Number</div><br></br>
-                    </div>
+                      <div style={{ marginBottom: 60, display: 'inline-block', marginLeft:40}}>
+                        <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
+                      </div><br />
+                      <div style={{ marginBottom: 120, display: 'inline-block' ,marginLeft:30}}>
+                        <div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">2</div><span>&nbsp; Add Name</span>
+                      </div><br />
+                      <div style={{ marginBottom: 10, display: 'inline-block',marginRight:80 }}>
+                        <div style={{ width: 180, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">3</div><span>&nbsp; Add Number</span>
+                      </div></div>
                   </div>
                 </div>
 
