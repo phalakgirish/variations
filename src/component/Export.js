@@ -51,6 +51,7 @@ function Export(){
     var stagediv = useRef();
     var inputSearch = useRef();
     var ResizeImagediv = useRef();
+    const ImgDivRef = useRef([]);
 
     
     var tshirtchangedetails = JSON.parse(localStorage.getItem('tshirtchangedetails'));
@@ -575,21 +576,55 @@ function Export(){
         console.log(inputSearch.current.value);
         if(inputSearch.current.value != '')
         {   
-            canvasRef.current= [];
+            // canvasRef.current= [];
             var excelData = JSON.parse(localStorage.getItem('tshirtDetails'));
             // console.log(excelData);
-            var filterData = excelData.filter((item,index)=>(item.name === inputSearch.current.value || item.number === parseInt(inputSearch.current.value)))
-            // console.log(filterData);
-            setTshirtDetails(filterData);
-            console.log(tshirtdetails);
+            // var filterData = excelData.filter((item,index)=>(item.name === inputSearch.current.value || item.number === parseInt(inputSearch.current.value)))
+            var searchvalue = inputSearch.current.value;
+            var filterData = excelData.filter((item,index)=>(item.name.toLowerCase().includes(searchvalue.toLowerCase()) || item.number.toString().includes(inputSearch.current.value)))
+            console.log(filterData);
+            // setTshirtDetails(filterData);
+            for(let val of excelData)
+            {
+                if(filterData.length > 0)
+                {
+                    // console.log(ImgDivRef.current[filterData[0].indexSr]);
+                        var searchdata = filterData.filter(item => item.indexSr == val.indexSr)
+                        // console.log(dts);
+                        // console.log(val.indexSr);
+                        // if(dts.indexSr !== val.indexSr)
+                        if(searchdata.length == 0)
+                        {
+                            ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3 hideimage'
+                            // console.log(ImgDivRef.current[val.indexSr]);
+                        }
+                        else
+                        {
+                            ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3'
+                        }  
+                }
+                else
+                {
+                    ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3 hideimage'
+                }
+            }
+            
+            
         }
         else
         {
             
             var filterData = JSON.parse(localStorage.getItem('tshirtDetails'))
             console.log(filterData);
+            for(let val of filterData)
+            {
+                    // console.log(ImgDivRef.current[filterData[0].indexSr]);
+                    // console.log(val.indexSr);
+                    ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3'
+                        // console.log(ImgDivRef.current[val.indexSr]);
+            }
             
-            setTshirtDetails(filterData);
+            // setTshirtDetails(filterData);
             // console.log(tshirtdetails);
             
         }
@@ -630,14 +665,17 @@ function Export(){
                                         </div>
                                         <div className='' style={{width:'30%',alignItems:'right',display:'flex'}}>
                                             <div style={{width:'12%',padding:'10px 5px 0 5px',backgroundColor:'#EAEEF8',borderRadius:"20px 0 0 20px"}}><FontAwesomeIcon icon={faMagnifyingGlass} className='mx-2' /></div>
-                                            <input ref={inputSearch} type='text' placeholder='Search all files' className='export-variation-search' onChange={()=>{handelInputsearch();}} disabled/>
+                                            <input ref={inputSearch} type='text' placeholder='Search all files' className='export-variation-search' onChange={()=>{handelInputsearch();}}/>
                                         </div>
                                     </div>
                                     <div className='my-5  justify-content-center ' >
                                     <div className='row'>
                                     {tshirtdetails && tshirtdetails.map((val, index) => (
                                         
-                <div key={index} className='col-xl-3 col-3' style={{ position: 'relative',paddingLeft:'10px',marginBottom:'25px'}}>
+                <div key={index} className='col-xl-3 col-3' style={{ position: 'relative',paddingLeft:'10px',marginBottom:'25px'}}
+                ref={(ref) => {
+                    if (ref) ImgDivRef.current[val.indexSr] = ref;
+                }}>
                     <div className='tshirtimg1' ref={(ref) => {
                     if (ref) downladImage.current[val.indexSr] = ref;
                 }}>

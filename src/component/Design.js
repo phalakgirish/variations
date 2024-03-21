@@ -10,6 +10,8 @@ import fronttshirt from '../assets/img/Plain TeeShirt.png';
 import * as htmlToImage from 'html-to-image';
 
 // import fronttshirt from '../assets/img/Front.svg';
+import undoblack from '../assets/img/undo_black_24dp.svg';
+import redoblack from '../assets/img/redo_black_24dp.svg';
 import backtshirt from '../assets/img/Plain TeeShirt.png';
 import redo from '../assets/img/outline_undo_black_24dp.png';
 import undo from '../assets/img/outline_redo_black_24dp.png';
@@ -125,6 +127,7 @@ const CustomOption = ({ innerProps, label, data }) => (
     {label}
   </div>
 );
+let historyStep = 0
 function Design() {
   // const { state } = useLocation();
   // var selectedValue
@@ -210,6 +213,8 @@ function Design() {
   const fontfamilyDropDown = useRef()
   const DesignImage = useRef();
   const [activeAccordionItem, setActiveAccordionItem] = useState("");
+  const [history, setHistory] = useState([]);
+  const [UndoRedo,setUndoRedo] = useState(0)
 
 
   if (Existingplayernamedetails != null && Existingplayernumberdetails != null) {
@@ -413,6 +418,7 @@ function Design() {
   };
 
   const handleImageChange = (e) => {
+    handleNameNumberDetails(0);
     const file = e.target.files[0];
     localStorage.removeItem('bgImageDetails');
     if (file) {
@@ -421,9 +427,10 @@ function Design() {
       reader.onload = () => {
         setSelectedImage(reader.result);
         console.log(reader.result);
-        localStorage.setItem('bgImageDetails',reader.result)
+        // localStorage.setItem('bgImageDetails',reader.result)
         // localStorage.setItem('bgImageDetails',reader.result)
         localStorage.setItem('bgname', file.name);
+        handleNameNumberDetails(0);
       };
       reader.readAsDataURL(file);
     }
@@ -446,7 +453,7 @@ function Design() {
     setActiveAccordionItem("2");
     console.log('accordion 2');// Open accordion item with eventkey 2
   };
-  const handleNameNumberDetails = async () => {
+  const handleNameNumberDetails = async (ev) => {
 
     const canvas = canvasRef.current;
 
@@ -504,9 +511,30 @@ function Design() {
 
     console.log(playernamedetails);
     console.log(playernumberdetails);
-
-    localStorage.setItem('playernamedetails', JSON.stringify(playernamedetails));
-    localStorage.setItem('playernumberdetails', JSON.stringify(playernumberdetails));
+    if(history.length == 0)
+    {
+      historyStep = 0;
+    }
+    else if(history.length !== historyStep)
+    {
+      historyStep = history.length
+    }
+    else
+    {
+      historyStep = historyStep +1
+    }
+    console.log(historyStep);
+    var historyrem = history.slice(0, historyStep + 1);
+    var historydts = [...historyrem,{selectedImage:selectedImage,playernamedetails:playernamedetails,playernumberdetails:playernumberdetails}]
+    setHistory(historydts)
+    console.log(history);
+    if(ev === 1)
+    {
+      localStorage.setItem('playernamedetails', JSON.stringify(playernamedetails));
+      localStorage.setItem('playernumberdetails', JSON.stringify(playernumberdetails));
+      localStorage.setItem('bgImageDetails',selectedImage)
+    }
+    
 
     // const dataUrl = await htmlToImage.toPng(DesignImage.current);
     // const link = document.createElement('a');
@@ -517,6 +545,65 @@ function Design() {
 
   const handleMouseKeyUp = (e)=>{
     console.log(e);
+  }
+
+  const UndoRedoUpdate = (obj) => {
+    setPlayerName(obj.playernamedetails.Name)
+      setNameTextSize(obj.playernamedetails.NametextSize)
+      setNameFontFamily(obj.playernamedetails.NamefontFamily)
+      setNameTextBorder(obj.playernamedetails.NametextBorder)
+      setNameTextPosition(obj.playernamedetails.NametextPosition)
+      setNameTextColor(obj.playernamedetails.NametextColor)
+      setNameOutLineColor(obj.playernamedetails.NameoutlineColor)
+      setNameRotationAngle(obj.playernamedetails.NamerotationAngle)
+      setPlayerNameWidth(obj.playernamedetails.NameWidth)
+      setNameScale(obj.playernamedetails.NameScale)
+      setSelectedImage(obj.selectedImage)
+      // console.log(obj.playernamedetails);
+      setPlayerNo(obj.playernumberdetails.No)
+      setTextSize(obj.playernumberdetails.textSize)
+      setFontFamily(obj.playernumberdetails.fontFamily)
+      setTextPosition(obj.playernumberdetails.textPosition)
+      setTextColor(obj.playernumberdetails.textColor)
+      setOutLineColor(obj.playernumberdetails.outlineColor)
+      setNoTextBorder(obj.playernumberdetails.NotextBorder)
+      setRotationAngle(obj.playernumberdetails.rotationAngle)
+      setPlayerNoWidth(obj.playernumberdetails.NoWidth)
+      setNoScale(obj.playernumberdetails.NoScale)
+  }
+  
+  const handelUndo = (e)=>{
+    if(historyStep === 0){
+      return ;
+    }
+    historyStep = historyStep-1;
+    console.log(historyStep);
+    console.log(history);
+    const previous = history[historyStep];
+    console.log(previous);
+    setUndoRedo(1);
+    if(previous != undefined)
+    {
+      UndoRedoUpdate(previous);
+    }
+  }
+
+  const handelRedo = (e)=>{
+
+    if(historyStep === history.length -1){
+      return ;
+    }
+    historyStep = historyStep+1;
+    console.log(historyStep);
+    console.log(history);
+    const next = history[historyStep];
+    console.log(next);
+    setUndoRedo(1);
+    if(next != undefined)
+    {
+      UndoRedoUpdate(next);
+    }
+
   }
   useEffect(() => {
     // document.addEventListener('mouseup',handleMouseKeyUp())
@@ -532,7 +619,11 @@ function Design() {
 
     // setPlayerNameWidth(300);
     // setPlayerNoWidth(300);
-    handleNameNumberDetails();
+    if(UndoRedo === 0)
+    {
+      handleNameNumberDetails(0);
+    }
+   
 
     const handleBeforeUnload = (event) => {
       // Cancel the event
@@ -540,12 +631,14 @@ function Design() {
       console.log(event);
       // Chrome requires returnValue to be set
       event.returnValue = '';
-      localStorage.removeItem('playernamedetails');
-      localStorage.removeItem('playernumberdetails');
-      localStorage.removeItem('bgImageDetails');
+      // localStorage.removeItem('playernamedetails');
+      // localStorage.removeItem('playernumberdetails');
+      // localStorage.removeItem('bgImageDetails');
       // localStorage.removeItem('tshirtchangedetails');
+      // localStorage.removeItem('tshirtDetails');
+
       // state.selectedImage= null;
-      setSelectedImage(null)
+      // setSelectedImage(null)
       
         // var tshirtDetails = JSON.parse(localStorage.getItem('tshirtDetails'));
         // console.log(tshirtDetails);
@@ -569,8 +662,8 @@ function Design() {
       event.returnValue = message;
       return message;
     };  
-
-    document.addEventListener('beforeunload',handleBeforeUnload);
+    setUndoRedo(0);
+    // window.addEventListener('beforeunload',handleBeforeUnload);
 
     // return () => {
     //   window.removeEventListener('beforeunload', handleBeforeUnload);
@@ -660,9 +753,11 @@ function Design() {
     const bgName = localStorage.getItem('bgname');
 
     // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
-    if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
+    // if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
+    if (playerName !== 'Sample text' && bgName) {
+
       // Navigate to Variation page
-      handleNameNumberDetails();
+      handleNameNumberDetails(1);
       navigate('/Variation', { state: { selectedImage: selectedImage } });
     } else {
       // Display error messages based on conditions
@@ -850,7 +945,7 @@ const addVariation =()=>{
                           type="color"
                           style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
                           id="exampleColorInput"
-                          defaultValue={NametextColor}
+                          value={NametextColor}
                           onChange={(e)=>{handlePlayerNameTextColorChange(e)}}
                           onBlur={handlePlayerNameTextColorClick} // Close the color picker on blur
                         />
@@ -1282,9 +1377,9 @@ const addVariation =()=>{
           <div className="col-9">
             <div className="row tab mt-3">
               <ul className="d-flex col-6 custom-tabs">
-                <li className="active" onClick={() => { handleNameNumberDetails(); navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
+                <li className="active" onClick={() => { handleNameNumberDetails(1); navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
                 <li className="mx-2" onClick={navigateToVariation}>Variation</li>
-                <li className="mx-2" onClick={() => { handleNameNumberDetails(); addVariation()}}>Export</li>
+                <li className="mx-2" onClick={() => { handleNameNumberDetails(1); addVariation()}}>Export</li>
               </ul>
               <div className="col-6 custom-btn">
                 <Button className="float-end" variant="primary" onClick={navigateToVariation}>
@@ -1309,8 +1404,11 @@ const addVariation =()=>{
                             </Button> 
                         </div> */}
               <div className="col-10 ">
-                <div id="container">
-
+                <div id="container" style={{display:'flex'}}>
+                <div className='Action-btn-div'>
+                          <button className='btn undo-redo-btn' onClick={(e)=>{handelUndo(e)}}><img src={undoblack}/><br />Undo</button><br />
+                          <button className='btn undo-redo-btn' onClick={(e)=>{handelRedo(e)}}><img src={redoblack}/><br />Redo</button>
+                  </div>
                   <div style={{ position: 'relative' }} className='tshirt-draw-canvas' ref={DesignImage}>
 
                     <svg className='svg-bg-img' xmlns="http://www.w3.org/2000/svg" ref={canvasRefName}>
@@ -1358,6 +1456,7 @@ const addVariation =()=>{
                       </Layer>
                     </Stage>
                   </div>
+                  
                 </div>
 
 

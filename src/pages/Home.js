@@ -2,8 +2,8 @@ import React,  { useState } from "react";
 
 // import { useHistory } from 'react-router-dom';/
 import Sidebar from "../component/Sidebar";
-import front from '../assets/img/Front.svg';
-import back from '../assets/img/Back.svg';
+import front from '../assets/img/homepage-first.png';
+import back from '../assets/img/homepage-second.png';
 // import { Dropdown } from 'react-bootstrap';
 import { BrowserRouter as Router, Link,useNavigate  } from "react-router-dom";
 import { Form, InputGroup } from 'react-bootstrap';
