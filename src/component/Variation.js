@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect,useLayoutEffect } from 'react';
 import Sidebar from "../component/Sidebar";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import { Form, InputGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import sidemenu from '../assets/img/second-age.png';
-import switchImage from '../assets/img/switch_access.png';
+import switchImage from '../assets/img/switch_access_shortcut_black_24dp.svg';
 import fronttshirt from '../assets/img/Plain TeeShirt.png';
 import * as XLSX from 'xlsx';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -43,7 +43,8 @@ function Variation() {
     const [NamerotationAngle, setNameRotationAngle] = useState(0);
     const [NofontFamily, setNofontFamily] = useState('');
     const [BgName, setBgName] = useState('');
-    const [RemovedRow,setremovedRow] = useState([]);
+    const [RemovedRow, setremovedRow] = useState([]);
+    const [renderingTime, setRenderingTime] = useState(null);
     // var selectedImage = localStorage.getItem('bgImageDetails');
     var selectedImage = state.selectedImage;
     const NameRef = useRef([]);
@@ -200,6 +201,8 @@ function Variation() {
 
     const { register, formState: { errors }, handleSubmit, unregister, reset } = useForm();
     var selectFile = (ev) => {
+        console.time('selectFile'); // Start measuring rendering time
+        const startTime = performance.now(); // Define startTime
         console.log(ev.target.files[0]);
         if (ev.target.files[0] === undefined || ev.target.files[0] === null) {
             setFileStatus(false);
@@ -248,6 +251,12 @@ function Variation() {
 
 
                     }
+                    const endTime = performance.now();
+                    const elapsedMilliseconds = endTime - startTime;
+                    const elapsedSeconds = elapsedMilliseconds / 1000;
+                    setRenderingTime(elapsedSeconds);
+
+                    console.timeEnd('selectFile');
                     console.log(dataToPost);
                     localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
                 };
@@ -255,15 +264,24 @@ function Variation() {
             else {
                 setExcelFileType(false);
                 setExcelData(null);
+                console.timeEnd('selectFile'); // End measuring rendering time
                 message.current.className = 'alert alert-danger upload-error';
                 setErrmsg('Please Select Only Excel File Types.');
+                console.timeEnd('selectFile');
             }
 
 
 
         }
     }
-
+    useLayoutEffect(() => {
+        const startTime = new Date();
+        return () => {
+            const endTime = new Date();
+            const timeRendered = endTime - startTime;
+            console.log(typeof timeRendered); // Expect this to be a positive number
+        };
+    }, []);
     var addRow = (ev) => {
         // ev.preventDefault();
         console.log(count);
@@ -279,7 +297,7 @@ function Variation() {
 
     var removeAddedRow = (ev, val) => {
         console.log(val);
-        var removed_row = [...RemovedRow,parseInt(val)]
+        var removed_row = [...RemovedRow, parseInt(val)]
         setremovedRow(removed_row);
         const currentTarget = ev.currentTarget.getAttribute("for");
         console.log(currentTarget);
@@ -290,11 +308,11 @@ function Variation() {
     var removeExcelRow = (index, id) => {
         {
             const list = [...excelData];
-            var removed_row = [...RemovedRow,parseInt(id)]
+            var removed_row = [...RemovedRow, parseInt(id)]
             setremovedRow(removed_row);
             console.log(list);
             console.log(id);
-            const result1 = list.filter(items =>  items.__rowNum__ != id);
+            const result1 = list.filter(items => items.__rowNum__ != id);
             const result = result1.filter(items => items.indexSr != id);
             console.log(result);
             setExcelData((result.length == 0) ? null : result);
@@ -311,16 +329,14 @@ function Variation() {
         console.log(NameRef.current);
         var dataToPost = [];
         console.log(RemovedRow);
-        for(let i in  NameRef.current)
-        {
+        for (let i in NameRef.current) {
             console.log(i);
             var indexNo = RemovedRow.indexOf(parseInt(i));
             console.log(indexNo);
-            if(i != 0 && indexNo == -1)
-            {
+            if (i != 0 && indexNo == -1) {
                 if (NameRef.current[i].value != "" && SizeRef.current[i].value != "") {
-                        dataToPost = [...dataToPost, { indexSr: i, name: NameRef.current[i].value, number:NumberRef.current[i].value, size: SizeRef.current[i].value}];
-                        //    index = index + 1
+                    dataToPost = [...dataToPost, { indexSr: i, name: NameRef.current[i].value, number: NumberRef.current[i].value, size: SizeRef.current[i].value }];
+                    //    index = index + 1
                 }
             }
         }
@@ -433,12 +449,20 @@ function Variation() {
                                     </div>
                                     <div className="col-6">
                                         <form>
+                                            
+
                                             <table responsive="sm" className='table variation-inner-table'>
+
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
+                                                        <th style={{ width: '25%' }}>Name</th>
                                                         <th style={{ width: '10%' }}>Number</th>
-                                                        <th>Size</th>
+                                                        <th style={{ width: '25%' }}>Size</th>
+                                                        <div  style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                                <Button style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0' }} onClick={() => addRow()}>Add</Button>
+                                                <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0', marginLeft: '20px' }} onClick={(e) => upload_data(e)} >Save</Button>
+
+                                            </div>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="custom-tbody">
@@ -459,29 +483,29 @@ function Variation() {
                                                         <tr key={index} id={value['__rowNum__']}>
 
                                                             <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" defaultValue={value['name']} ref={(ref) => {
-                                                                if (ref) NameRef.current[index+1] = ref;
-                                                            }}/></td>
+                                                                if (ref) NameRef.current[index + 1] = ref;
+                                                            }} /></td>
                                                             <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" defaultValue={value['number']} ref={(ref) => {
-                                                                if (ref) NumberRef.current[index+1] = ref;
-                                                            }}/></td>
+                                                                if (ref) NumberRef.current[index + 1] = ref;
+                                                            }} /></td>
                                                             <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" defaultValue={value['size']} ref={(ref) => {
-                                                                if (ref) SizeRef.current[index+1] = ref;
-                                                            }}/></td>
-                                                            <td><span for={index} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(index+1, (value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                                if (ref) SizeRef.current[index + 1] = ref;
+                                                            }} /></td>
+                                                            <td><span for={index} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(index + 1, (value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                         </tr>
                                                     ))}
                                                     {appendingRow.map((val, index) => (
                                                         <tr id={`row${val}`} key={`row${val}`}>
                                                             <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" placeholder='Type here...' ref={(ref) => {
                                                                 if (ref) NameRef.current[val] = ref;
-                                                            }}/></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]"  placeholder='00' ref={(ref) => {
+                                                            }} /></td>
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
                                                                 if (ref) NumberRef.current[val] = ref;
-                                                            }}/></td>
+                                                            }} /></td>
                                                             <td>
                                                                 <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name={`size[${val}]`} ref={(ref) => {
-                                                                if (ref) SizeRef.current[val] = ref;
-                                                            }}>
+                                                                    if (ref) SizeRef.current[val] = ref;
+                                                                }}>
                                                                     {Object.keys(dimensions).map((size, index) => (
                                                                         <option key={index} value={size}>
                                                                             {size}
@@ -494,8 +518,6 @@ function Variation() {
                                                     ))}
                                                 </tbody>
                                             </table>
-                                            <Button style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0' }} onClick={() => addRow()}>Add</Button>
-                                            <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0', marginLeft: '20px' }} onClick={(e) => upload_data(e)} >Save</Button>
                                         </form>
 
                                     </div>
@@ -520,7 +542,8 @@ function Variation() {
                                             <p>TOTAL</p>
                                             <h6>{variationcount} Variations</h6>
                                             <p>RENDERING TIME</p>
-                                            <h6>1.2 Min Approx</h6>
+
+                                            {renderingTime && <h6> {renderingTime.toFixed(2)} seconds</h6>}
                                         </div>
                                     </div>
 
