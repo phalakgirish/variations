@@ -57,6 +57,7 @@ function Export(){
 
 
     const drawTextOnCanvas = (text, number,canvas,index) => {
+        // console.log(canvas);
         if (canvas) {
 
             var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
@@ -106,10 +107,10 @@ function Export(){
             // ctx.fillText(number, ((playernumberdetails.textPosition.x)*canvas.width)/100, (playernumberdetails.textPosition.y*canvas.height)/100);
 
             const stage = canvas;
-            console.log(stage);
-
+            // console.log(stage);
+            //  stage.children = [];
             const layer = new Konva.Layer();
-
+            //  console.log(layer);
             // var image = new Konva.Image({
             //     x:0,
             //     y:0,
@@ -134,7 +135,7 @@ function Export(){
                 scaleX:playernamedetails.NameScale.x,
                 scaleY:playernamedetails.NameScale.y 
             });
-
+            
             layer.add(text1);
 
             var text2 = new Konva.Text({
@@ -154,8 +155,15 @@ function Export(){
             });
 
             layer.add(text2);
-
+            // console.log(text1);
+            // console.log(text2);
+            // layer.children.push(text1);
+            // layer.children.push(text2);
+            // console.log(layer.children);
+            // console.log(layer);
             stage.add(layer);
+            // stage.children.push(layer);
+            // console.log(stage);
         }
     };
 
@@ -566,12 +574,14 @@ function Export(){
         
         console.log(inputSearch.current.value);
         if(inputSearch.current.value != '')
-        {
+        {   
+            canvasRef.current= [];
             var excelData = JSON.parse(localStorage.getItem('tshirtDetails'));
-            var filterData = excelData.filter((item,index)=>item.name.includes(inputSearch.current.value) || item.number.includes(inputSearch.current.value))
+            // console.log(excelData);
+            var filterData = excelData.filter((item,index)=>(item.name === inputSearch.current.value || item.number === parseInt(inputSearch.current.value)))
             // console.log(filterData);
             setTshirtDetails(filterData);
-            // console.log(tshirtdetails);
+            console.log(tshirtdetails);
         }
         else
         {

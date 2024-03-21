@@ -476,7 +476,7 @@ th
 .variation-inner  select{
   background-color:  rgb(231, 239, 254);
   border: 0;
-  width: 60%;
+  /* width: 60%; */
 }
 
 .variation-inner .card{

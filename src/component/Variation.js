@@ -189,13 +189,14 @@ function Variation() {
         if (tshirtDetails != null) {
             setExcelData(tshirtDetails);
             setCount(tshirtDetails.length);
+            setAppendingRow([]);
             setVariationCount(tshirtDetails.length);
             console.log(tshirtDetails);
         }
     }, [])
-    const [appendingRow, setAppendingRow] = useState([]);
+    const [appendingRow, setAppendingRow] = useState([1]);
     const list = [];
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(1);
     const [variationcount, setVariationCount] = useState(0);
 
     const { register, formState: { errors }, handleSubmit, unregister, reset } = useForm();
@@ -236,6 +237,7 @@ function Variation() {
                     setVariationCount(data.length);
                     setAppendingRow([]);
                     setExcelData(data);
+                    setremovedRow([]);
                     var dataToPost = []
                     var index = 0;
                     for (let val of data) {
@@ -287,11 +289,12 @@ function Variation() {
         setVariationCount(variationcount => variationcount - 1);
     };
 
-    var removeExcelRow = (index, id) => {
+    var removeExcelRow = (ev, id) => {
         {
             const list = [...excelData];
             var removed_row = [...RemovedRow,parseInt(id)]
             setremovedRow(removed_row);
+            // document.getElementById(currentTarget).remove();
             console.log(list);
             console.log(id);
             const result1 = list.filter(items =>  items.__rowNum__ != id);
@@ -303,6 +306,7 @@ function Variation() {
         }
 
     }
+    useEffect(()=>{console.log(excelData);},[excelData])
 
     var upload_data = (e) => {
         e.preventDefault();
@@ -456,18 +460,29 @@ function Variation() {
                                         </tr> */}
 
                                                     {excelData && excelData.map((value, index) => (
-                                                        <tr key={index} id={value['__rowNum__']}>
+                                                        <tr key={index} id={(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']}>
 
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" defaultValue={value['name']} ref={(ref) => {
-                                                                if (ref) NameRef.current[index+1] = ref;
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" Value={value['name']} ref={(ref) => {
+                                                                if (ref) NameRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
                                                             }}/></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" defaultValue={value['number']} ref={(ref) => {
-                                                                if (ref) NumberRef.current[index+1] = ref;
+                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" Value={value['number']} ref={(ref) => {
+                                                                if (ref) NumberRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
                                                             }}/></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" defaultValue={value['size']} ref={(ref) => {
-                                                                if (ref) SizeRef.current[index+1] = ref;
-                                                            }}/></td>
-                                                            <td><span for={index} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(index+1, (value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                            <td>
+                                                                <input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" Value={value['size']} ref={(ref) => {
+                                                                if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
+                                                            }}/>
+                                                            {/* <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" Value={value['size']} ref={(ref) => {
+                                                                if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
+                                                            }}>
+                                                                    {Object.keys(dimensions).map((size, index) => (
+                                                                        <option key={index} value={size}>
+                                                                            {size}
+                                                                        </option>
+                                                                    ))}
+                                                                </select> */}
+                                                            </td>
+                                                            <td><span for={(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(ev, (value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                         </tr>
                                                     ))}
                                                     {appendingRow.map((val, index) => (

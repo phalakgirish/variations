@@ -139,8 +139,8 @@ function Design() {
   var Existingplayernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
   var Existingplayernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
   var selectedBGImage = localStorage.getItem('bgImageDetails');
-  const { state } = useLocation();
-  console.log(state);
+  // const { state } = useLocation();
+  // console.log(state);
 
   const [view, setView] = useState('front');
   const [playerName, setPlayerName] = useState((Existingplayernamedetails != null) ? Existingplayernamedetails.Name : 'Sample text');
@@ -197,8 +197,8 @@ function Design() {
 
 
 
-  // const [selectedImage, setSelectedImage] = useState((selectedBGImage != null)?selectedBGImage:null);
-  const [selectedImage, setSelectedImage] = useState((state != null) ? state.selectedImage : null);
+  const [selectedImage, setSelectedImage] = useState((selectedBGImage != null)?selectedBGImage:null);
+  // const [selectedImage, setSelectedImage] = useState((state != null) ? state.selectedImage : null);
   const [IsNameSelected, setNameSelected] = useState(false);
   const [IsNoSelected, setNoSelected] = useState(false);
   const canvasRef = useRef(null);
@@ -421,7 +421,7 @@ function Design() {
       reader.onload = () => {
         setSelectedImage(reader.result);
         console.log(reader.result);
-        // sessionStorage.setItem('bgImageDetails',reader.result)
+        localStorage.setItem('bgImageDetails',reader.result)
         // localStorage.setItem('bgImageDetails',reader.result)
         localStorage.setItem('bgname', file.name);
       };
@@ -534,6 +534,48 @@ function Design() {
     // setPlayerNoWidth(300);
     handleNameNumberDetails();
 
+    const handleBeforeUnload = (event) => {
+      // Cancel the event
+      event.preventDefault();
+      console.log(event);
+      // Chrome requires returnValue to be set
+      event.returnValue = '';
+      localStorage.removeItem('playernamedetails');
+      localStorage.removeItem('playernumberdetails');
+      localStorage.removeItem('bgImageDetails');
+      // localStorage.removeItem('tshirtchangedetails');
+      // state.selectedImage= null;
+      setSelectedImage(null)
+      
+        // var tshirtDetails = JSON.parse(localStorage.getItem('tshirtDetails'));
+        // console.log(tshirtDetails);
+        // if(tshirtDetails != null || tshirtDetails != undefined)
+        // {
+        //   // const response = window.confirm('Are you sure you want to refresh? Your variation changes may be lost.')
+        //   // if(response)
+        //   // {
+        //     console.log(tshirtDetails);
+        //     localStorage.removeItem('playernamedetails');
+        //     localStorage.removeItem('playernumberdetails');
+        //     localStorage.removeItem('bgname');
+        //     localStorage.removeItem('tshirtchangedetails');
+        //   // }
+          
+        // }
+        
+      
+    //   // Add your custom logic here, for example, showing a confirmation dialog
+      const message = 'Are you sure you want to refresh? Your unsaved changes may be lost.';
+      event.returnValue = message;
+      return message;
+    };  
+
+    document.addEventListener('beforeunload',handleBeforeUnload);
+
+    // return () => {
+    //   window.removeEventListener('beforeunload', handleBeforeUnload);
+    // };
+    
     // const canvas = canvasRef.current;
     // var canvaseNameX = (NametextPosition.x/canvas.attrs.width)*100;
     // var canvaseNameY =  (NametextPosition.y/canvas.attrs.height)*100;
@@ -632,7 +674,16 @@ function Design() {
     }
   };
 const addVariation =()=>{
-  alert('Add Variation');
+  var variationdts = localStorage.getItem('tshirtDetails');
+  if(variationdts == null || variationdts == undefined)
+  {
+    alert('Add Variation');
+  }
+  else
+  {
+    navigate('/Export',{ state: { selectedImage: selectedImage } })
+  }
+ 
 }
   return (
     <div id="main-container" className="container-fluid main">
@@ -708,8 +759,8 @@ const addVariation =()=>{
 
             </div>
             <Accordion defaultActiveKey={activeAccordionItem}>
-              <Accordion.Item eventKey="1" className={(activeAccordionItem !== '1')?"mb-2 custom-accordion":"mb-2 custom-accordion show-accordian"}>
-                <Accordion.Header className='mx-2 show'>Player Name</Accordion.Header>
+              <Accordion.Item eventKey="1" className={(activeAccordionItem !== '1')?"mb-2 custom-accordion hide-accordian":"mb-2 custom-accordion show-accordian"}>
+                <Accordion.Header className='mx-2'>Player Name</Accordion.Header>
                 <Accordion.Body >
                   <Form>
                     <FontAwesomeIcon icon="" />
@@ -907,7 +958,7 @@ const addVariation =()=>{
                 </Accordion.Body>
               </Accordion.Item>
 
-              <Accordion.Item eventKey="2" className={(activeAccordionItem !== '2')?"mb-2 custom-accordion":"mb-2 custom-accordion show-accordian"}>
+              <Accordion.Item eventKey="2" className={(activeAccordionItem !== '2')?"mb-2 custom-accordion hide-accordian":"mb-2 custom-accordion show-accordian"}>
                 <Accordion.Header className='mx-2'>Player Number font</Accordion.Header>
                 <Accordion.Body>
                   <Form>
