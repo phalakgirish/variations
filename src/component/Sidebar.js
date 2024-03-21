@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { HouseDoor, Moon, PersonCircle,ChatDots } from 'react-bootstrap-icons';
 import { BrowserRouter as Router, Link, useLocation, useAsyncError } from "react-router-dom";
-import Varient from '../assets/img/varient.png'
-import Home from '../assets/img/home_black_24dp.png'
-import Person from '../assets/img/account_circle_black_24dp.png'
-import Feedback from '../assets/img/rate_review_FILL0_wght400_GRAD0_opsz24.png'
+import Varient from '../assets/img/Group 12302.svg'
+import Home from '../assets/img/home_black_24dp.svg'
+import Person from '../assets/img/account_circle_black_24dp.svg'
+import Feedback from '../assets/img/rate_review_FILL0_wght400_GRAD0_opsz24.svg'
 import FeedbackOffCanvas from "./FeedbackOffCanvas";
 import FeedbackScreenShotModal from "./FeedbackScreenShotModal";
 

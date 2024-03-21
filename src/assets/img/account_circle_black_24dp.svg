@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <g id="account_circle_black_24dp" transform="translate(-0.415)">
+    <g id="Group_2576" data-name="Group 2576">
+      <rect id="Rectangle_6170" data-name="Rectangle 6170" width="30" height="30" transform="translate(0.415)" fill="none"/>
+    </g>
+    <g id="Group_2578" data-name="Group 2578" transform="translate(2.5 2.5)">
+      <g id="Group_2577" data-name="Group 2577">
+        <path id="Path_521" data-name="Path 521" d="M14.5,2A12.5,12.5,0,1,0,27,14.5,12.5,12.5,0,0,0,14.5,2Zm0,22.5a9.926,9.926,0,0,1-5.812-1.875,9.947,9.947,0,0,1,11.625,0A9.926,9.926,0,0,1,14.5,24.5Zm7.675-3.6a12.439,12.439,0,0,0-15.35,0,10,10,0,1,1,15.35,0Z" transform="translate(-2 -2)" fill="#0d214b"/>
+        <path id="Path_522" data-name="Path 522" d="M12.875,5.93a4.375,4.375,0,1,0,4.375,4.375A4.38,4.38,0,0,0,12.875,5.93Zm0,6.25a1.875,1.875,0,1,1,1.875-1.875A1.872,1.872,0,0,1,12.875,12.18Z" transform="translate(-0.375 -1.018)" fill="#0d214b"/>
+      </g>
+    </g>
+  </g>
+</svg>
