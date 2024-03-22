@@ -506,8 +506,8 @@ function Variation() {
                                                                 if (ref) NumberRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
                                                             }}/></td>
                                                             <td>
-                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px',width:'100px' }} name={`size[]`} ref={(ref) => {
-                                                                        if (ref) SizeRef.current[index + 1] = ref;
+                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px',width:'100px' }} name={`size[]`} value={value['size']} ref={(ref) => {
+                                                                        if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
                                                                     }}>
                                                                         {Object.keys(dimensions).map((size, index) => (
                                                                             <option key={index} value={size}>

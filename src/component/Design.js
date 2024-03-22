@@ -1455,7 +1455,7 @@ const addVariation =()=>{
 
                       </Layer>
                     </Stage>
-                    <div style={{ position: 'absolute', top: 70, right: 200 }}>
+                    <div style={{ position: 'absolute', top: 70,right:-285 }}>
                       <div style={{ marginBottom: 60, display: 'inline-block', marginLeft:40}}>
                         <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
                       </div><br />
