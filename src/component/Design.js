@@ -781,7 +781,7 @@ const addVariation =()=>{
  
 }
   return (
-    <div id="main-container" className="container-fluid main">
+    <div id="main-container" className="container-fluid main" style={{maxHeight:'100vh',overflowY:'scroll'}}>
 
       <Sidebar></Sidebar>
       <section className="home">
