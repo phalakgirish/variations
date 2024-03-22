@@ -464,13 +464,13 @@ function Variation() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-6">
+                                    <div className="col-6" style={{maxHeight:'50vh',overflowY:'scroll'}}>
                                         <form>
                                             
 
-                                            <table responsive="sm" className='table variation-inner-table'>
+                                            <table responsive="sm"  className='table variation-inner-table'>
 
-                                                <thead>
+                                                <thead style={{position:'sticky',top:0,backgroundColor:'#fff'}}>
                                                     <tr>
                                                         <th style={{ width: '25%' }}>Name</th>
                                                         <th style={{ width: '10%' }}>Number</th>
