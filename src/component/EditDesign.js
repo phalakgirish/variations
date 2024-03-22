@@ -9,6 +9,8 @@ import fronttshirt from '../assets/img/Plain TeeShirt.png';
 // import backtshirt from '../assets/img/t-shirt.png'
 
 // import fronttshirt from '../assets/img/Front.svg';
+import undoblack from '../assets/img/undo_black_24dp.svg';
+import redoblack from '../assets/img/redo_black_24dp.svg';
 import backtshirt from '../assets/img/Plain TeeShirt.png';
 import redo from '../assets/img/outline_undo_black_24dp.png';
 import undo from '../assets/img/outline_redo_black_24dp.png';
@@ -122,6 +124,7 @@ var fontOptions = [
       {label}
     </div>
   );
+  let historyStep = 0
 function EditDesign(){
     const { state } = useLocation();
     const selectedValue = localStorage.getItem('tshirtSize');
@@ -205,6 +208,8 @@ function EditDesign(){
     const TextNoRef =useRef(null);
     const TextNoTranRef =useRef(null);
     const [activeAccordionItem, setActiveAccordionItem] = useState("");
+    const [history, setHistory] = useState([]);
+    const [UndoRedo,setUndoRedo] = useState(0)
 
 
     const LoadImage = () => {
@@ -371,6 +376,7 @@ function EditDesign(){
       };
 
       const handleImageChange = (e) => {
+        handleNameNumberDetails(0);
         const file = e.target.files[0];
         localStorage.removeItem('bgImageDetails');
         if (file) {
@@ -378,8 +384,9 @@ function EditDesign(){
           const reader = new FileReader();
           reader.onload = () => {
             setSelectedImage(reader.result);
-            localStorage.setItem('bgImageDetails',reader.result)
+            // localStorage.setItem('bgImageDetails',reader.result)
             localStorage.setItem('bgname',file.name);
+            handleNameNumberDetails(0);
           };
           reader.readAsDataURL(file);
         }
@@ -403,7 +410,7 @@ function EditDesign(){
         console.log('accordion 2');// Open accordion item with eventkey 2
       };
 
-      const handleNameNumberDetails = () =>{
+      const handleNameNumberDetails = async (ev) =>{
             var tshirtchangedetails = JSON.parse(localStorage.getItem('tshirtchangedetails'));
             var changedData =[]
     
@@ -433,6 +440,7 @@ function EditDesign(){
     
             
             var playernamedetails = {
+            Name: playerName,
             NametextSize:NametextSize,
             NamefontFamily:NamefontFamily,
             NametextPosition:NametextPosition,
@@ -451,6 +459,7 @@ function EditDesign(){
     
             }
             var playernumberdetails = {
+            No: playerNo,
             textSize:textSize,
             fontFamily:fontFamily,
             textPosition:textPosition,
@@ -469,12 +478,90 @@ function EditDesign(){
     
             console.log(playernamedetails);
             console.log(playernumberdetails);
-    
+
+            if(history.length == 0)
+            {
+              historyStep = 0;
+            }
+            else if(history.length !== historyStep)
+            {
+              historyStep = history.length
+            }
+            else
+            {
+              historyStep = historyStep +1
+            }
+            console.log(historyStep);
+            var historyrem = history.slice(0, historyStep + 1);
+            var historydts = [...historyrem,{selectedImage:selectedImage,playernamedetails:playernamedetails,playernumberdetails:playernumberdetails}]
+            setHistory(historydts)
+            console.log(history);
             tshirtchangedetails = [...changedData,{indexSr:playerIndex,playernamedetails:playernamedetails,playernumberdetails:playernumberdetails}];
     
         //   console.log(tshirtchangedetails);
+        if(ev === 1)
+        {
+          localStorage.setItem('tshirtchangedetails',JSON.stringify(tshirtchangedetails));
+        }
+      }
+
+      const UndoRedoUpdate = (obj) => {
+        setPlayerName(obj.playernamedetails.Name)
+          setNameTextSize(obj.playernamedetails.NametextSize)
+          setNameFontFamily(obj.playernamedetails.NamefontFamily)
+          setNameTextBorder(obj.playernamedetails.NametextBorder)
+          setNameTextPosition(obj.playernamedetails.NametextPosition)
+          setNameTextColor(obj.playernamedetails.NametextColor)
+          setNameOutLineColor(obj.playernamedetails.NameoutlineColor)
+          setNameRotationAngle(obj.playernamedetails.NamerotationAngle)
+          setPlayerNameWidth(obj.playernamedetails.NameWidth)
+          setNameScale(obj.playernamedetails.NameScale)
+          setSelectedImage(obj.selectedImage)
+          // console.log(obj.playernamedetails);
+          setPlayerNo(obj.playernumberdetails.No)
+          setTextSize(obj.playernumberdetails.textSize)
+          setFontFamily(obj.playernumberdetails.fontFamily)
+          setTextPosition(obj.playernumberdetails.textPosition)
+          setTextColor(obj.playernumberdetails.textColor)
+          setOutLineColor(obj.playernumberdetails.outlineColor)
+          setNoTextBorder(obj.playernumberdetails.NotextBorder)
+          setRotationAngle(obj.playernumberdetails.rotationAngle)
+          setPlayerNoWidth(obj.playernumberdetails.NoWidth)
+          setNoScale(obj.playernumberdetails.NoScale)
+      }
+      
+      const handelUndo = (e)=>{
+        if(historyStep === 0){
+          return ;
+        }
+        historyStep = historyStep-1;
+        console.log(historyStep);
+        console.log(history);
+        const previous = history[historyStep];
+        console.log(previous);
+        setUndoRedo(1);
+        if(previous != undefined)
+        {
+          UndoRedoUpdate(previous);
+        }
+      }
     
-        localStorage.setItem('tshirtchangedetails',JSON.stringify(tshirtchangedetails));
+      const handelRedo = (e)=>{
+    
+        if(historyStep === history.length -1){
+          return ;
+        }
+        historyStep = historyStep+1;
+        console.log(historyStep);
+        console.log(history);
+        const next = history[historyStep];
+        console.log(next);
+        setUndoRedo(1);
+        if(next != undefined)
+        {
+          UndoRedoUpdate(next);
+        }
+    
       }
       
     useEffect(() => {
@@ -488,10 +575,13 @@ function EditDesign(){
         TextNoTranRef.current.nodes([TextNoRef.current]);
       }
 
-            handleNameNumberDetails();
+      if(UndoRedo === 0)
+      {
+        handleNameNumberDetails(0);
+      }
       
 
-      
+      setUndoRedo(0);
 
     //   localStorage.setItem('playernamedetails',JSON.stringify(playernamedetails));
     //   localStorage.setItem('playernumberdetails',JSON.stringify(playernumberdetails));
@@ -529,9 +619,10 @@ function EditDesign(){
       const bgName = localStorage.getItem('bgname');
   
       // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
-      if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
+      // if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
+      if (playerName !== 'Sample text' && bgName) {
         // Navigate to Variation page
-        handleNameNumberDetails();
+        handleNameNumberDetails(1);
         navigate('/Variation', { state: { selectedImage: selectedImage } });
       } else {
         // Display error messages based on conditions
@@ -543,9 +634,16 @@ function EditDesign(){
       }
     };
   const addVariation =()=>{
-    alert('Add Variation');
+    var variationdts = localStorage.getItem('tshirtDetails');
+    if(variationdts == null || variationdts == undefined)
+    {
+      alert('Add Variation');
+    }
+    else
+    {
+      navigate('/Export',{ state: { selectedImage: selectedImage } })
+    }
   }
-
     return(
       <div id="main-container" className="container-fluid main">
 
@@ -725,7 +823,7 @@ function EditDesign(){
           type="color"
           style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
           id="exampleColorInput"
-          defaultValue={NametextColor}
+          value={NametextColor}
           onChange={(e)=>{handlePlayerNameTextColorChange(e)}}
           onBlur={handlePlayerNameTextColorClick} // Close the color picker on blur
         />
@@ -792,7 +890,7 @@ function EditDesign(){
           type="color"
           id="exampleColorInput"
           style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
-          defaultValue={NameoutlineColor}
+          value={NameoutlineColor}
           onChange={(e)=>{handlePlayerNameOutlineColorChange(e)}}
           onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
         />
@@ -922,7 +1020,7 @@ function EditDesign(){
           type="color"
           id="exampleColorInput"
           style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
-          defaultValue={textColor}
+          value={textColor}
           onChange={(e)=>{handleTextColorChange(e)}}
           onBlur={handleTextColorClick} // Close the color picker on blur
         />
@@ -1018,7 +1116,7 @@ function EditDesign(){
           type="color"
           id="exampleColorInput"
           style={{border: "1px solid black", padding:"0px", height:"25px",width:"30px",borderRadius:"8px"}}
-          defaultValue={outlineColor}
+          value={outlineColor}
           onChange={(e)=>{handleOutlineColorChange(e)}}
           onBlur={handleOutlineColorClick} // Close the color picker on blur
         />
@@ -1150,12 +1248,12 @@ function EditDesign(){
                 <div className="col-9">
                     <div className="row tab mt-3">
                         <ul className="d-flex col-6 custom-tabs">
-                            <li className="active" onClick={()=>{handleNameNumberDetails();navigate('/Design',{state:{selectedImage:selectedImage}})}}>Design</li>
+                            <li className="active" onClick={()=>{handleNameNumberDetails(1);navigate('/Design',{state:{selectedImage:selectedImage}})}}>Design</li>
                             <li className="mx-2" onClick={navigateToVariation}>Variation</li>
-                            <li className="mx-2" onClick={()=>{handleNameNumberDetails(); addVariation(); navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
+                            <li className="mx-2" onClick={()=>{handleNameNumberDetails(1); addVariation(); navigate('/Export',{state:{selectedImage:selectedImage}})}}>Export</li>
                         </ul>
                         <div className="col-6 custom-btn">
-                            <Button  className="float-end " variant="primary" onClick={()=>{ handleNameNumberDetails();
+                            <Button  className="float-end " variant="primary" onClick={()=>{ handleNameNumberDetails(1);
                             navigate('/Export',{state:{selectedImage:selectedImage}});}}>
                             <FontAwesomeIcon icon={faList} style={{ marginRight: '5px' }} /> Export
                             </Button> 
@@ -1177,56 +1275,59 @@ function EditDesign(){
                                 <span>Zoom</span>
                             </Button> 
                         </div> */}
-                        <div className="col-10 ">
-                            <div id="container">
-                                
-                            <div style={{ position: 'relative' }} className='tshirt-draw-canvas'>
+                      <div className="col-10 ">
+                      <div id="container" style={{display:'flex'}}>
+                      <div className='Action-btn-div'>
+                          <button className='btn undo-redo-btn' onClick={(e)=>{handelUndo(e)}}><img src={undoblack}/><br />Undo</button><br />
+                          <button className='btn undo-redo-btn' onClick={(e)=>{handelRedo(e)}}><img src={redoblack}/><br />Redo</button>
+                      </div>         
+                      <div style={{ position: 'relative' }} className='tshirt-draw-canvas'>
                               
-        <svg className='svg-bg-img' xmlns="http://www.w3.org/2000/svg" ref={canvasRefName}>
-         
-          <rect x="0" y="0" width="320" height="500" fill="white" />
-          {/* {selectedImage && <image href={selectedImage}  className='tshirt-bg-img'/>} */}
-          {/* {backgroundImage && <image href={backgroundImage} x="40" y="0" width="320" height="500" style={{border:'1px solid red;' }}/>} */}
-         
-          <circle cx="160" cy="-123" r="160" fill="white" className='neck-circle'/>
-        </svg>
+                      <svg className='svg-bg-img' xmlns="http://www.w3.org/2000/svg" ref={canvasRefName}>
+                      
+                        <rect x="0" y="0" width="320" height="500" fill="white" />
+                        {/* {selectedImage && <image href={selectedImage}  className='tshirt-bg-img'/>} */}
+                        {/* {backgroundImage && <image href={backgroundImage} x="40" y="0" width="320" height="500" style={{border:'1px solid red;' }}/>} */}
+                      
+                        <circle cx="160" cy="-123" r="160" fill="white" className='neck-circle'/>
+                      </svg>
 
-        <Stage width={500} height={500} style={{ position: 'absolute', top: 0, left: 190 }}>
-                                    <Layer>
-                                    {selectedImage && <LoadBGImage x={285}/>}
-                                    <LoadImage />
-                                    </Layer>
-                                </Stage>
-                                <Stage width={320} height={500} style={{ position: 'absolute', top: 0, left: 280,zIndex:0 }} ref={canvasRef}>
-                                    <Layer>
-                                        <Text ref={TextNameRef} text={playerName} fontSize={NametextSize} draggable x={NametextPosition.x} y={NametextPosition.y} fill={NametextColor} fontFamily={NamefontFamily} onDragEnd={(e) => {
-                                                                        console.log(e.target);
-                                                                        setNameTextPosition({                                
-                                                                            x: e.target.x(),
-                                                                            y: e.target.y(),
-                                                                        });
-                                                                        }} stroke={NameoutlineColor} strokeWidth={NametextBorder} onClick={(e)=>{handleNameClick()}} onTap={(e)=>{handleNameClick()}} align='center' width={playerNameWidth} rotation={NamerotationAngle} scaleX={NameScale.x} scaleY={NameScale.y}/>
-                                        {/* {IsNameSelected &&<Transformer ref={TextNameTranRef} keepRatio={false} enabledAnchors={[
-          'top-left',
-          'top-right',
-          'bottom-left',
-          'bottom-right',
-        ]}/>} */}
-                                        <Text ref={TextNoRef} text={playerNo} fontSize={textSize} draggable x={textPosition.x} y={textPosition.y} fill={textColor} fontFamily={fontFamily} onDragEnd={(e) => {
-                                                                        console.log(e.target);
-                                                                        setTextPosition({
-                                                                            x: e.target.x(),
-                                                                            y: e.target.y(),
-                                                                        });
-                                                                        }} stroke={outlineColor} strokeWidth={NotextBorder}
-                                                                        onClick={(e)=>{handleNumberClick()
-                                                                        }} onTap={(e)=>{handleNumberClick()}}
-                                                                        align='center' width={playerNoWidth} rotation={rotationAngle}
-                                                                        scaleX={NoScale.x} scaleY={NoScale.y}/>
-                                        <Transformer ref={TextNoTranRef} />
-                                        
-                                    </Layer>
-                                </Stage>
+                      <Stage width={500} height={500} style={{ position: 'absolute', top: 0, left: 190 }}>
+                                                  <Layer>
+                                                  {selectedImage && <LoadBGImage x={285}/>}
+                                                  <LoadImage />
+                                                  </Layer>
+                                              </Stage>
+                                              <Stage width={320} height={500} style={{ position: 'absolute', top: 0, left: 280,zIndex:0 }} ref={canvasRef}>
+                                                  <Layer>
+                                                      <Text ref={TextNameRef} text={playerName} fontSize={NametextSize} draggable x={NametextPosition.x} y={NametextPosition.y} fill={NametextColor} fontFamily={NamefontFamily} onDragEnd={(e) => {
+                                                      console.log(e.target);
+                                                      setNameTextPosition({                                                           
+                                                          x: e.target.x(),
+                                                          y: e.target.y(),
+                                                      });
+                                                      }} stroke={NameoutlineColor} strokeWidth={NametextBorder} onClick={(e)=>{handleNameClick()}} onTap={(e)=>{handleNameClick()}} align='center' width={playerNameWidth} rotation={NamerotationAngle} scaleX={NameScale.x} scaleY={NameScale.y}/>
+                                                      {/* {IsNameSelected &&<Transformer ref={TextNameTranRef} keepRatio={false} enabledAnchors={[
+                                                        'top-left',
+                                                        'top-right',
+                                                        'bottom-left',
+                                                        'bottom-right',
+                                                      ]}/>} */}
+                                                      <Text ref={TextNoRef} text={playerNo} fontSize={textSize} draggable x={textPosition.x} y={textPosition.y} fill={textColor} fontFamily={fontFamily} onDragEnd={(e) => {
+                                                              console.log(e.target);
+                                                              setTextPosition({
+                                                              x: e.target.x(),
+                                                              y: e.target.y(),
+                                                              });
+                                                              }} stroke={outlineColor} strokeWidth={NotextBorder}
+                                                              onClick={(e)=>{handleNumberClick()
+                                                              }} onTap={(e)=>{handleNumberClick()}}
+                                                              align='center' width={playerNoWidth} rotation={rotationAngle}
+                                                              scaleX={NoScale.x} scaleY={NoScale.y}/>
+                                                      <Transformer ref={TextNoTranRef} />
+                                                      
+                                                  </Layer>
+                                              </Stage>
                             </div>
                         </div>
 
