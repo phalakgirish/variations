@@ -648,7 +648,8 @@ function Export() {
                            <h4>Variation Completed - Unleash the Power of Personalisation</h4>
                            <p>With a simple click of the "Create" button, watch as our software auto-generates<br/> a myriad of variations, effortlessly incorporating the selected fonts and Player
                            <br/> details, Experience the power of automation and unleash your creativity.</p>
-                            <Button className="px-3 py-1" style={{borderRadius: '30px'}} onClick={downloadImage}> Download All </Button>
+                            <Button className="px-3 py-1" style={{borderRadius: '30px'}} onClick={downloadImage}><img src={download} alt="download"  style={{width: '20px'}}/>
+Download All </Button>
                         </div>
                         <div className="container mt-5">
                             <div className="row variation-inner">

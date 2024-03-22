@@ -199,6 +199,19 @@ function Variation() {
     const list = [];
     const [count, setCount] = useState(1);
     const [variationcount, setVariationCount] = useState(0);
+    const [charCount, setCharCount] = useState(0);
+    const [numCount, setNumCount] = useState(0);
+
+    const handleInputTextChange = (event) => {
+        const inputValue = event.target.value;
+        setCharCount(inputValue.length);
+    };
+
+
+    const handleInputNumbeChange = (event) => {
+        const inputValue = event.target.value;
+        setNumCount(inputValue.length);
+    };
 
     const { register, formState: { errors }, handleSubmit, unregister, reset } = useForm();
     var selectFile = (ev) => {
@@ -493,44 +506,51 @@ function Variation() {
                                                                 if (ref) NumberRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
                                                             }}/></td>
                                                             <td>
-                                                                <input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" Value={value['size']} ref={(ref) => {
-                                                                if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
-                                                            }}/>
-                                                            {/* <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="size[]" Value={value['size']} ref={(ref) => {
-                                                                if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
-                                                            }}>
-                                                                    {Object.keys(dimensions).map((size, index) => (
-                                                                        <option key={index} value={size}>
-                                                                            {size}
-                                                                        </option>
-                                                                    ))}
-                                                                </select> */}
-                                                            </td>
+                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px',width:'100px' }} name={`size[]`} value={value['size']} ref={(ref) => {
+                                                                        if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
+                                                                    }}>
+                                                                        {Object.keys(dimensions).map((size, index) => (
+                                                                            <option key={index} value={size}>
+                                                                                {size}
+                                                                            </option>
+                                                                        ))}
+                                                                    </select></td>
                                                             <td><span for={(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(ev, (value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                         </tr>
                                                     ))}
                                                     {appendingRow.map((val, index) => (
-                                                        <tr id={`row${val}`} key={`row${val}`}>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" placeholder='Type here...' ref={(ref) => {
-                                                                if (ref) NameRef.current[val] = ref;
-                                                            }} /></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
-                                                                if (ref) NumberRef.current[val] = ref;
-                                                            }} /></td>
-                                                            <td>
-                                                                <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name={`size[${val}]`} ref={(ref) => {
-                                                                    if (ref) SizeRef.current[val] = ref;
-                                                                }}>
-                                                                    {Object.keys(dimensions).map((size, index) => (
-                                                                        <option key={index} value={size}>
-                                                                            {size}
-                                                                        </option>
-                                                                    ))}
-                                                                </select>
-                                                            </td>
-                                                            <td key={`row${val}`}><span for={`row${val}`} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeAddedRow(ev, val)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
-                                                        </tr>
-                                                    ))}
+                                                            <tr id={`row${val}`} key={`row${val}`}>
+
+                                                                <td style={{ position: 'relative', display: 'inline-block' }}>
+                                                                    <input type='text' maxlength="10" className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" placeholder='Type here...' ref={(ref) => {
+                                                                        if (ref) NameRef.current[val] = ref;
+                                                                    }} onChange={handleInputTextChange} />
+                                                                    <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}>{charCount}/10</span>
+                                                                </td>
+
+                                                                <td><div style={{ position: 'relative', display: 'inline-block' }}>
+                                                                    <input type='text' maxlength="3" className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
+                                                                        if (ref) NumberRef.current[val] = ref;
+                                                                    }} onChange={handleInputNumbeChange} />
+                                                                    <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}>{numCount}/3</span></div>
+                                                                </td>
+
+                                                                <td>
+                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px',width:'100px' }} name={`size[${val}]`} ref={(ref) => {
+                                                                        if (ref) SizeRef.current[val] = ref;
+                                                                    }}>
+
+                                                                        {Object.keys(dimensions).map((size, index) => (
+                                                                            <option key={index} value={size}>
+                                                                                {size}
+                                                                            </option>
+                                                                        ))}
+
+                                                                    </select>
+                                                                </td>
+                                                                <td key={`row${val}`}><span for={`row${val}`} className="form-control tshirt-variant-dataa" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeAddedRow(ev, val)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                            </tr>
+                                                        ))}
                                                 </tbody>
                                             </table>
                                         </form>
