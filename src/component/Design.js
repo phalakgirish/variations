@@ -27,6 +27,9 @@ import { Border, Link } from 'react-bootstrap-icons';
 import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text, Transformer, Shape } from 'react-konva';
 // import Konva from 'konva';
 import useImage from 'use-image';
+import usePopup from '../hook/usePopUp';
+import Popup from './Popup';
+
 
 var fontOptions = [
   { value: 'Arial', label: 'Arial' },
@@ -242,6 +245,7 @@ function Design() {
 
   }
 
+  const { isOpen, message, openPopup, closePopup } = usePopup();
 
 
   const LoadImage = () => {
@@ -750,11 +754,10 @@ function Design() {
 
   const navigateToVariation = () => {
     const playerNamedetails = localStorage.getItem('playernamedetails');
-    const bgName = localStorage.getItem('bgname');
 
     // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
     // if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
-    if (playerName !== 'Sample text' && bgName) {
+    if (playerName !== 'Sample text') {
 
       // Navigate to Variation page
       handleNameNumberDetails(1);
@@ -762,9 +765,7 @@ function Design() {
     } else {
       // Display error messages based on conditions
       if (!playerNamedetails || JSON.parse(playerNamedetails).Name === 'Sample text') {
-        alert('Please enter Name');
-      } else if (!bgName) {
-        alert('Please add image');
+        openPopup('Please enter Name');
       }
     }
   };
@@ -772,7 +773,7 @@ const addVariation =()=>{
   var variationdts = localStorage.getItem('tshirtDetails');
   if(variationdts == null || variationdts == undefined)
   {
-    alert('Add Variation');
+    openPopup('Add Variation');
   }
   else
   {
@@ -781,10 +782,11 @@ const addVariation =()=>{
  
 }
   return (
-    <div id="main-container" className="container-fluid main" style={{maxHeight:'100vh',overflowY:'scroll'}}>
+    <div id="main-container" className="container-fluid main" style={{overflowY:'scroll'}}>
 
       <Sidebar></Sidebar>
       <section className="home">
+      <Popup isOpen={isOpen} message={message} closePopup={closePopup} />
         <div className="row mx-2">
           <div className="col-3 page-side">
             <div className="custom-side">
@@ -952,47 +954,40 @@ const addVariation =()=>{
                       </div>
                     </div>
                     <div className="mb-4 row custombackground">
-                      <div className="col-9 d-flex align-items-center order-1">
+                      <div className="col-3 d-flex align-items-center">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
                           className="custom-input-group-text"
                           style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
                         >
-                          Text Size
+                          <div>Text Size</div>
                         </InputGroup.Text>
                       </div>
-                      <div className="col-3 d-flex align-items-center order-2">
-
-                        <Form.Control
+                      <div className="col-9 d-flex align-items-center justify-content-end">
+                         <input
+                          type="number"
                           value={NametextSize}
                           onChange={handlePlayerNameTextSizeChange}
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="text-end"
-                          style={{ border: '1px solid #CDD5EB', width: '60px', alignItems: 'center' }}
+                          className='custom-select text-end texttb'
                         />
                       </div>
                     </div>
                     <div className="mb-2 row custombackground">
-                      <div className="col-9 d-flex align-items-center order-1">
+                      <div className="col-3 d-flex align-items-center">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
                           className="custom-input-group-text"
                           style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
                         >
-                          Border
+                          <div>Border</div>
                         </InputGroup.Text>
                       </div>
-                      <div className="col-3 d-flex align-items-center order-2">
-
-                        <Form.Control
+                      <div className="col-9 d-flex align-items-center justify-content-end">
+                         <input
+                          type="number"
                           value={NametextBorder}
                           onChange={handlePlayerNameBorderChange}
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="text-end"
-                          style={{ border: '1px solid #CDD5EB', width: '60px', alignItems: 'center' }}
-                          placeholder='0'
+                          className='custom-select text-end texttb'
                         />
                       </div>
                     </div>
@@ -1019,6 +1014,7 @@ const addVariation =()=>{
                           onChange={(e) => { handlePlayerNameOutlineColorChange(e) }}
                           onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
                         />
+                        
                       </div>
                     </div>
                     <div className="mb-2 row custombackground">
@@ -1040,12 +1036,7 @@ const addVariation =()=>{
                           ref={NamerotationInputRef}
                           onChange={handlePlayerNameRotationChange}
                           placeholder="Enter rotation angle"
-                          className='custom-select text-end text-end'
-                          style={{
-                            width: '60px',
-                            // height: '100px',
-                            marginLeft: 'auto',
-                          }}
+                          className='custom-select text-end texttb'
                         />
                       </div>
                     </div>
@@ -1183,7 +1174,7 @@ const addVariation =()=>{
  
 </div> */}
                     <div className="mb-4 row custombackground">
-                      <div className="col-9 d-flex align-items-center order-1">
+                      <div className="col-3 d-flex align-items-center">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
                           className="custom-input-group-text"
@@ -1192,20 +1183,17 @@ const addVariation =()=>{
                           Text Size
                         </InputGroup.Text>
                       </div>
-                      <div className="col-3 d-flex align-items-center order-2">
-
-                        <Form.Control
+                      <div className="col-9 d-flex align-items-center justify-content-end">
+                         <input
+                          type="number"
                           value={textSize}
                           onChange={handleTextSizeChange}
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="text-end"
-                          style={{ border: '1px solid #CDD5EB', width: '60px', alignItems: 'center' }}
+                          className='custom-select text-end texttb'
                         />
                       </div>
                     </div>
                     <div className="mb-2 row custombackground">
-                      <div className="col-9 d-flex align-items-center order-1">
+                      <div className="col-3 d-flex align-items-center">
                         <InputGroup.Text
                           id="inputGroup-sizing-default"
                           className="custom-input-group-text"
@@ -1214,18 +1202,15 @@ const addVariation =()=>{
                           Border
                         </InputGroup.Text>
                       </div>
-                      <div className="col-3 d-flex align-items-center order-2">
-
-                        <Form.Control
+                      <div className="col-9 d-flex align-items-center justify-content-end">
+                         <input
+                          type="number"
                           value={NotextBorder}
                           onChange={handleNoBorderChange}
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="text-end"
-                          style={{ border: '1px solid #CDD5EB', width: '60px', alignItems: 'center' }}
-                          placeholder='0'
+                          className='custom-select text-end texttb'
                         />
                       </div>
+                      
                     </div>
                     <div className="mb-2 row custombackground">
                       <div className="col-3 d-flex align-items-center">
@@ -1270,12 +1255,7 @@ const addVariation =()=>{
                           ref={rotationInputRef}
                           onChange={handleRotationChange}
                           placeholder="Enter rotation angle"
-                          className='custom-select text-end text-end'
-                          style={{
-                            width: '60px',
-                            // height: '100px',
-                            marginLeft: 'auto',
-                          }}
+                          className='custom-select text-end texttb'
                         />
                       </div>
                     </div>
@@ -1420,13 +1400,13 @@ const addVariation =()=>{
                       <circle cx="160" cy="-123" r="160" fill="white" className='neck-circle' />
                     </svg>
 
-                    <Stage width={500} height={500} style={{ position: 'absolute', top: 0, left: 190 }}>
+                    <Stage width={500} height={500} className='ts-img'>
                       <Layer>
                         {selectedImage && <LoadBGImage x={285} />}
                         <LoadImage />
                       </Layer>
                     </Stage>
-                    <Stage width={320} height={500} style={{ position: 'absolute', top: 0, left: 280, zIndex: 0 }} ref={canvasRef}>
+                    <Stage width={320} height={500} className='ts-detail' ref={canvasRef}>
                       <Layer>
                         <Text ref={TextNameRef} text={playerName} fontSize={NametextSize} draggable x={NametextPosition.x} y={NametextPosition.y} fill={NametextColor} fontFamily={NamefontFamily} onDragEnd={(e) => {
                           console.log(e.target);
@@ -1459,7 +1439,7 @@ const addVariation =()=>{
                       <div style={{ marginBottom: 60, display: 'inline-block', marginLeft:40}}>
                         <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
                       </div><br />
-                      <div style={{ marginBottom: 120, display: 'inline-block' ,marginLeft:30}}>
+                      <div style={{ marginBottom: 100, display: 'inline-block' ,marginLeft:30}}>
                         <div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">2</div><span>&nbsp; Add Name</span>
                       </div><br />
                       <div style={{ marginBottom: 10, display: 'inline-block',marginRight:80 }}>
@@ -1468,7 +1448,6 @@ const addVariation =()=>{
                   </div>
                   
                 </div>
-
 
                 <div className='tsize'>
                   <div className='tsize-action-div'>
@@ -1504,6 +1483,7 @@ const addVariation =()=>{
                   </div>
 
                 </div>
+               
 
               </div>
               {/* <div className="col-1 tool-btn">
