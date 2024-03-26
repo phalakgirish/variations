@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect,useLayoutEffect } from 'react';
+import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import Sidebar from "../component/Sidebar";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
@@ -47,7 +47,7 @@ function Variation() {
     const [renderingTime, setRenderingTime] = useState(null);
     // var selectedImage = localStorage.getItem('bgImageDetails');
     var selectedImage = state.selectedImage;
-    const NameRef = useRef([]);
+    const NameRef = useRef(Array(10).fill(null));
     const NumberRef = useRef([]);
     const SizeRef = useRef([]);
 
@@ -199,18 +199,22 @@ function Variation() {
     const list = [];
     const [count, setCount] = useState(1);
     const [variationcount, setVariationCount] = useState(0);
-    const [charCount, setCharCount] = useState(0);
-    const [numCount, setNumCount] = useState(0);
+    const [charCount, setCharCount] = useState(Array(10).fill(0));
+    const [numCount, setNumCount] = useState(Array(3).fill(0));
 
-    const handleInputTextChange = (event) => {
-        const inputValue = event.target.value;
-        setCharCount(inputValue.length);
+    const handleInputTextChange = (event,index) => {
+    const inputValue = event.target.value;
+    const newCharCounts = [...charCount];
+    newCharCounts[index] = inputValue.length; 
+    setCharCount(newCharCounts);
     };
 
 
-    const handleInputNumbeChange = (event) => {
+    const handleInputNumbeChange = (event,index) => {
         const inputValue = event.target.value;
-        setNumCount(inputValue.length);
+        const newNumCounts = [...numCount];
+        newNumCounts[index] = inputValue.length; 
+        setNumCount(newNumCounts);
     };
 
     const { register, formState: { errors }, handleSubmit, unregister, reset } = useForm();
@@ -337,7 +341,7 @@ function Variation() {
         }
 
     }
-    useEffect(()=>{console.log(excelData);},[excelData])
+    useEffect(() => { console.log(excelData); }, [excelData])
 
     var upload_data = (e) => {
         e.preventDefault();
@@ -351,8 +355,9 @@ function Variation() {
             var indexNo = RemovedRow.indexOf(parseInt(i));
             console.log(indexNo);
             if (i != 0 && indexNo == -1) {
-                if (NameRef.current[i].value != "" && SizeRef.current[i].value != "") {
-                    dataToPost = [...dataToPost, { indexSr: i, name: NameRef.current[i].value, number: NumberRef.current[i].value, size: SizeRef.current[i].value }];
+                const inputRef = NameRef.current[i];
+                if (inputRef && inputRef.value !== "" && SizeRef.current[i].value != "") {
+                    dataToPost = [...dataToPost, { indexSr: i, name: inputRef.value, number: NumberRef.current[i].value, size: SizeRef.current[i].value }];
                     //    index = index + 1
                 }
             }
@@ -410,13 +415,13 @@ function Variation() {
 
                         {/* <img src={sidemenu} style={{ width: '100%' , textAlign: 'center'}} /> */}
                         <div style={{ position: 'relative' }}>
-                            <Stage width={315} height={315} style={{ position: 'absolute', top: 10, left: 0 }}>
+                            <Stage width={315} height={315} className='stage1'>
                                 <Layer>
                                     {/* <LoadImage /> */}
                                     {selectedImage && <LoadBGImage x={285} />}
                                 </Layer>
                             </Stage>
-                            <Stage width={220} height={315} style={{ position: 'absolute', top: 10, left: 55, zIndex: 0, border: '0px solid #000' }} ref={canvasRef}></Stage>
+                            <Stage width={220} height={315} className='stage2' ref={canvasRef}></Stage>
                         </div>
 
                     </div>
@@ -437,8 +442,8 @@ function Variation() {
 
                         <div className="row mt-5">
                             <div className="col-12 text-center">
-                                <h4>Maintain Excel</h4>
-                                <p>Efficient input all player name and number details into <br /> the Excel.Our user-friendly system ensures accuracy <br /> and saves you valuable time.</p>
+                                <h4 className='h-variation'>Maintain Excel</h4>
+                                <p className='p-variation'>Efficient input all player name and number details into <br /> the Excel.Our user-friendly system ensures accuracy <br /> and saves you valuable time.</p>
                                 {/* <Button className="px-3 py-1" style={{borderRadius: '30px', backgroundColor:'#2b2b5e'}} type="file" > Upload Excel </Button> */}
                                 <div className='upload-excel-div'>
                                     <input type="file" id="uploadbtn" className='upload_excel_input' ref={fileInputField} onChange={selectFile} />
@@ -464,27 +469,31 @@ function Variation() {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-6" style={{maxHeight:'50vh',overflowY:'scroll'}}>
-                                        <form>
-                                            
 
-                                            <table responsive="sm"  className='table variation-inner-table'>
+                                    <div className="col-6 variation-block" >
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end' ,paddingBottom:'5px'}}>
+                                            <Button style={{ borderRadius: '30px', backgroundColor: '#8B3CD9', border: '0' }} onClick={() => addRow()}>Add</Button>
+                                            <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#8B3CD9', border: '0', marginLeft: '20px' }} onClick={(e) => upload_data(e)} >Save</Button>
 
-                                                <thead style={{position:'sticky',top:0,backgroundColor:'#fff'}}>
-                                                    <tr>
-                                                        <th style={{ width: '25%' }}>Name</th>
-                                                        <th style={{ width: '10%' }}>Number</th>
-                                                        <th style={{ width: '25%' }}>Size</th>
-                                                        <div  style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                                <Button style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0' }} onClick={() => addRow()}>Add</Button>
-                                                <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#0986dc', border: '0', marginLeft: '20px' }} onClick={(e) => upload_data(e)} >Save</Button>
+                                        </div>
+                                        <div style={{ maxHeight: '50vh', overflowY: 'scroll' }}>
 
-                                            </div>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="custom-tbody">
+                                            <form>
 
-                                                    {/* <tr>
+
+                                                <table responsive="sm" className='table variation-inner-table'>
+
+                                                    <thead style={{ position: 'sticky', top: 0, backgroundColor: '#F9FAFD' }}>
+                                                        <tr>
+                                                            <th style={{ width: '35%' }}>Name</th>
+                                                            <th style={{ width: '10%' }}>Number</th>
+                                                            <th style={{ width: '10%' }}>Size</th>
+                                                            <th style={{ width: '1%' }}></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="custom-tbody" style={{backgroundColor:'#F9FAFD'}}>
+
+                                                        {/* <tr>
                                             <td>Jigar <span>5/8</span></td>
                                             <td>26 <span>2/3</span></td>
                                             <td>
@@ -496,18 +505,19 @@ function Variation() {
                                             </td>
                                         </tr> */}
 
-                                                    {excelData && excelData.map((value, index) => (
-                                                        <tr key={index} id={(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']}>
+                                                        {excelData && excelData.map((value, index) => (
 
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" Value={value['name']} ref={(ref) => {
-                                                                if (ref) NameRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
-                                                            }}/></td>
-                                                            <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" Value={value['number']} ref={(ref) => {
-                                                                if (ref) NumberRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
-                                                            }}/></td>
-                                                            <td>
-                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px',width:'100px' }} name={`size[]`} value={value['size']} ref={(ref) => {
-                                                                        if (ref) SizeRef.current[(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']] = ref;
+                                                            <tr key={index} id={(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']}>
+
+                                                                <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="name[]" Value={value['name']} ref={(ref) => {
+                                                                    if (ref) NameRef.current[(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']] = ref;
+                                                                }} /></td>
+                                                                <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="number[]" Value={value['number']} ref={(ref) => {
+                                                                    if (ref) NumberRef.current[(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']] = ref;
+                                                                }} /></td>
+                                                                <td>
+                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px', width: '100px' }} name="size[]" defaultValue={value['size']} ref={(ref) => {
+                                                                        if (ref) SizeRef.current[(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']] = ref;
                                                                     }}>
                                                                         {Object.keys(dimensions).map((size, index) => (
                                                                             <option key={index} value={size}>
@@ -515,28 +525,29 @@ function Variation() {
                                                                             </option>
                                                                         ))}
                                                                     </select></td>
-                                                            <td><span for={(value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__']} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(ev, (value['indexSr'] != undefined)?value['indexSr']:value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
-                                                        </tr>
-                                                    ))}
-                                                    {appendingRow.map((val, index) => (
+                                                                <td><span for={(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']} className="form-control tshirt-variant-data" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeExcelRow(ev, (value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__'])}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
+                                                            </tr>
+                                                        ))}
+                                                        {appendingRow.map((val, index) => (
+                                                            
                                                             <tr id={`row${val}`} key={`row${val}`}>
 
                                                                 <td style={{ position: 'relative', display: 'inline-block' }}>
-                                                                    <input type='text' maxlength="10" className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="name[]" placeholder='Type here...' ref={(ref) => {
+                                                                    <input type='text' maxlength="10" className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="name[]" placeholder='Type here...' ref={(ref) => {
                                                                         if (ref) NameRef.current[val] = ref;
-                                                                    }} onChange={handleInputTextChange} />
-                                                                    <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}>{charCount}/10</span>
+                                                                    }} onChange={(e) => handleInputTextChange(e, index)} />
+                                                                    <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}>  {charCount[index]}/10</span>
                                                                 </td>
 
                                                                 <td><div style={{ position: 'relative', display: 'inline-block' }}>
-                                                                    <input type='text' maxlength="3" className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
+                                                                    <input type='text' maxlength="3" className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
                                                                         if (ref) NumberRef.current[val] = ref;
-                                                                    }} onChange={handleInputNumbeChange} />
-                                                                    <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}>{numCount}/3</span></div>
+                                                                    }} onChange={(e) => handleInputNumbeChange(e, index)} />
+                                                                    <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}>{numCount[index]}/3</span></div>
                                                                 </td>
 
                                                                 <td>
-                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: 'rgb(231, 239, 254)', borderRadius: '52px',width:'100px' }} name={`size[${val}]`} ref={(ref) => {
+                                                                    <select className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px', width: '100px' }} name={`size[${val}]`} ref={(ref) => {
                                                                         if (ref) SizeRef.current[val] = ref;
                                                                     }}>
 
@@ -551,21 +562,22 @@ function Variation() {
                                                                 <td key={`row${val}`}><span for={`row${val}`} className="form-control tshirt-variant-dataa" style={{ borderRadius: '52px', border: 'none', color: '#000' }} onClick={(ev) => removeAddedRow(ev, val)}><FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} /></span></td>
                                                             </tr>
                                                         ))}
-                                                </tbody>
-                                            </table>
-                                        </form>
+                                                    </tbody>
+                                                </table>
+                                            </form>
 
+                                        </div>
                                     </div>
                                     <div className={`col-3 side-card ${!excelFileType || !setFileStatus ? 'hidden' : ''}`}>
                                         <div className="card">
                                             <div className='card-inner'>
-                                                <h6>uploaded File</h6>
+                                                <h6 className='file-details'>Uploaded File</h6>
                                                 <p>FILE NAME</p>
-                                                <h6>{(filedata != null) ? filedata['name'] : ''}</h6>
+                                                <h6 className='file-details'>{(filedata != null) ? filedata['name'] : ''}</h6>
                                                 <p>FILE SIZE</p>
-                                                <h6>{(filedata != null) ? (filedata['size'] / 1024).toFixed(2) + " KB" : ''}</h6>
+                                                <h6 className='file-details'>{(filedata != null) ? (filedata['size'] / 1024).toFixed(2) + " KB" : ''}</h6>
                                                 <div className="mx-auto mt-3 text-center">
-                                                    <Button style={{ backgroundColor: '#050505', borderRadius: '52px', border: 'none' }} onClick={() => setFileData(null)}>
+                                                    <Button className='rmfile' style={{ backgroundColor: '#050505', borderRadius: '52px', border: 'none' }} onClick={() => setFileData(null)}>
                                                         <FontAwesomeIcon icon={faTrash} style={{ marginRight: '5px' }} />
                                                         Remove file
                                                     </Button>
@@ -581,7 +593,6 @@ function Variation() {
                                             {renderingTime && <h6> {renderingTime.toFixed(2)} seconds</h6>}
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

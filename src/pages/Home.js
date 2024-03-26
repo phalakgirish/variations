@@ -17,6 +17,7 @@ function Home(){
     localStorage.removeItem('tshirtDetails')
     localStorage.removeItem('playernumberdetails')
     localStorage.removeItem('tshirtchangedetails')
+    localStorage.removeItem('bgname')
     const handleSelectChange = (event) => {
         const value = event.target.value;
         setSelectedValue(value);
