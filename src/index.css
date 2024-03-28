@@ -526,6 +526,10 @@
     border-style: none !important;
   }
 
+  .theadd {
+    z-index: 50;
+  }
+
   .variation-inner .table td {
     /* background-color:  rgb(231, 239, 254);
   border-radius: 30px; */
@@ -853,6 +857,11 @@
     left: 55px;
     z-index: 0;
     border: 0px solid #000;
+  }
+
+  .custom-button:hover {
+    background-color: #682ca3 !important;
+    z-index: 10;
   }
 
   @media only screen and (min-width:1200px) {
