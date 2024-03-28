@@ -144,8 +144,8 @@ function Design() {
   // }
   var Existingplayernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
   var Existingplayernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
-  var selectedBGImage = localStorage.getItem('bgImageDetails');
-  // const { state } = useLocation();
+  // var selectedBGImage = localStorage.getItem('bgImageDetails');
+  const { state } = useLocation();
   // console.log(state);
 
   const [view, setView] = useState('front');
@@ -203,8 +203,8 @@ function Design() {
 
 
 
-  const [selectedImage, setSelectedImage] = useState((selectedBGImage != null)?selectedBGImage:null);
-  // const [selectedImage, setSelectedImage] = useState((state != null) ? state.selectedImage : null);
+  // const [selectedImage, setSelectedImage] = useState((selectedBGImage != null)?selectedBGImage:null);
+  const [selectedImage, setSelectedImage] = useState((state !== null)?state.selectedImage:null);
   const [IsNameSelected, setNameSelected] = useState(false);
   const [IsNoSelected, setNoSelected] = useState(false);
   const canvasRef = useRef(null);
@@ -536,7 +536,7 @@ function Design() {
     {
       localStorage.setItem('playernamedetails', JSON.stringify(playernamedetails));
       localStorage.setItem('playernumberdetails', JSON.stringify(playernumberdetails));
-      localStorage.setItem('bgImageDetails',selectedImage)
+      // localStorage.setItem('bgImageDetails',selectedImage)
     }
     
 
@@ -750,7 +750,7 @@ function Design() {
     fontOptions = fontlistarr;
 
   }, [])
-  console.log(typeof activeAccordionItem);
+  console.log(activeAccordionItem);
 
   const navigateToVariation = () => {
     const playerNamedetails = localStorage.getItem('playernamedetails');
