@@ -150,7 +150,7 @@ function Design() {
 
   const [view, setView] = useState('front');
   const [playerName, setPlayerName] = useState((Existingplayernamedetails != null) ? Existingplayernamedetails.Name : 'Sample text');
-  const [playerNo, setPlayerNo] = useState((Existingplayernumberdetails != null) ? Existingplayernumberdetails.No : '10');
+  const [playerNo, setPlayerNo] = useState((Existingplayernumberdetails != null) ? Existingplayernumberdetails.No : '00');
   const navigate = useNavigate()
 
   // localStorage.setItem('tshirtSize',selectedValue);
@@ -218,7 +218,29 @@ function Design() {
   const [activeAccordionItem, setActiveAccordionItem] = useState("");
   const [history, setHistory] = useState([]);
   const [UndoRedo, setUndoRedo] = useState(0)
+  const [playersName, setPlayersName] = useState(null);
+  
+  
+  useEffect(() => {
+    handleNameNumberDetails();
+  }, []);
 
+  useEffect(()=>{
+    const div1 = document.getElementById('div1');
+    if (localStorage.getItem('bgname') && localStorage.getItem('bgname') !== '') {
+      div1.style.visibility = 'hidden'; // Hide the div
+    } else {
+      div1.style.display = 'inline-block'; // Show the div
+    }
+  })
+  useEffect(()=>{
+    const div3 = document.getElementById('div3');
+    if (playerNo !== '00' || playerNo == '') {
+      div3.style.visibility = 'hidden'; // Hide the div
+    } else {
+      div3.style.display = 'inline-block'; // Show the div
+    }
+  })
 
   if (Existingplayernamedetails != null && Existingplayernumberdetails != null) {
     //Number Details
@@ -278,7 +300,19 @@ function Design() {
   };
 
   const handlePlayerNoChange = (event) => {
-    setPlayerNo(event.target.value);
+    let inputValue = event.target.value;
+
+    // Ensure only numeric characters are allowed
+    inputValue = inputValue.replace(/\D/g, '');
+
+    // Truncate the input value if it exceeds 3 digits
+    if (inputValue.length > 3) {
+        inputValue = inputValue.slice(0, 3);
+    }
+
+    // Update the state with the modified value
+    setPlayerNo(inputValue);
+    hideDiv3(); 
   };
   const handleTextSizeChange = (event) => {
     console.log(event.target.value);
@@ -286,6 +320,7 @@ function Design() {
   };
   const handleTextColorChange = (color) => {
     setTextColor(color.target.value);
+    hideDiv3(); 
     // setTimeout(() => {
     //   handleColorPickerClose();
     // }, '1000');
@@ -435,6 +470,7 @@ function Design() {
         // localStorage.setItem('bgImageDetails',reader.result)
         localStorage.setItem('bgname', file.name);
         handleNameNumberDetails(0);
+        hideDiv1();
       };
       reader.readAsDataURL(file);
     }
@@ -516,6 +552,7 @@ function Design() {
     }
 
     console.log(playernamedetails);
+    setPlayersName(playernamedetails.Name);
     console.log(playernumberdetails);
     if (history.length == 0) {
       historyStep = 0;
@@ -779,11 +816,37 @@ function Design() {
 
   const toggleAccordion1 = () => {
     setAccordion1Open(!accordion1Open);
+    if (accordion2Open) {
+      setAccordion2Open(false); // Close accordion2 if it's open
+  }
   };
 
   const toggleAccordion2 = () => {
     setAccordion2Open(!accordion2Open);
+    if (accordion1Open) {
+      setAccordion1Open(false); // Close accordion1 if it's open
+  }
   };
+
+  console.log(playersName);
+  const hideDiv3 = () => {
+    const div3 = document.getElementById('div3');
+    if (playerNo !== '') {
+      div3.style.visibility = 'hidden'; // Hide the div
+    } else {
+      div3.style.display = 'inline-block'; // Show the div
+    }
+  };
+
+  const hideDiv1 = () => {
+    const div1 = document.getElementById('div1');
+    if (localStorage.getItem('bgname') !== '') {
+      div1.style.visibility = 'hidden'; // Hide the div
+    } else {
+      div1.style.display = 'inline-block'; // Show the div
+    }
+  };
+
   return (
     <div id="main-container" className="container-fluid main" style={{ overflowY: 'scroll' }}>
 
@@ -893,6 +956,8 @@ function Design() {
                                 aria-label="Default"
                                 aria-describedby="inputGroup-sizing-default"
                                 className="text-end"
+                                type='text'
+                                maxLength='12'
                               />
                             </div>
                           </div>
@@ -1100,6 +1165,9 @@ function Design() {
                             <div className="col-9 d-flex align-items-center">
                               <Form.Control
                                 value={playerNo}
+                                type='number'
+                                maxLength='3'
+                                defaultValue={playerNo}
                                 onChange={handlePlayerNoChange}
                                 aria-label="Default"
                                 aria-describedby="inputGroup-sizing-default"
@@ -1465,14 +1533,22 @@ function Design() {
                     </Stage>
                     <div style={{ position: 'absolute', top: 70, right: -285 }}>
                       <div style={{ marginBottom: 60, display: 'inline-block', marginLeft: 40 }}>
+                        <div id='div1'>
                         <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
-                      </div><br />
+                        </div>
+                      </div>
+                      <br />
                       <div style={{ marginBottom: 100, display: 'inline-block', marginLeft: 30 }}>
-                        <div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">2</div><span>&nbsp; Add Name</span>
-                      </div><br />
-                      <div style={{ marginBottom: 10, display: 'inline-block', marginRight: 80 }}>
+                        {playersName == 'Sample text' && (
+                          <div>
+                            <div style={{ width: 200, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">2</div><span>&nbsp; Add Name</span>
+                          </div>)}</div>
+                      <br />
+                      <div id='div3' style={{ marginBottom: 10, display: 'inline-block', marginRight: 80, position: 'sticky' }}>
                         <div style={{ width: 180, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">3</div><span>&nbsp; Add Number</span>
-                      </div></div>
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>

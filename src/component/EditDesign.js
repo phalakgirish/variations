@@ -26,6 +26,9 @@ import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text, Transformer } fr
 // import Konva from 'konva';
 import useImage from 'use-image';
 
+import usePopup from '../hook/usePopUp';
+import Popup from './Popup';
+
 var fontOptions = [
   { value: 'Arial', label: 'Arial' },
   { value: 'Times New Roman', label: 'Times New Roman' },
@@ -208,6 +211,8 @@ function EditDesign() {
   const [activeAccordionItem, setActiveAccordionItem] = useState("");
   const [history, setHistory] = useState([]);
   const [UndoRedo, setUndoRedo] = useState(0)
+
+  const { isOpen, message, openPopup, closePopup } = usePopup();
 
 
   const LoadImage = () => {
@@ -395,7 +400,8 @@ function EditDesign() {
 
   const handleNameClick = () => {
     setNameSelected(true);
-    setNoSelected(false);
+    setNoSelected(false);    
+    toggleAccordion1();
     setActiveAccordionItem("1");
     console.log('accordion 1');// Open accordion item with eventkey 1
   };
@@ -404,6 +410,7 @@ function EditDesign() {
   const handleNumberClick = () => {
     setNoSelected(true);
     setNameSelected(false);
+    toggleAccordion2();
     setActiveAccordionItem("2");
     console.log('accordion 2');// Open accordion item with eventkey 2
   };
@@ -606,18 +613,17 @@ function EditDesign() {
 
     // Check if playerNamedetails exists in localStorage and if its "Name" value is not equal to 'Sample text'
     // if (playerNamedetails && JSON.parse(playerNamedetails).Name !== 'Sample text' && bgName) {
-    if (playerName !== 'Sample text' && bgName) {
-      // Navigate to Variation page
-      handleNameNumberDetails(1);
-      navigate('/Variation', { state: { selectedImage: selectedImage } });
-    } else {
-      // Display error messages based on conditions
-      if (!playerNamedetails || JSON.parse(playerNamedetails).Name === 'Sample text') {
-        alert('Please enter Name');
-      } else if (!bgName) {
-        alert('Please add image');
+      if (playerName !== 'Sample text') {
+
+        // Navigate to Variation page
+        handleNameNumberDetails(1);
+        navigate('/Variation', { state: { selectedImage: selectedImage } });
+      } else {
+        // Display error messages based on conditions
+        if (!playerNamedetails || JSON.parse(playerNamedetails).Name === 'Sample text') {
+          openPopup('Please enter Name');
+        }
       }
-    }
   };
   const addVariation = () => {
     var variationdts = localStorage.getItem('tshirtDetails');
@@ -628,6 +634,23 @@ function EditDesign() {
       navigate('/Export', { state: { selectedImage: selectedImage } })
     }
   }
+  const [accordion1Open, setAccordion1Open] = useState(false);
+  const [accordion2Open, setAccordion2Open] = useState(false);
+
+  const toggleAccordion1 = () => {
+    setAccordion1Open(!accordion1Open);
+    if (accordion2Open) {
+      setAccordion2Open(false); // Close accordion2 if it's open
+  }
+  };
+
+  const toggleAccordion2 = () => {
+    setAccordion2Open(!accordion2Open);
+    if (accordion1Open) {
+      setAccordion1Open(false); // Close accordion1 if it's open
+  }
+  };
+
   return (
     <div id="main-container" className="container-fluid main">
 
@@ -687,211 +710,221 @@ function EditDesign() {
               </Form.Group>
 
             </div>
-            <Accordion defaultActiveKey={activeAccordionItem}>
-              <Accordion.Item eventKey="1" className={(activeAccordionItem !== '1') ? "mb-2 custom-accordion" : "mb-2 custom-accordion show-accordian"}>
-                <Accordion.Header className='mx-2'>Player Name</Accordion.Header>
-                <Accordion.Body>
-                  <Form>
-                    <FontAwesomeIcon icon="" />
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Text
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center">
-                        <Form.Control
-                          value={playerName}
-                          onChange={handlePlayerNameChange}
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="text-end"
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Font
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center">
-                        <Form.Select
-                          aria-label="Default select example"
-                          value={NamefontFamily}
-                          onChange={handlePlayerNameFontFamilyChange}
-                          className="custom-select text-end"
-                          style={{ border: 'none' }}
-                        >
-                          {fontOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
+            <div>
+              <div className="accordionn mb-2">
+                <div className='custom-accordion acco1'>
+                  <div className="accordion-header mx-2" onClick={toggleAccordion1}>
+                    <span> Player Name </span>
+                    <span className='bg-dd'> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down svgg" viewBox="0 0 16 16">
+                      <path d="M8 10.598L1.646 4.354a.5.5 0 0 1 .708-.708L8 9.182l5.646-5.536a.5.5 0 1 1 .708.708L8 10.598z" />
+                    </svg></span>
+                  </div>
+                  {accordion1Open && (
+                    <div className="accordionn-content">
+                      <div>
+                        <Form>
+                          <FontAwesomeIcon icon="" />
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                Text
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center">
+                              <Form.Control
+                                value={playerName}
+                                onChange={handlePlayerNameChange}
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                className="text-end"
+                                type='text'
+                                maxLength='12'
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                Font
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center">
+                              <Form.Select
+                                aria-label="Default select example"
+                                value={NamefontFamily}
+                                onChange={handlePlayerNameFontFamilyChange}
+                                className="custom-select text-end"
+                                style={{ border: 'none' }}
+                              >
+                                {fontOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
 
 
-                        </Form.Select>
-                      </div>
-                      <div className="font-sample" style={{ fontFamily: NamefontFamily }}>
-                        {fontOptions.map((option) => (
-                          <span
-                            key={option.value}
-                            style={{ display: NamefontFamily === option.value ? 'block' : 'none' }}
-                          >
-                            Sample Text
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          <div>Text Color</div>
-                        </InputGroup.Text>
+                              </Form.Select>
+                            </div>
+                            <div className="font-sample" style={{ fontFamily: NamefontFamily }}>
+                              {fontOptions.map((option) => (
+                                <span
+                                  key={option.value}
+                                  style={{ display: NamefontFamily === option.value ? 'block' : 'none' }}
+                                >
+                                  Sample Text
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Text Color</div>
+                              </InputGroup.Text>
 
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                        {/* Additional content in the second column */}
-                        {/* <div
-          onClick={handlePlayerNameTextColorClick}
-          style={{
-            width: '20px',
-            height: '20px',
-            background: NametextColor,
-            marginLeft: 'auto',
-            border: '1px solid rgb(0,0,0,0.1)'
-          }}
-        ></div>
-        {NamecolorPickerVisible && (
-          <ChromePicker
-           
-            color={NametextColor}
-            onChangeComplete={handlePlayerNameTextColorChange}
-            onHide
-            // onBlur={handlePlayerNameColorPickerClose}    
-            style={{
-                position: 'absolute',
-                zIndex: '1',
-                marginTop: '10px',
-                 // Optional: adjust the margin to position the color picker
-              }}
-          />
-        )} */}
-                        <Form.Control
-                          type="color"
-                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
-                          id="exampleColorInput"
-                          value={NametextColor}
-                          onChange={(e) => { handlePlayerNameTextColorChange(e) }}
-                          onBlur={handlePlayerNameTextColorClick} // Close the color picker on blur
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-4 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Text Size
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                         <input
-                          type="number"
-                          value={NametextSize}
-                          onChange={handlePlayerNameTextSizeChange}
-                          className='custom-select text-end texttb'
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Border
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                         <input
-                          type="number"
-                          value={NametextBorder}
-                          onChange={handlePlayerNameBorderChange}
-                          className='custom-select text-end texttb'
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          <div>Border Color</div>
-                        </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end" >
+                              {/* Additional content in the second column */}
+                              {/* <div
+                          onClick={handlePlayerNameTextColorClick}
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            background: NametextColor,
+                            marginLeft: 'auto',
+                            border: '1px solid rgb(0,0,0,0.1)'
+                          }}
+                        ></div> */}
 
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                        {/* Additional content in the second column */}
-                        <Form.Control
-                          type="color"
-                          id="exampleColorInput"
-                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
-                          value={NameoutlineColor}
-                          onChange={(e) => { handlePlayerNameOutlineColorChange(e) }}
-                          onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
-                        />
+                              <Form.Control
+                                type="color"
+                                style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
+                                id="exampleColorInput"
+                                value={NametextColor}
+                                onChange={(e) => { handlePlayerNameTextColorChange(e) }}
+                                onBlur={handlePlayerNameTextColorClick} // Close the color picker on blur
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-4 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Text Size</div>
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              <input
+                                type="number"
+                                value={NametextSize}
+                                onChange={handlePlayerNameTextSizeChange}
+                                className='custom-select text-end texttb'
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Border</div>
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              <input
+                                type="number"
+                                value={NametextBorder}
+                                onChange={handlePlayerNameBorderChange}
+                                className='custom-select text-end texttb'
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Border Color</div>
+                              </InputGroup.Text>
+
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              {/* Additional content in the second column */}
+
+
+                              <Form.Control
+                                type="color"
+                                id="exampleColorInput"
+                                style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
+                                defaultValue={NameoutlineColor}
+                                onChange={(e) => { handlePlayerNameOutlineColorChange(e) }}
+                                onBlur={handlePlayerNameOutlineColorClick} // Close the color picker on blur
+                              />
+
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Rotation</div>
+                              </InputGroup.Text>
+
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              {/* Additional content in the second column */}
+                              <input
+                                type="number"
+                                value={NamerotationAngle}
+                                ref={NamerotationInputRef}
+                                onChange={handlePlayerNameRotationChange}
+                                placeholder="Enter rotation angle"
+                                className='custom-select text-end texttb'
+                              />
+                            </div>
+                          </div>
+                        </Form>
                       </div>
                     </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          <div>Rotation</div>
-                        </InputGroup.Text>
+                  )}
+                </div>
+              </div>
 
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                        {/* Additional content in the second column */}
-                        <input
-                          type="number"
-                          value={NamerotationAngle}
-                          ref={NamerotationInputRef}
-                          onChange={handlePlayerNameRotationChange}
-                          placeholder="Enter rotation angle"
-                          className='custom-select text-end texttb'
-                        />
-                      </div>
-                    </div>
-                  </Form>
-                </Accordion.Body>
-              </Accordion.Item>
-
-              <Accordion.Item eventKey="2" className={(activeAccordionItem !== '2') ? "mb-2 custom-accordion" : "mb-2 custom-accordion show-accordian"}>
-                <Accordion.Header className='mx-2'>Player Number font</Accordion.Header>
-                <Accordion.Body>
-                  <Form>
-                    {/* <InputGroup className="mb-2 custombackground">
+              <div className="accordionn mb-2">
+                <div className='custom-accordion acco2 '>
+                  <div className="accordion-header mx-2" onClick={toggleAccordion2}>
+                    <span>Player Number</span>
+                    <span className='bg-dd'><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down svgg" viewBox="0 0 16 16">
+                      <path d="M8 10.598L1.646 4.354a.5.5 0 0 1 .708-.708L8 9.182l5.646-5.536a.5.5 0 1 1 .708.708L8 10.598z" />
+                    </svg></span>
+                  </div>
+                  {accordion2Open && (
+                    <div className="accordionn-content">
+                      <div>
+                        <Form>
+                          {/* <InputGroup className="mb-2 custombackground">
                                         <InputGroup.Text id="inputGroup-sizing-default" className="custom-input-group-text">
                                         Text
                                         </InputGroup.Text>
@@ -903,89 +936,94 @@ function EditDesign() {
         className="text-end"
     />
                                     </InputGroup> */}
-                    <FontAwesomeIcon icon="" />
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Text
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center">
-                        <Form.Control
-                          value={playerNo}
-                          onChange={handlePlayerNoChange}
-                          aria-label="Default"
-                          aria-describedby="inputGroup-sizing-default"
-                          className="text-end"
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Font
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center">
-                        <Form.Select
-                          aria-label="Default select example"
-                          value={fontFamily}
-                          onChange={handleFontFamilyChange}
-                          className="custom-select text-end"
-                          style={{ border: 'none' }}
-                        >
-                          {fontOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
+                          <FontAwesomeIcon icon="" />
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                Text
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center">
+                              <Form.Control
+                                value={playerNo}
+                                type='number'
+                                maxLength='3'
+                                defaultValue={playerNo}
+                                onChange={handlePlayerNoChange}
+                                aria-label="Default"
+                                aria-describedby="inputGroup-sizing-default"
+                                className="text-end"
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                Font
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center">
+                              <Form.Select
+                                aria-label="Default select example"
+                                value={fontFamily}
+                                onChange={handleFontFamilyChange}
+                                className="custom-select text-end"
+                                style={{ border: 'none' }}
+                              >
+                                {fontOptions.map((option) => (
+                                  <option key={option.value} value={option.value}>
+                                    {option.label}
+                                  </option>
+                                ))}
 
 
-                        </Form.Select>
-                      </div>
-                      <div className="font-sample" style={{ fontFamily: fontFamily }}>
-                        {fontOptions.map((option) => (
-                          <span
-                            key={option.value}
-                            style={{ display: fontFamily === option.value ? 'block' : 'none' }}
-                          >
-                            Sample Text
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          <div>Text Color</div>
-                        </InputGroup.Text>
+                              </Form.Select>
+                            </div>
+                            <div className="font-sample" style={{ fontFamily: fontFamily }}>
+                              {fontOptions.map((option) => (
+                                <span
+                                  key={option.value}
+                                  style={{ display: fontFamily === option.value ? 'block' : 'none' }}
+                                >
+                                  Sample Text
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Text Color</div>
+                              </InputGroup.Text>
 
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                        {/* Additional content in the second column */}
-                        <Form.Control
-                          type="color"
-                          id="exampleColorInput"
-                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
-                          value={textColor}
-                          onChange={(e) => { handleTextColorChange(e) }}
-                          onBlur={handleTextColorClick} // Close the color picker on blur
-                        />
-                      </div>
-                    </div>
-                    {/* <div className="mb-2 row custombackground">
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              {/* Additional content in the second column */}
+
+                              <Form.Control
+                                type="color"
+                                id="exampleColorInput"
+                                style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
+                                defaultValue={textColor}
+                                onChange={(e) => { handleTextColorChange(e) }}
+                                onBlur={handleTextColorClick} // Close the color picker on blur
+                              />
+
+                            </div>
+                          </div>
+                          {/* <div className="mb-2 row custombackground">
   <div className="col-3 d-flex align-items-center">
     <InputGroup.Text
       id="inputGroup-sizing-default"
@@ -1014,94 +1052,94 @@ function EditDesign() {
   </div>
  
 </div> */}
-                    <div className="mb-4 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Text Size
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                         <input
-                          type="number"
-                          value={textSize}
-                          onChange={handleTextSizeChange}
-                          className='custom-select text-end texttb'
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          Border
-                        </InputGroup.Text>
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                         <input
-                          type="number"
-                          value={NotextBorder}
-                          onChange={handleNoBorderChange}
-                          className='custom-select text-end texttb'
-                        />
-                      </div>
-                      
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          <div>Border Color</div>
-                        </InputGroup.Text>
+                          <div className="mb-4 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                Text Size
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              <input
+                                type="number"
+                                value={textSize}
+                                onChange={handleTextSizeChange}
+                                className='custom-select text-end texttb'
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                Border
+                              </InputGroup.Text>
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              <input
+                                type="number"
+                                value={NotextBorder}
+                                onChange={handleNoBorderChange}
+                                className='custom-select text-end texttb'
+                              />
+                            </div>
 
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                        {/* Additional content in the second column */}
-                        <Form.Control
-                          type="color"
-                          id="exampleColorInput"
-                          style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
-                          value={outlineColor}
-                          onChange={(e) => { handleOutlineColorChange(e) }}
-                          onBlur={handleOutlineColorClick} // Close the color picker on blur
-                        />
-                      </div>
-                    </div>
-                    <div className="mb-2 row custombackground">
-                      <div className="col-3 d-flex align-items-center">
-                        <InputGroup.Text
-                          id="inputGroup-sizing-default"
-                          className="custom-input-group-text"
-                          style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
-                        >
-                          <div>Rotation</div>
-                        </InputGroup.Text>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Border Color</div>
+                              </InputGroup.Text>
 
-                      </div>
-                      <div className="col-9 d-flex align-items-center justify-content-end">
-                        {/* Additional content in the second column */}
-                        <input
-                          type="number"
-                          value={rotationAngle}
-                          ref={rotationInputRef}
-                          onChange={handleRotationChange}
-                          placeholder="Enter rotation angle"
-                          className='custom-select text-end texttb'
-                       
-                        />
-                      </div>
-                    </div>
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              {/* Additional content in the second column */}
 
-                    {/* <div className="mb-2 row custombackground">
+                              <Form.Control
+                                type="color"
+                                id="exampleColorInput"
+                                style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
+                                defaultValue={outlineColor}
+                                onChange={(e) => { handleOutlineColorChange(e) }}
+                                onBlur={handleOutlineColorClick} // Close the color picker on blur
+                              />
+                            </div>
+                          </div>
+                          <div className="mb-2 row custombackground">
+                            <div className="col-3 d-flex align-items-center">
+                              <InputGroup.Text
+                                id="inputGroup-sizing-default"
+                                className="custom-input-group-text"
+                                style={{ background: 'white', height: '38px', fontSize: '12px', color: 'gray' }}
+                              >
+                                <div>Rotation</div>
+                              </InputGroup.Text>
+
+                            </div>
+                            <div className="col-9 d-flex align-items-center justify-content-end">
+                              {/* Additional content in the second column */}
+                              <input
+                                type="number"
+                                value={rotationAngle}
+                                ref={rotationInputRef}
+                                onChange={handleRotationChange}
+                                placeholder="Enter rotation angle"
+                                className='custom-select text-end texttb'
+                              />
+                            </div>
+                          </div>
+
+                          {/* <div className="mb-2 row custombackground">
   <div className="col-3 d-flex align-items-center">
     <InputGroup.Text
       id="inputGroup-sizing-default"
@@ -1134,7 +1172,7 @@ function EditDesign() {
 
 
 
-                    {/* <InputGroup className="mb-2 custombackground">
+                          {/* <InputGroup className="mb-2 custombackground">
                                     <div className="col-3 d-flex align-items-center">
     <InputGroup.Text
       id="inputGroup-sizing-default"
@@ -1160,14 +1198,14 @@ function EditDesign() {
               </InputGroup> */}
 
 
-                    {/* <Form.Select aria-label="Default select example"  value={textColor}   onChange={handleTextColorChange} className="mb-2">
+                          {/* <Form.Select aria-label="Default select example"  value={textColor}   onChange={handleTextColorChange} className="mb-2">
                                     <option>Text Color</option>
                                     <option value="black">Black</option>
                                 <option value="red">Red</option>
                                 <option value="blue">Blue</option>
                                 
                                 </Form.Select> */}
-                    {/* <Form.Select aria-label="Default select example" value={textSize}   onChange={handleTextSizeChange}  className="mb-2">
+                          {/* <Form.Select aria-label="Default select example" value={textSize}   onChange={handleTextSizeChange}  className="mb-2">
                                     <option>Text Size</option>
                                     <option value="12">12</option>
                                 <option value="14">14</option>
@@ -1176,23 +1214,24 @@ function EditDesign() {
                                 <option value="22">22</option>
                                 
                                 </Form.Select> */}
-                    {/* <Form.Select aria-label="Default select example" className="mb-2">
+                          {/* <Form.Select aria-label="Default select example" className="mb-2">
                                     <option>Outline</option>
                                 
                                 </Form.Select> */}
-                    {/* <Form.Select aria-label="Default select example" className="mb-2">
+                          {/* <Form.Select aria-label="Default select example" className="mb-2">
                                     <option>Text Shape</option>
                                 
                                 </Form.Select> */}
-                    {/* <Form.Select aria-label="Default select example" className="mb-2">
+                          {/* <Form.Select aria-label="Default select example" className="mb-2">
                                     <option>Rotation</option>
                                 
                                 </Form.Select> */}
-                  </Form>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-
+                        </Form>
+                      </div>          </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="col-9">

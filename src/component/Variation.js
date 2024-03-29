@@ -45,6 +45,9 @@ function Variation() {
     const [BgName, setBgName] = useState('');
     const [RemovedRow, setremovedRow] = useState([]);
     const [renderingTime, setRenderingTime] = useState(null);
+    const [localStorageValue, setLocalStorageValue] = useState('');
+    const [isSaveDisabled, setSaveDisabled] = useState(true);
+
     // var selectedImage = localStorage.getItem('bgImageDetails');
     var selectedImage = state.selectedImage;
     const NameRef = useRef(Array(10).fill(null));
@@ -207,6 +210,7 @@ function Variation() {
         const newCharCounts = [...charCount];
         newCharCounts[index] = inputValue.length;
         setCharCount(newCharCounts);
+        handleInputChange();
     };
 
 
@@ -215,6 +219,7 @@ function Variation() {
         const newNumCounts = [...numCount];
         newNumCounts[index] = inputValue.length;
         setNumCount(newNumCounts);
+        handleInputChange();
     };
 
     const handleKeyPress = (event) => {
@@ -285,6 +290,8 @@ function Variation() {
                     console.timeEnd('selectFile');
                     console.log(dataToPost);
                     localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
+                    const tshirtDetails = localStorage.getItem('tshirtDetails');
+        setLocalStorageValue(tshirtDetails);
                 };
             }
             else {
@@ -383,7 +390,29 @@ function Variation() {
         // }
         console.log(dataToPost);
         localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
+        const tshirtDetails = localStorage.getItem('tshirtDetails');
+        setLocalStorageValue(tshirtDetails);
     }
+    useEffect(() => {
+        const tshirtDetails = localStorage.getItem('tshirtDetails');
+        setLocalStorageValue(tshirtDetails);
+    }, []);
+
+    const isDisabled = localStorageValue === '[]' || localStorageValue === '' || !localStorageValue;
+
+    const handleInputChange = () => {
+        const inputs = document.querySelectorAll('.tshirt-variant-data input, .tshirt-variant-data select');
+        let isEmpty = false;
+
+        inputs.forEach(input => {
+            if (input.value.trim() === '') {
+                isEmpty = true;
+            }
+        });
+
+        setSaveDisabled(isEmpty);
+    };
+
     return (
         <div id="main-container" className="container-fluid main">
 
@@ -441,7 +470,7 @@ function Variation() {
                                 <li className="mx-2" onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }}>Export</li>
                             </ul>
                             <div className="col-6 custom-btn">
-                                <Button onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }} className="float-end " variant="primary">
+                                <Button onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }} className="float-end " variant="primary" disabled={isDisabled}>
                                     <img src={switchImage} alt="home" style={{ width: '25px' }} /> Generate
                                 </Button>
                             </div>
@@ -480,7 +509,7 @@ function Variation() {
                                     <div className="col-6 variation-block" >
                                         <div style={{ display: 'flex', justifyContent: 'flex-end', paddingBottom: '5px' }}>
                                             <Button style={{ borderRadius: '30px', backgroundColor: '#8B3CD9', border: '0' }} className="custom-button" onClick={() => addRow()}>Add</Button>
-                                            <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#8B3CD9', border: '0', marginLeft: '20px' }} className="custom-button" onClick={(e) => upload_data(e)} >Save</Button>
+                                            <Button type='submit' style={{ borderRadius: '30px', backgroundColor: '#8B3CD9', border: '0', marginLeft: '20px' }} className="custom-button" disabled={isSaveDisabled} onClick={(e) => upload_data(e)} >Save</Button>
 
                                         </div>
                                         <div style={{ maxHeight: '50vh', overflowY: 'scroll',paddingBottom:'10px' }}>
@@ -556,7 +585,7 @@ function Variation() {
 
                                                                 <td>
                                                                     <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                                                                        <select className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px', width: '100%', paddingRight: '20px' }} name={`size[${val}]`} ref={(ref) => {
+                                                                        <select className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px', width: '100%', paddingRight: '20px' }} name={`size[${val}]`} onChange={handleInputChange} ref={(ref) => {
                                                                             if (ref) SizeRef.current[val] = ref;
                                                                         }}>
                                                                             <option value="" disabled selected hidden>Select Size</option>
