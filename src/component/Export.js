@@ -9,9 +9,7 @@ import cover from '../assets/img/png2.png';
 import addfile from '../assets/img/outline_note_add_black_24dp.png';
 import ReactDOMServer from 'react-dom/server';
 import { faImage, faTrash } from '@fortawesome/free-solid-svg-icons';
-import Accordion from 'react-bootstrap/Accordion';
 import * as htmlToImage from 'html-to-image';
-import Resizer from "react-image-file-resizer";
 import html2canvas from 'html2canvas';
 import { getImageSize } from 'react-image-size';
 import { faUndo, faRedo, faSearchPlus, faShirt, faList, faCirclePlus, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
@@ -23,6 +21,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-bootstrap-icons';
 import '../index.css';
 import download from '../assets/img/file_download_black_24dp.svg'
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+
 function Export() {
 
     const [tshirtvariation, setTshirtvariation] = useState();
@@ -212,7 +213,7 @@ function Export() {
         // console.log(count);
 
         for (let i in tshirtdetails) {
-            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i);
+            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].size}_${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i);
         }
     }
 
@@ -619,7 +620,6 @@ function Export() {
     }
 
 
-
     return (
         <div id="main-container" className="container-fluid main">
 
@@ -641,7 +641,7 @@ function Export() {
                                 <h4>Variation Completed - Unleash the Power of Personalisation</h4>
                                 <p>With a simple click of the "Create" button, watch as our software auto-generates<br /> a myriad of variations, effortlessly incorporating the selected fonts and Player
                                     <br /> details, Experience the power of automation and unleash your creativity.</p>
-                                <Button className="px-3 py-1" style={{ borderRadius: '30px' }} onClick={downloadImage}><img src={download} alt="download" style={{ width: '20px' }} />
+                                    <Button className="px-3 py-1" style={{ borderRadius: '30px' }} onClick={downloadImage}><img src={download} alt="download" style={{ width: '20px' }} />
                                     Download All </Button>
                             </div>
                             <div className="container mt-5">
@@ -689,7 +689,7 @@ function Export() {
                                                         </div>
                                                         <div className='mt-3'>
                                                             <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => { navigate('/EditDesign', { state: { indexSr: val.indexSr, selectedImage: selectedImage } }) }}> Edit</button>
-                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index)}> Download </button>
+                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.size}_${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index)}> Download </button>
                                                         </div>
                                                     </div>
                                                 ))}

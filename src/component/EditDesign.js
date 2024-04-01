@@ -29,6 +29,30 @@ import useImage from 'use-image';
 import usePopup from '../hook/usePopUp';
 import Popup from './Popup';
 
+
+const fontStyles = {
+  Arial: { fontFamily: 'Arial, sans-serif' },
+  'Times New Roman': { fontFamily: "'Times New Roman', Times, serif" },
+  'Euclid Circular A': { fontFamily: "'Euclid Circular A', sans-serif" },
+  Medium: { fontFamily: 'Medium, sans-serif' },
+  BlinkMacSystemFont: { fontFamily: 'BlinkMacSystemFont, sans-serif' },
+  'Segoe UI': { fontFamily: 'Segoe UI, sans-serif' },
+  Ubuntu: { fontFamily: 'Ubuntu, sans-serif' },
+  Cantarell: { fontFamily: 'Cantarell, sans-serif' },
+  'Fira Sans': { fontFamily: 'Fira Sans, sans-serif' },
+  'Droid Sans': { fontFamily: 'Droid Sans, sans-serif' },
+  'Helvetica Neue': { fontFamily: 'Helvetica Neue, sans-serif' },
+  'American Captain': { fontFamily: 'American Captain, sans-serif' },
+  'Bruce Forever': { fontFamily: 'Bruce Forever, sans-serif' },
+  Freshman: { fontFamily: 'Freshman, sans-serif' },
+  'Govrnment Agent BB': { fontFamily: 'Govrnment Agent BB, sans-serif' },
+  'Govrnment Agent BB Italic': { fontFamily: 'Govrnment Agent BB Italic, sans-serif' },
+  'Jersey M54': { fontFamily: 'Jersey M54, sans-serif' },
+  'Rozha One': { fontFamily: 'Rozha One, sans-serif' },
+  'Sports Jersey': { fontFamily: 'Sports Jersey, sans-serif' },
+  'Sports World': { fontFamily: 'Sports World, sans-serif' }
+};
+
 var fontOptions = [
   { value: 'Arial', label: 'Arial' },
   { value: 'Times New Roman', label: 'Times New Roman' },
@@ -765,23 +789,12 @@ function EditDesign() {
                                 style={{ border: 'none' }}
                               >
                                 {fontOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
+                                  <option key={option.value} value={option.value} style={fontStyles[option.value]}>
                                     {option.label}
                                   </option>
                                 ))}
 
-
                               </Form.Select>
-                            </div>
-                            <div className="font-sample" style={{ fontFamily: NamefontFamily }}>
-                              {fontOptions.map((option) => (
-                                <span
-                                  key={option.value}
-                                  style={{ display: NamefontFamily === option.value ? 'block' : 'none' }}
-                                >
-                                  Sample Text
-                                </span>
-                              ))}
                             </div>
                           </div>
                           <div className="mb-2 row custombackground">
@@ -986,16 +999,6 @@ function EditDesign() {
 
 
                               </Form.Select>
-                            </div>
-                            <div className="font-sample" style={{ fontFamily: fontFamily }}>
-                              {fontOptions.map((option) => (
-                                <span
-                                  key={option.value}
-                                  style={{ display: fontFamily === option.value ? 'block' : 'none' }}
-                                >
-                                  Sample Text
-                                </span>
-                              ))}
                             </div>
                           </div>
                           <div className="mb-2 row custombackground">
