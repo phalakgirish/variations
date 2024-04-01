@@ -30,6 +30,28 @@ import useImage from 'use-image';
 import usePopup from '../hook/usePopUp';
 import Popup from './Popup';
 
+const fontStyles = {
+  Arial: { fontFamily: 'Arial, sans-serif' },
+  'Times New Roman': { fontFamily: "'Times New Roman', Times, serif" },
+  'Euclid Circular A': { fontFamily: "'Euclid Circular A', sans-serif" },
+  Medium: { fontFamily: 'Medium, sans-serif' },
+  BlinkMacSystemFont: { fontFamily: 'BlinkMacSystemFont, sans-serif' },
+  'Segoe UI': { fontFamily: 'Segoe UI, sans-serif' },
+  Ubuntu: { fontFamily: 'Ubuntu, sans-serif' },
+  Cantarell: { fontFamily: 'Cantarell, sans-serif' },
+  'Fira Sans': { fontFamily: 'Fira Sans, sans-serif' },
+  'Droid Sans': { fontFamily: 'Droid Sans, sans-serif' },
+  'Helvetica Neue': { fontFamily: 'Helvetica Neue, sans-serif' },
+  'American Captain': { fontFamily: 'American Captain, sans-serif' },
+  'Bruce Forever': { fontFamily: 'Bruce Forever, sans-serif' },
+  Freshman: { fontFamily: 'Freshman, sans-serif' },
+  'Govrnment Agent BB': { fontFamily: 'Govrnment Agent BB, sans-serif' },
+  'Govrnment Agent BB Italic': { fontFamily: 'Govrnment Agent BB Italic, sans-serif' },
+  'Jersey M54': { fontFamily: 'Jersey M54, sans-serif' },
+  'Rozha One': { fontFamily: 'Rozha One, sans-serif' },
+  'Sports Jersey': { fontFamily: 'Sports Jersey, sans-serif' },
+  'Sports World': { fontFamily: 'Sports World, sans-serif' }
+};
 
 var fontOptions = [
   { value: 'Arial', label: 'Arial' },
@@ -219,13 +241,13 @@ function Design() {
   const [history, setHistory] = useState([]);
   const [UndoRedo, setUndoRedo] = useState(0)
   const [playersName, setPlayersName] = useState(null);
-  
-  
+
+
   useEffect(() => {
     handleNameNumberDetails();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     const div1 = document.getElementById('div1');
     if (localStorage.getItem('bgname') && localStorage.getItem('bgname') !== '') {
       div1.style.visibility = 'hidden'; // Hide the div
@@ -233,7 +255,7 @@ function Design() {
       div1.style.display = 'inline-block'; // Show the div
     }
   })
-  useEffect(()=>{
+  useEffect(() => {
     const div3 = document.getElementById('div3');
     if (playerNo !== '00' || playerNo == '') {
       div3.style.visibility = 'hidden'; // Hide the div
@@ -307,12 +329,12 @@ function Design() {
 
     // Truncate the input value if it exceeds 3 digits
     if (inputValue.length > 3) {
-        inputValue = inputValue.slice(0, 3);
+      inputValue = inputValue.slice(0, 3);
     }
 
     // Update the state with the modified value
     setPlayerNo(inputValue);
-    hideDiv3(); 
+    hideDiv3();
   };
   const handleTextSizeChange = (event) => {
     console.log(event.target.value);
@@ -320,7 +342,7 @@ function Design() {
   };
   const handleTextColorChange = (color) => {
     setTextColor(color.target.value);
-    hideDiv3(); 
+    hideDiv3();
     // setTimeout(() => {
     //   handleColorPickerClose();
     // }, '1000');
@@ -818,14 +840,14 @@ function Design() {
     setAccordion1Open(!accordion1Open);
     if (accordion2Open) {
       setAccordion2Open(false); // Close accordion2 if it's open
-  }
+    }
   };
 
   const toggleAccordion2 = () => {
     setAccordion2Open(!accordion2Open);
     if (accordion1Open) {
       setAccordion1Open(false); // Close accordion1 if it's open
-  }
+    }
   };
 
   console.log(playersName);
@@ -980,23 +1002,12 @@ function Design() {
                                 style={{ border: 'none' }}
                               >
                                 {fontOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
+                                  <option key={option.value} value={option.value} style={fontStyles[option.value]}>
                                     {option.label}
                                   </option>
                                 ))}
 
-
                               </Form.Select>
-                            </div>
-                            <div className="font-sample" style={{ fontFamily: NamefontFamily }}>
-                              {fontOptions.map((option) => (
-                                <span
-                                  key={option.value}
-                                  style={{ display: NamefontFamily === option.value ? 'block' : 'none' }}
-                                >
-                                  Sample Text
-                                </span>
-                              ))}
                             </div>
                           </div>
                           <div className="mb-2 row custombackground">
@@ -1194,23 +1205,11 @@ function Design() {
                                 style={{ border: 'none' }}
                               >
                                 {fontOptions.map((option) => (
-                                  <option key={option.value} value={option.value}>
+                                  <option key={option.value} value={option.value} style={fontStyles[option.value]}>
                                     {option.label}
                                   </option>
                                 ))}
-
-
                               </Form.Select>
-                            </div>
-                            <div className="font-sample" style={{ fontFamily: fontFamily }}>
-                              {fontOptions.map((option) => (
-                                <span
-                                  key={option.value}
-                                  style={{ display: fontFamily === option.value ? 'block' : 'none' }}
-                                >
-                                  Sample Text
-                                </span>
-                              ))}
                             </div>
                           </div>
                           <div className="mb-2 row custombackground">
@@ -1534,7 +1533,7 @@ function Design() {
                     <div style={{ position: 'absolute', top: 70, right: -285 }}>
                       <div style={{ marginBottom: 60, display: 'inline-block', marginLeft: 40 }}>
                         <div id='div1'>
-                        <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
+                          <div style={{ width: 150, marginBottom: 5, height: 1, backgroundColor: 'black', display: 'inline-block' }}></div><div class="rounded-div">1</div><span>&nbsp; Add Tee Shirt Design</span>
                         </div>
                       </div>
                       <br />
