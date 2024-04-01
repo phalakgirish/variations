@@ -213,7 +213,7 @@ function Export() {
         // console.log(count);
 
         for (let i in tshirtdetails) {
-            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i);
+            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].size}_${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i);
         }
     }
 
@@ -689,7 +689,7 @@ function Export() {
                                                         </div>
                                                         <div className='mt-3'>
                                                             <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => { navigate('/EditDesign', { state: { indexSr: val.indexSr, selectedImage: selectedImage } }) }}> Edit</button>
-                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index)}> Download </button>
+                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.size}_${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index)}> Download </button>
                                                         </div>
                                                     </div>
                                                 ))}
