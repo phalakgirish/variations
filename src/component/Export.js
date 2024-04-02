@@ -31,6 +31,7 @@ function Export() {
     // var selectedImage = localStorage.getItem('bgImageDetails');
     const { state } = useLocation();
     var selectedImage = state.selectedImage;
+    const [isLoaderShow, setIsLoaderShow] = useState(false)
 
 
     // var [imagebg] = useImage(selectedImage)
@@ -38,6 +39,7 @@ function Export() {
     // console.log(tshirtdetails);
     const tshirtimg = useRef();
     const navigate = useNavigate();
+    const [dataURL, setDataURL] = useState([]);
 
 
     //    var backgroundImg=localStorage.getItem('bgImageDetails');
@@ -211,11 +213,83 @@ function Export() {
 
         // var count = tshirtimg.current.length;
         // console.log(count);
-
+        setIsLoaderShow(true);
         for (let i in tshirtdetails) {
-            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].size}_${tshirtdetails[i].name}_${tshirtdetails[i].number}.png`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i);
+            handleDownload(canvasRef.current[tshirtdetails[i].indexSr], `${tshirtdetails[i].size}_${tshirtdetails[i].name}_${tshirtdetails[i].number}.jpeg`, tshirtdetails[i].size, tshirtdetails[i].indexSr, i,'zip');
         }
+        // convertBase64ToZip(dataURL)
+
+        setTimeout(()=>{
+            console.log(listObj_data);
+            convertBase64ToZip(listObj_data);
+        },3000)
+        
+
     }
+
+    const convertBase64ToZip = async (base64String) => {
+        try {
+            const zip = new JSZip();
+            const folder = zip.folder('tshirt_variation');  // create a folder in the ZIP file
+            console.log(base64String);
+            // Convert Base64 string to Blob
+            for(let val of base64String)
+            {
+                console.log(val);
+                const byteCharacters = atob(val.baseString.split(',')[1]);
+                const byteArrays = [];
+        
+                for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                    const slice = byteCharacters.slice(offset, offset + 512);
+        
+                    const byteNumbers = new Array(slice.length);
+                    for (let i = 0; i < slice.length; i++) {
+                        byteNumbers[i] = slice.charCodeAt(i);
+                    }
+        
+                    const byteArray = new Uint8Array(byteNumbers);
+                    byteArrays.push(byteArray);
+                }
+        
+                const blob = new Blob(byteArrays, { type: 'image/jpeg' });
+        
+                // Add the Blob to the ZIP folder
+                await folder.file(val.fileName, blob);
+                setIsLoaderShow(false);
+            }
+            
+    
+            // Generate the ZIP file
+            const zipBlob = await zip.generateAsync({ type: 'blob' });
+    
+            // // Save the ZIP file
+            saveAs(zipBlob, 'tshirt_variation.zip');
+    
+        } catch (error) {
+            console.error('Error converting Base64 to ZIP:', error);
+        }
+    };
+
+    const Loader = () => {
+        const [isLoading, setIsLoading] = useState(true);
+      
+        // Simulate loading effect with useEffect
+        useEffect(() => {
+        //   const timer = setTimeout(() => {
+        //     setIsLoading(false);
+        //   }); // Simulates 3 seconds of loading
+      
+        //   return () => clearTimeout(timer);
+        }, []);
+      
+        if (isLoading) {
+          return (
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          );
+        }
+      };
 
     const resizeImage = (dataUrl, width, height) => {
         return new Promise((resolve) => {
@@ -366,8 +440,8 @@ function Export() {
 
 
 
-
-    const handleDownload = async (canvas, fileName, size, indexSr, index) => {
+    var listObj_data = []
+    const handleDownload = (canvas, fileName, size, indexSr, index,file_type) => {
         // console.log(stagediv);
 
         // var canvasHtml = await html2canvas(stagediv.current,{scale:3});
@@ -459,11 +533,11 @@ function Export() {
         //         link.click();
         //     });
 
-        const resizeImage = (stageDataURL, maxWidth, maxHeight, fileName) => {
+        const resizeImage = (stageDataURL, maxWidth, maxHeight, fileName,file_type) => {
             // return new Promise((resolve) => {
             let img = new Image()
             img.src = stageDataURL
-            img.onload = async () => {
+            img.onload = () => {
                 let canvas = document.createElement('canvas')
                 const MAX_WIDTH = maxWidth
                 const MAX_HEIGHT = maxHeight
@@ -482,8 +556,8 @@ function Export() {
                 //   }
                 // }
 
-                var dpiWidth = (width / 96) * 300;
-                var dpiheight = (height / 96) * 300
+                // var dpiWidth = (width / 96) * 300;
+                // var dpiheight = (height / 96) * 300
                 // canvas.width = width 
                 // canvas.height = height
 
@@ -493,27 +567,44 @@ function Export() {
                 const targetHeight = targetWidth / aspectRatio;
 
                 // Set the size of the canvas
-                canvas.width = targetWidth;
-                canvas.height = targetHeight;
+                // canvas.width = targetWidth;
+                // canvas.height = targetHeight;
+                canvas.width = width;
+                canvas.height = height;
 
 
                 let ctx = canvas.getContext('2d')
                 // ctx.scale(300/96,300/96);
                 // ctx.drawImage(img, 0, 0, width, height)
-                ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+                // ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
                 // resolve(canvas.toDataURL())
                 // console.log(canvas.toDataURL('image/jpeg'));
                 // var canvasHtml = html2canvas(canvas,{scale:3});
                 // const dataUrl = await htmlToImage.toPng(canvas,{ cacheBust: false,scale:3 });
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/jpeg', 1.0);
-                link.download = fileName;
-                link.click();
+                if(file_type == 'single')
+                {
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/jpeg', 1.0);
+                    link.download = fileName;
+                    link.click();
+                }
+                else
+                {
+                    var canvasDataURL = canvas.toDataURL('image/jpeg', 1.0);
+                    var new_obj = {fileName:fileName,baseString:canvasDataURL}
+                    console.log(new_obj);
+                    listObj_data = [...listObj_data,new_obj];
+                    console.log(listObj_data);
+                    // setDataURL(DataUrls)
+                }
+                
             }
             // })
         }
 
-        resizeImage(stageDataURL, dimensions[tshirtSize].width, dimensions[tshirtSize].height, fileName);
+        resizeImage(stageDataURL, dimensions[tshirtSize].width, dimensions[tshirtSize].height, fileName,file_type);
         //   console.log(imagedataurl);
         //         const link = document.createElement('a');
         //         link.href = imagedataurl;
@@ -622,7 +713,9 @@ function Export() {
 
     return (
         <div id="main-container" className="container-fluid main">
-
+            {isLoaderShow && (
+                <Loader />
+            )}
             <Sidebar></Sidebar>
             <section className="home" style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
                 <div className="row mx-2">
@@ -689,7 +782,7 @@ function Export() {
                                                         </div>
                                                         <div className='mt-3'>
                                                             <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => { navigate('/EditDesign', { state: { indexSr: val.indexSr, selectedImage: selectedImage } }) }}> Edit</button>
-                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.size}_${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index)}> Download </button>
+                                                            <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.size}_${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index,'single')}> Download </button>
                                                         </div>
                                                     </div>
                                                 ))}
