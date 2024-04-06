@@ -15,6 +15,7 @@ function Home(){
 
     const navigate = useNavigate();
     var token = secureLocalStorage.getItem('Login')
+    console.log(token);
     if(token == null)
     {
         navigate('/');

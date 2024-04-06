@@ -297,7 +297,7 @@ function Design() {
 
   const LoadImage = () => {
     // console.log(state.side);
-    const [image] = useImage((state.side === 'front')?fronttshirt:backtshirt);
+    const [image] = useImage((state?.side === 'front')?fronttshirt:backtshirt);
     return <KonvaImage image={image} width={500} height={500} />;
   };
   const LoadBGImage = () => {
