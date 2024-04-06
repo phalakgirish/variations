@@ -12,10 +12,12 @@ import fronttshirt from '../assets/img/Plain TeeShirt.png';
 import undoblack from '../assets/img/undo_black_24dp.svg';
 import redoblack from '../assets/img/redo_black_24dp.svg';
 import backtshirt from '../assets/img/Plain TeeShirt.png';
+// import backtshirt from '../assets/img/homepage-first.png';
+
 import redo from '../assets/img/outline_undo_black_24dp.png';
 import undo from '../assets/img/outline_redo_black_24dp.png';
 import addfile from '../assets/img/upload_file_FILL0_wght400_GRAD0_opsz24.svg';
-
+import secureLocalStorage from 'react-secure-storage';
 import Accordion from 'react-bootstrap/Accordion';
 import { ChromePicker } from 'react-color';
 
@@ -28,6 +30,7 @@ import useImage from 'use-image';
 
 import usePopup from '../hook/usePopUp';
 import Popup from './Popup';
+import verifytoken from '../env/verifytoken';
 
 
 const fontStyles = {
@@ -153,6 +156,21 @@ const CustomOption = ({ innerProps, label, data }) => (
 );
 let historyStep = 0
 function EditDesign() {
+  const navigate = useNavigate();
+  var token = secureLocalStorage.getItem('Login')
+  if(token == null)
+  {
+      navigate('/');
+  }
+  else
+  {
+      var tokenExpired = verifytoken();
+      if(tokenExpired)
+      {
+          navigate('/')
+      }
+  }
+
   const { state } = useLocation();
   const selectedValue = localStorage.getItem('tshirtSize');
   const [view, setView] = useState('front');
@@ -168,7 +186,7 @@ function EditDesign() {
   // var selectedBGImage = localStorage.getItem('bgImageDetails');
   var selectedBGImage = state.selectedImage;
 
-  const navigate = useNavigate();
+  
 
   if (tshirtChangeData != null) {
     var playerTShirtDetails = []
@@ -240,7 +258,7 @@ function EditDesign() {
 
 
   const LoadImage = () => {
-    const [image] = useImage(fronttshirt);
+    const [image] = useImage((state.side == 'front')?fronttshirt:backtshirt);
     return <KonvaImage image={image} width={500} height={500} />;
   };
   const LoadBGImage = () => {
@@ -262,20 +280,16 @@ function EditDesign() {
     setPlayerNo(event.target.value);
   };
   const handleTextSizeChange = (event) => {
-    console.log(event.target.value);
+  
     setTextSize(event.target.value);
   };
   const handleTextColorChange = (color) => {
     setTextColor(color.target.value);
-    // setTimeout(()=>{
-    //   handleColorPickerClose();
-    // },'1000');
+
   };
   const handleOutlineColorChange = (color) => {
     setOutLineColor(color.target.value)
-    // setTimeout(()=>{
-    //   handleOutlineColorClick();
-    // },'1000');
+
   }
   const handleNoBorderChange = (event) => {
 
@@ -290,9 +304,9 @@ function EditDesign() {
   };
   const handleMouseDown = (event, type) => {
 
-    console.log(type);
+
     setDragStart({ x: event.clientX, y: event.clientY });
-    console.log(type);
+
     if (type === 'number') {
       setIsDragging(true);
     } else if (type === 'name') {
@@ -364,17 +378,13 @@ function EditDesign() {
   };
   const handlePlayerNameTextColorChange = (color) => {
     setNameTextColor(color.target.value);
-    // setTimeout(() => {
-    //   handlePlayerNameColorPickerClose();
-    // }, "1000");
+
 
   };
 
   const handlePlayerNameOutlineColorChange = (color) => {
     setNameOutLineColor(color.target.value)
-    // setTimeout(() => {
-    //   handlePlayerNameOutlineColorClick();
-    // }, "1000");
+
   }
 
   const handlePlayerNameFontFamilyChange = (selectedOption) => {
@@ -427,7 +437,7 @@ function EditDesign() {
     setNoSelected(false);    
     toggleAccordion1();
     setActiveAccordionItem("1");
-    console.log('accordion 1');// Open accordion item with eventkey 1
+
   };
 
   // Function to handle click or tap on number text
@@ -436,7 +446,7 @@ function EditDesign() {
     setNameSelected(false);
     toggleAccordion2();
     setActiveAccordionItem("2");
-    console.log('accordion 2');// Open accordion item with eventkey 2
+
   };
 
   const handleNameNumberDetails = async (ev) => {
@@ -504,8 +514,7 @@ function EditDesign() {
       NoScale: { x: TextNoRef.current.attrs.scaleX, y: TextNoRef.current.attrs.scaleY }
     }
 
-    console.log(playernamedetails);
-    console.log(playernumberdetails);
+
 
     if (history.length == 0) {
       historyStep = 0;
@@ -516,16 +525,25 @@ function EditDesign() {
     else {
       historyStep = historyStep + 1
     }
-    console.log(historyStep);
     var historyrem = history.slice(0, historyStep + 1);
     var historydts = [...historyrem, { selectedImage: selectedImage, playernamedetails: playernamedetails, playernumberdetails: playernumberdetails }]
     setHistory(historydts)
-    console.log(history);
+
     tshirtchangedetails = [...changedData, { indexSr: playerIndex, playernamedetails: playernamedetails, playernumberdetails: playernumberdetails }];
 
-    //   console.log(tshirtchangedetails);
     if (ev === 1) {
       localStorage.setItem('tshirtchangedetails', JSON.stringify(tshirtchangedetails));
+
+      var local_Data = JSON.parse(localStorage.getItem('tshirtDetails'));
+
+      // var filterd_local_Data = local_Data.filter((item)=>item.indexSr != playerIndex)
+      const updatedItems = local_Data.map(item => 
+        item.indexSr === playerIndex ? { ...item, name:playerName,number:playerNo} : item
+      );
+
+      // console.log(updatedItems);
+      localStorage.setItem('tshirtDetails',JSON.stringify(updatedItems))
+    
     }
   }
 
@@ -559,10 +577,9 @@ function EditDesign() {
       return;
     }
     historyStep = historyStep - 1;
-    console.log(historyStep);
-    console.log(history);
+
     const previous = history[historyStep];
-    console.log(previous);
+
     setUndoRedo(1);
     if (previous != undefined) {
       UndoRedoUpdate(previous);
@@ -575,10 +592,9 @@ function EditDesign() {
       return;
     }
     historyStep = historyStep + 1;
-    console.log(historyStep);
-    console.log(history);
+
     const next = history[historyStep];
-    console.log(next);
+
     setUndoRedo(1);
     if (next != undefined) {
       UndoRedoUpdate(next);
@@ -614,7 +630,7 @@ function EditDesign() {
     detectionElement.style.fontFamily = 'inherit';
     document.body.appendChild(detectionElement);
     const computedFont = window.getComputedStyle(detectionElement).fontFamily;
-    // console.log(typeof computedFont)
+
     document.body.removeChild(detectionElement);
     var SystemFonts = computedFont.split(",");
 
@@ -641,7 +657,7 @@ function EditDesign() {
 
         // Navigate to Variation page
         handleNameNumberDetails(1);
-        navigate('/Variation', { state: { selectedImage: selectedImage } });
+        navigate('/Variation', { state: { selectedImage: selectedImage,side:state.side } });
       } else {
         // Display error messages based on conditions
         if (!playerNamedetails || JSON.parse(playerNamedetails).Name === 'Sample text') {
@@ -810,17 +826,6 @@ function EditDesign() {
                             </div>
                             <div className="col-9 d-flex align-items-center justify-content-end" >
                               {/* Additional content in the second column */}
-                              {/* <div
-                          onClick={handlePlayerNameTextColorClick}
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            background: NametextColor,
-                            marginLeft: 'auto',
-                            border: '1px solid rgb(0,0,0,0.1)'
-                          }}
-                        ></div> */}
-
                               <Form.Control
                                 type="color"
                                 style={{ border: "1px solid black", padding: "0px", height: "25px", width: "30px", borderRadius: "8px" }}
@@ -1141,94 +1146,6 @@ function EditDesign() {
                               />
                             </div>
                           </div>
-
-                          {/* <div className="mb-2 row custombackground">
-  <div className="col-3 d-flex align-items-center">
-    <InputGroup.Text
-      id="inputGroup-sizing-default"
-      className="custom-input-group-text"
-      style={{ background: 'white', height: '38px',fontSize:'12px', color:'gray'  }}
-    >
-      
-    </InputGroup.Text>
-  </div>
-  <div className="col-9 d-flex align-items-center">
-  <Form.Select
-                  aria-label="Default select example"
-                  value={textSize}  
-                   onChange={handleTextSizeChange}
-                  className="custom-select text-end"
-                  style={{ border: 'none' }}
-                >
-                         {fontSizes.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-
-                 
-                </Form.Select>
-  </div>
- 
-</div> */}
-
-
-
-
-                          {/* <InputGroup className="mb-2 custombackground">
-                                    <div className="col-3 d-flex align-items-center">
-    <InputGroup.Text
-      id="inputGroup-sizing-default"
-      className="custom-input-group-text"
-      style={{ background: 'white', height: '38px',fontSize:'12px', color:'gray'  }}
-    >
-      Font
-    </InputGroup.Text>
-  </div>
-  <div className="col-9 d-flex align-items-center">
-                <Form.Select
-                  aria-label="Default select example"
-                  value={fontFamily}
-                  onChange={handleFontFamilyChange}
-                  className="custom-select text-end"
-                  style={{ border: 'none' }}
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                 
-                </Form.Select>
-                </div>
-              </InputGroup> */}
-
-
-                          {/* <Form.Select aria-label="Default select example"  value={textColor}   onChange={handleTextColorChange} className="mb-2">
-                                    <option>Text Color</option>
-                                    <option value="black">Black</option>
-                                <option value="red">Red</option>
-                                <option value="blue">Blue</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" value={textSize}   onChange={handleTextSizeChange}  className="mb-2">
-                                    <option>Text Size</option>
-                                    <option value="12">12</option>
-                                <option value="14">14</option>
-                                <option value="16">16</option>
-                                <option value="18">18</option>
-                                <option value="22">22</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" className="mb-2">
-                                    <option>Outline</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" className="mb-2">
-                                    <option>Text Shape</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" className="mb-2">
-                                    <option>Rotation</option>
-                                
-                                </Form.Select> */}
                         </Form>
                       </div>          </div>
                   )}
@@ -1240,9 +1157,9 @@ function EditDesign() {
           <div className="col-9">
             <div className="row tab mt-3">
               <ul className="d-flex col-6 custom-tabs">
-                <li className="active" onClick={() => { handleNameNumberDetails(1); navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
+                <li className="active" onClick={() => { handleNameNumberDetails(1); navigate('/Design', { state: { selectedImage: selectedImage,side:state.side } }) }}>Design</li>
                 <li className="mx-2" onClick={navigateToVariation}>Variation</li>
-                <li className="mx-2" onClick={() => { handleNameNumberDetails(1); addVariation(); navigate('/Export', { state: { selectedImage: selectedImage } }) }}>Export</li>
+                <li className="mx-2" onClick={() => { handleNameNumberDetails(1); addVariation(); navigate('/Export', { state: { selectedImage: selectedImage,side:state.side } }) }}>Export</li>
               </ul>
               <div className="col-6 custom-btn">
                 <Button className="float-end " variant="primary" onClick={() => {
@@ -1295,7 +1212,7 @@ function EditDesign() {
                     <Stage width={320} height={500} style={{ position: 'absolute', top: 0, left: 280, zIndex: 0 }} ref={canvasRef}>
                       <Layer>
                         <Text ref={TextNameRef} text={playerName} fontSize={NametextSize} draggable x={NametextPosition.x} y={NametextPosition.y} fill={NametextColor} fontFamily={NamefontFamily} onDragEnd={(e) => {
-                          console.log(e.target);
+
                           setNameTextPosition({
                             x: e.target.x(),
                             y: e.target.y(),
@@ -1308,7 +1225,7 @@ function EditDesign() {
                                                         'bottom-right',
                                                       ]}/>} */}
                         <Text ref={TextNoRef} text={playerNo} fontSize={textSize} draggable x={textPosition.x} y={textPosition.y} fill={textColor} fontFamily={fontFamily} onDragEnd={(e) => {
-                          console.log(e.target);
+
                           setTextPosition({
                             x: e.target.x(),
                             y: e.target.y(),

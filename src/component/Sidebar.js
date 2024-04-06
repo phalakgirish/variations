@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { HouseDoor, Moon, PersonCircle,ChatDots } from 'react-bootstrap-icons';
-import { BrowserRouter as Router, Link, useLocation, useAsyncError } from "react-router-dom";
+import { BrowserRouter as Router, Link, useLocation, useAsyncError,useNavigate } from "react-router-dom";
 import Varient from '../assets/img/Group 12302.svg'
 import Home from '../assets/img/home_black_24dp.svg'
 import Person from '../assets/img/account_circle_black_24dp.svg'
 import Feedback from '../assets/img/rate_review_FILL0_wght400_GRAD0_opsz24.svg'
 import FeedbackOffCanvas from "./FeedbackOffCanvas";
 import FeedbackScreenShotModal from "./FeedbackScreenShotModal";
-
+import secureLocalStorage from 'react-secure-storage';
 
 
 function Sidebar(){
     const { pathname } = useLocation();
-
+    const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const [showScreenShot, setShowScreenShot] = useState(false)
 
@@ -26,6 +26,12 @@ function Sidebar(){
     const handelScreenShotHide = () =>{
         setShowScreenShot(false)
         handleShow();
+    }
+
+    const handleLogout = () =>{
+        secureLocalStorage.removeItem('Login');
+        navigate('/')
+        
     }
 
     return(
@@ -66,12 +72,12 @@ function Sidebar(){
                         </a>
                         </li> */}
 
-                        <li className="nav-item">
+                        <li className="nav-item" onClick={()=>{handleLogout()}}>
                         <a href="#" className="nav-link" aria-current="page">
                             <div className="circle-icon">
                                 <img src={Person} alt="home"  style={{width: '25px'}}/>
                             </div><br/>
-                            <span>Bhumik</span>
+                            <span>Logout</span>
                         </a>
                         </li>
 

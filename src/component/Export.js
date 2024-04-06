@@ -23,9 +23,25 @@ import '../index.css';
 import download from '../assets/img/file_download_black_24dp.svg'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import secureLocalStorage from 'react-secure-storage';
+import verifytoken from '../env/verifytoken';
+
 
 function Export() {
-
+    const navigate = useNavigate();
+    var token = secureLocalStorage.getItem('Login')
+    if(token == null)
+    {
+        navigate('/');
+    }
+    else
+    {
+        var tokenExpired = verifytoken();
+        if(tokenExpired)
+        {
+            navigate('/')
+        }
+    }
     const [tshirtvariation, setTshirtvariation] = useState();
     const [tshirtdetails, setTshirtDetails] = useState(JSON.parse(localStorage.getItem('tshirtDetails')));
     // var selectedImage = localStorage.getItem('bgImageDetails');
@@ -36,9 +52,9 @@ function Export() {
 
     // var [imagebg] = useImage(selectedImage)
     var [imagebg] = useImage(state.selectedImage)
-    // console.log(tshirtdetails);
+
     const tshirtimg = useRef();
-    const navigate = useNavigate();
+    
     const [dataURL, setDataURL] = useState([]);
 
 
@@ -61,7 +77,6 @@ function Export() {
 
 
     const drawTextOnCanvas = (text, number, canvas, index) => {
-        // console.log(canvas);
         if (canvas) {
 
             var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
@@ -71,42 +86,12 @@ function Export() {
 
             if (tshirtchangedetails != null) {
                 changedData = tshirtchangedetails.filter((item) => item.indexSr == index);
-                console.log(changedData);
+
                 if (changedData.length != 0) {
                     playernamedetails = changedData[0].playernamedetails;
                     playernumberdetails = changedData[0].playernumberdetails;
-
-                    console.log(playernamedetails, playernumberdetails);
                 }
             }
-            //  console.log(playernumberdetails.textColor);
-            // const ctx = canvas.getContext('2d');
-            // // ctx.clearRect(0, 0, canvas.width, canvas.height);
-            //  // Draw background image
-            //  const img = new Image();
-            //  img.src = backgroundImage;
-            //  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            //   // Draw text or other content on top of the background
-            // // Draw name
-            // ctx.textAlign="center";
-            // ctx.font = `${playernamedetails.NametextSize-30}px ${playernamedetails.NamefontFamily}`
-            // ctx.fillStyle = playernamedetails.NametextColor;
-            // ctx.strokeStyle=playernamedetails.NameoutlineColor
-            // ctx.lineWidth = '2'; // Set the outline size
-            // ctx.rotate((playernamedetails.NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-            // // ctx.fillText(text, playernamedetails.NametextPosition.x-135, playernamedetails.NametextPosition.y-80);
-            // // ctx.fillText(text, 110, (playernamedetails.NametextPosition.y*canvas.height)/100);
-            // ctx.fillText(text, ((playernamedetails.NametextPosition.x)*canvas.width)/100, (playernamedetails.NametextPosition.y*canvas.height)/100);
-
-            //   // Draw number
-            // ctx.font = `${playernumberdetails.textSize}px ${playernumberdetails.fontFamily}`
-            // ctx.fillStyle = playernumberdetails.textColor;
-            // ctx.strokeStyle=playernumberdetails.outlineColor
-            // ctx.lineWidth = '2'; // Set the outline size
-            // ctx.rotate((playernumberdetails.rotationAngle * Math.PI) / 180); // Convert degrees to radians
-            // // ctx.fillText(number, playernumberdetails.textPosition.x-160, playernumberdetails.textPosition.y-100);
-            // // ctx.fillText(number, 110, (playernumberdetails.textPosition.y*canvas.height)/100);
-            // ctx.fillText(number, ((playernumberdetails.textPosition.x)*canvas.width)/100, (playernumberdetails.textPosition.y*canvas.height)/100);
 
             const stage = canvas;
             // console.log(stage);
@@ -157,36 +142,28 @@ function Export() {
             });
 
             layer.add(text2);
-            // console.log(text1);
-            // console.log(text2);
-            // layer.children.push(text1);
-            // layer.children.push(text2);
-            // console.log(layer.children);
-            // console.log(layer);
+
+
+
             stage.add(layer);
-            // stage.children.push(layer);
-            // console.log(stage);
         }
     };
 
     useEffect(() => {
         // canvasRef.destroy();
-        console.log(tshirtdetails);
+
         if (tshirtdetails) {
             tshirtdetails.forEach((val, index) => {
-                console.log(val);
                 drawTextOnCanvas(val.name, val.number, canvasRef.current[val.indexSr], val.indexSr);
                 // drawTextOnCanvas(`${val.name}`, canvasRef.current[index]);
                 // drawTextOnCanvas(`${val.number}`, canvasRef.current[index]);
             });
         }
-        console.log(canvasRef);
+
     }, [tshirtdetails]);
     const downloadImage = async () => {
 
         // var divimg = document.querySelectorAll('.tshirtimg1');
-        // // console.log(divimg[0]);
-        // //console.log("dimensions")
         // const tshirtSize = "XL";
         // const dimensions = {
         //     XL: { width: 2208, height: 3171 },
@@ -220,7 +197,7 @@ function Export() {
         // convertBase64ToZip(dataURL)
 
         setTimeout(()=>{
-            console.log(listObj_data);
+            // console.log(listObj_data);
             convertBase64ToZip(listObj_data);
         },3000)
         
@@ -231,11 +208,11 @@ function Export() {
         try {
             const zip = new JSZip();
             const folder = zip.folder('tshirt_variation');  // create a folder in the ZIP file
-            console.log(base64String);
+            // console.log(base64String);
             // Convert Base64 string to Blob
             for(let val of base64String)
             {
-                console.log(val);
+                // console.log(val);
                 const byteCharacters = atob(val.baseString.split(',')[1]);
                 const byteArrays = [];
         
@@ -307,7 +284,7 @@ function Export() {
     };
     const [bgimage] = useImage(backgroundImg);
     const drawResizeStage = (indexSr, index, width, height) => {
-        console.log(index, width, height);
+        // console.log(index, width, height);
         var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
         var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
         var changedData = []
@@ -328,60 +305,13 @@ function Export() {
             return <KonvaImage image={image} width={width} height={height} />;
         };
 
-        // return(
-        //     <>
-        //     <Stage width={width} height={height}>
-        //         <Layer>
-        //             <LoadImage />
-        //             <Text text={tshirtdetails[index].name} fontSize={(playernamedetails.NametextSize*width)/100} x={(playernamedetails.NametextPosition.x*width)/100} y={(playernamedetails.NametextPosition.y*height)/100} fill={playernamedetails.NamefontFamily} fontFamily={playernamedetails.NamefontFamily} stroke={playernamedetails.NameoutlineColor} strokeWidth={0}/>
-        //         </Layer>
-        //     </Stage>
-        //     </>);
-
-        // var resizecanvas = document.createElement('canvas');
-        // resizecanvas.width=width;
-        // resizecanvas.height=height;
-        // const ctx = resizecanvas.getContext('2d');
-        // ctx.clearRect(0, 0, width, height);
-        // const img = new Image();
-        // img.src = backgroundImage;
-        // ctx.drawImage(img, 0, 0, width, height);
-
-        // ctx.font = `${(playernamedetails.NametextSizePer*width)/100}px ${playernamedetails.NamefontFamily}`
-        // ctx.fillStyle = playernamedetails.NametextColor;
-        // ctx.strokeStyle=playernamedetails.NameoutlineColor
-        // ctx.lineWidth = playernamedetails.NametextBorder; // Set the outline size
-        // ctx.rotate((playernamedetails.NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-        //     // ctx.fillText(text, playernamedetails.NametextPosition.x-135, playernamedetails.NametextPosition.y-80);
-        //     // ctx.fillText(text, 110, (playernamedetails.NametextPosition.y*canvas.height)/100);
-        // ctx.fillText(tshirtdetails[index].name, (playernamedetails.NametextPositionPer.x*width)/100, (playernamedetails.NametextPositionPer.y*height)/100);
-
-        // ctx.font = `${(playernumberdetails.textSizePer*width)/100}px ${playernumberdetails.fontFamily}`
-        // ctx.fillStyle = playernumberdetails.textColor;
-        // ctx.strokeStyle=playernumberdetails.outlineColor
-        // ctx.lineWidth = playernumberdetails.NotextBorder; // Set the outline size
-        // ctx.rotate((playernumberdetails.rotationAngle * Math.PI) / 180); // Convert degrees to radians
-        //     // ctx.fillText(number, playernumberdetails.textPosition.x-160, playernumberdetails.textPosition.y-100);
-        //     // ctx.fillText(number, 110, (playernumberdetails.textPosition.y*canvas.height)/100);
-        // ctx.fillText(tshirtdetails[index].number, (playernumberdetails.textPositionPer.x*width)/100, (playernumberdetails.textPositionPer.y*height)/100);
-
-        // return(resizecanvas.toDataURL('image/png'))
-
-
-
-        // var stage = new Konva.Stage({
-        //     container:'stagediv',
-        //     width:width,
-        //     height:height,
-        //     ref:'stagediv'
-        // })
         // var convertedwidth = width;
         // var convertedheight = height;
         var convertedwidth = ((width * 100) / 24);
         var convertedheight = ((height * 100) / 24);
         stagediv.current.attrs.width = convertedwidth;
         stagediv.current.attrs.height = convertedheight;
-        console.log(stagediv);
+        // console.log(stagediv);
         var stage = stagediv.current
         //https://codepen.io/AudreyRBC/pen/MzmLYx 
         //http://www.javascripter.net/faq/hex2cmyk.htm
@@ -433,8 +363,6 @@ function Export() {
 
 
         return (stagediv.current);
-
-
 
     }
 
@@ -506,33 +434,6 @@ function Export() {
             });
         };
 
-        //   const image = document.createElement('img');
-        //     image.src = stageDataURL
-        //     console.log(image);
-
-        //   generateImage(stagediv,stageRsize,fileName);
-        //   console.log(stagediv);
-        //   const dataUrl = await htmlToImage.toPng(stageRsize,{ cacheBust: false,scale:3 });
-        // var canvasHtml = await html2canvas(stageRsize,{scale:3});
-        //   var stageDataURL = canvasHtml.toDataURL('image/jpg');
-        // var apiInstance = new CloudmersiveConvertApiClient.ConvertImageApi();
-        // console.log(apiInstance);
-        // console.log(stageRsize.current);
-
-
-        // const link = document.createElement('a');
-        //         link.href = stageDataURL;
-        //         link.download = fileName;
-        //         link.click();
-
-        // resizeImage(dataUrl, dimensions[tshirtSize].width, dimensions[tshirtSize].height)
-        //     .then(resizedDataUrl => {
-        //         const link = document.createElement('a');
-        //         link.href = resizedDataUrl;
-        //         link.download = fileName;
-        //         link.click();
-        //     });
-
         const resizeImage = (stageDataURL, maxWidth, maxHeight, fileName,file_type) => {
             // return new Promise((resolve) => {
             let img = new Image()
@@ -594,9 +495,9 @@ function Export() {
                 {
                     var canvasDataURL = canvas.toDataURL('image/jpeg', 1.0);
                     var new_obj = {fileName:fileName,baseString:canvasDataURL}
-                    console.log(new_obj);
+                    // console.log(new_obj);
                     listObj_data = [...listObj_data,new_obj];
-                    console.log(listObj_data);
+                    // console.log(listObj_data);
                     // setDataURL(DataUrls)
                 }
                 
@@ -612,55 +513,13 @@ function Export() {
         //         link.click();
 
         stagediv.current.children = [];
-        console.log(stagediv.current);
+        // console.log(stagediv.current);
 
     };
 
-    useEffect(() => {
-
-        // var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
-        // var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
-        // console.log(playernamedetails);
-        // console.log(playernumberdetails);
-        // const canvas = canvasRefName.current;
-        // const ctx = canvas.getContext('2d');
-
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // ctx.translate(playernamedetails.NametextPosition.x-135, playernamedetails.NametextPosition.y);
-        // ctx.rotate((playernamedetails.NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-
-        // ctx.font = `${playernamedetails.NametextSize-20}px ${playernamedetails.NamefontFamily}`
-        // ctx.fillStyle = playernamedetails.NametextColor;
-        // ctx.strokeStyle = playernamedetails.NameoutlineColor; // Set the outline color
-        // ctx.lineWidth = playernamedetails.outlineSize; // Set the outline size
-
-        // ctx.strokeText(tshirtdetails[0].name, 0, 0);
-        // ctx.fillText(tshirtdetails[0].name, 0, 0);
-        // ctx.restore();
-        // ctx.save();
-
-        // const canvas1 = canvasRef.current;
-        // const ctxnumber = canvas1.getContext('2d');
-
-        // ctxnumber.clearRect(0, 0, canvas.width, canvas.height);
-        // ctxnumber.translate(playernumberdetails.textPosition.x-160, playernumberdetails.textPosition.y-100);
-        // ctxnumber.rotate((playernumberdetails.rotationAngle * Math.PI) / 180); // Convert degrees to radians
-
-        // ctxnumber.font = `${playernumberdetails.textSize}px ${playernumberdetails.fontFamily}`
-        // ctxnumber.fillStyle = playernumberdetails.textColor;
-        // ctxnumber.strokeStyle = playernumberdetails.outlineColor; // Set the outline color
-        // // ctxnumber.lineWidth = playernumberdetails.outlineSize; // Set the outline size
-
-        // ctxnumber.strokeText(tshirtdetails[0].number, 0, 0);
-        // ctxnumber.fillText(tshirtdetails[0].number, 0, 0);
-        // ctxnumber.restore();
-        // ctxnumber.save();
-
-    });
-
     const handelInputsearch = () => {
 
-        console.log(inputSearch.current.value);
+        // console.log(inputSearch.current.value);
         if (inputSearch.current.value != '') {
             // canvasRef.current= [];
             var excelData = JSON.parse(localStorage.getItem('tshirtDetails'));
@@ -668,7 +527,7 @@ function Export() {
             // var filterData = excelData.filter((item,index)=>(item.name === inputSearch.current.value || item.number === parseInt(inputSearch.current.value)))
             var searchvalue = inputSearch.current.value;
             var filterData = excelData.filter((item, index) => (item.name.toLowerCase().includes(searchvalue.toLowerCase()) || item.number.toString().includes(inputSearch.current.value)))
-            console.log(filterData);
+            // console.log(filterData);
             // setTshirtDetails(filterData);
             for (let val of excelData) {
                 if (filterData.length > 0) {
@@ -695,16 +554,14 @@ function Export() {
         else {
 
             var filterData = JSON.parse(localStorage.getItem('tshirtDetails'))
-            console.log(filterData);
+
             for (let val of filterData) {
-                // console.log(ImgDivRef.current[filterData[0].indexSr]);
-                // console.log(val.indexSr);
+
                 ImgDivRef.current[val.indexSr].className = 'col-xl-3 col-3'
-                // console.log(ImgDivRef.current[val.indexSr]);
+
             }
 
             // setTshirtDetails(filterData);
-            // console.log(tshirtdetails);
 
         }
 
@@ -722,9 +579,9 @@ function Export() {
                     <div className="col-12">
                         <div className="row tab mt-3">
                             <ul className="d-flex col-6 custom-tabs">
-                                <li className="" onClick={() => { navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
-                                <li className="mx-2" onClick={() => { navigate('/Variation', { state: { selectedImage: selectedImage } }) }}>Variation</li>
-                                <li className="mx-2 active" onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }}>Export</li>
+                                <li className="" onClick={() => { navigate('/Design', { state: { selectedImage: selectedImage,side:state.side } }) }}>Design</li>
+                                <li className="mx-2" onClick={() => { navigate('/Variation', { state: { selectedImage: selectedImage,side:state.side } }) }}>Variation</li>
+                                <li className="mx-2 active" onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage,side:state.side } }) }}>Export</li>
                             </ul>
 
                         </div>
@@ -781,40 +638,12 @@ function Export() {
                                                                 style={{ position: 'absolute', top: 0, left: 10, border: '0px solid #000', borderRadius: "10px" }}></Stage>
                                                         </div>
                                                         <div className='mt-3'>
-                                                            <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => { navigate('/EditDesign', { state: { indexSr: val.indexSr, selectedImage: selectedImage } }) }}> Edit</button>
+                                                            <button className='px-3 py-1 me-3' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => { navigate('/EditDesign', { state: { indexSr: val.indexSr, selectedImage: selectedImage,side:state.side } }) }}> Edit</button>
                                                             <button className='px-3 py-1' style={{ borderRadius: '30px', backgroundColor: '#9fd3f7', border: '0' }} onClick={() => handleDownload(downladImage.current[val.indexSr], `${val.size}_${val.name}_${val.number}.jpeg`, val.size, val.indexSr, index,'single')}> Download </button>
                                                         </div>
                                                     </div>
                                                 ))}
                                             </div>
-
-
-                                            {/* <div className='col-4 mx-3 alert alert-danger' style={{ position: 'relative' }}>
-                                            <svg width="220" height="315" xmlns="http://www.w3.org/2000/svg" >
-                                                    <rect x="40" y="0" width="160" height="315" fill="white" />
-                                                    {selectedImage && <image href={selectedImage} x="0" y="0" width="220" height="315"/>}
-                                                     {/* {backgroundImage && <image href={backgroundImage} x="40" y="0" width="320" height="500" style={{border:'1px solid red;' }}/>} 
-                                                    <circle cx="110" cy="-55" r="73" fill="white" />
-                                                </svg>
-                                                <canvas
-                                                    ref={canvasRef}
-                                                    width={220}
-                                                    height={315}
-                                                    style={{ position: 'absolute', top: 16, left: 16 }}
-                                                    ></canvas>
-                                                <canvas
-                                                    ref={canvasRefName}
-                                                    width={220}
-                                                    height={315}
-                                                    style={{ position: 'absolute', top: 16, left: 16}}
-                                                ></canvas>
-                                            <div className='mt-3'>
-                                                <Button className='px-3 py-1 me-3' style={{borderRadius: '30px',  backgroundColor: '#9fd3f7', border:'0'}}> Edit </Button>
-                                                <Button className='px-3 py-1' style={{borderRadius: '30px',  backgroundColor: '#9fd3f7', border:'0'}}> Download </Button>
-                                            </div>
-                                            
-                                        </div> */}
-
                                         </div>
                                     </div>
 
