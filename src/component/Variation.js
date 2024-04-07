@@ -14,14 +14,29 @@ import { useForm } from 'react-hook-form';
 import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text, Shape } from 'react-konva';
 import Konva from 'konva';
 import excelDownloadUrl from '../assets/sampleSheet.xlsx';
-
+import secureLocalStorage from 'react-secure-storage';
 import { faUndo, faRedo, faSearchPlus, faShirt, faList, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 import Table from 'react-bootstrap/Table';
 import { Link } from 'react-bootstrap-icons';
 import useImage from 'use-image';
+import verifytoken from '../env/verifytoken';
 
 function Variation() {
     var fileRecord = null;
+    const navigate = useNavigate();
+    var token = secureLocalStorage.getItem('Login')
+    if(token == null)
+    {
+        navigate('/');
+    }
+    else
+    {
+        var tokenExpired = verifytoken();
+        if(tokenExpired)
+        {
+            navigate('/')
+        }
+    }
     const [filedata, setFileData] = useState(null);
     const [fileStatus, setFileStatus] = useState(false);
     const [errmsg, setErrmsg] = useState(" ");
@@ -30,10 +45,10 @@ function Variation() {
     const [excelFile, setExcelFile] = useState(null);
     const [excelData, setExcelData] = useState(null);
     const message = useRef();
-    const navigate = useNavigate();
+    
     const fileInputField = useRef();
     const { state } = useLocation();
-    console.log(state);
+    // console.log(state);
     const [NametextSize, setNameTextSize] = useState('32');
     const [NamefontFamily, setNameFontFamily] = useState('Arial');
     const [tshirtSize, settshirtSize] = useState('M');
@@ -47,6 +62,8 @@ function Variation() {
     const [renderingTime, setRenderingTime] = useState(null);
     const [localStorageValue, setLocalStorageValue] = useState('');
     const [isSaveDisabled, setSaveDisabled] = useState(true);
+    const [generateDisable, setGenerateDisable] = useState(true)
+    var CharCount = {}
 
     // var selectedImage = localStorage.getItem('bgImageDetails');
     var selectedImage = state.selectedImage;
@@ -99,36 +116,9 @@ function Variation() {
             var playernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
             var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
             //  console.log(playernumberdetails.textColor);
-            // const ctx = canvas.getContext('2d');
-            // // ctx.clearRect(0, 0, canvas.width, canvas.height);
-            //  // Draw background image
-            //  const img = new Image();
-            //  img.src = backgroundImage;
-            //  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            //   // Draw text or other content on top of the background
-            // // Draw name
-            // ctx.textAlign="center";
-            // ctx.font = `${playernamedetails.NametextSize-30}px ${playernamedetails.NamefontFamily}`
-            // ctx.fillStyle = playernamedetails.NametextColor;
-            // ctx.strokeStyle=playernamedetails.NameoutlineColor
-            // ctx.lineWidth = '2'; // Set the outline size
-            // ctx.rotate((playernamedetails.NamerotationAngle * Math.PI) / 180); // Convert degrees to radians
-            // // ctx.fillText(text, playernamedetails.NametextPosition.x-135, playernamedetails.NametextPosition.y-80);
-            // // ctx.fillText(text, 110, (playernamedetails.NametextPosition.y*canvas.height)/100);
-            // ctx.fillText(text, ((playernamedetails.NametextPosition.x)*canvas.width)/100, (playernamedetails.NametextPosition.y*canvas.height)/100);
-
-            //   // Draw number
-            // ctx.font = `${playernumberdetails.textSize}px ${playernumberdetails.fontFamily}`
-            // ctx.fillStyle = playernumberdetails.textColor;
-            // ctx.strokeStyle=playernumberdetails.outlineColor
-            // ctx.lineWidth = '2'; // Set the outline size
-            // ctx.rotate((playernumberdetails.rotationAngle * Math.PI) / 180); // Convert degrees to radians
-            // // ctx.fillText(number, playernumberdetails.textPosition.x-160, playernumberdetails.textPosition.y-100);
-            // // ctx.fillText(number, 110, (playernumberdetails.textPosition.y*canvas.height)/100);
-            // ctx.fillText(number, ((playernumberdetails.textPosition.x)*canvas.width)/100, (playernumberdetails.textPosition.y*canvas.height)/100);
 
             const stage = canvas;
-            console.log(stage);
+            // console.log(stage);
 
             const layer = new Konva.Layer();
 
@@ -178,7 +168,7 @@ function Variation() {
         var playernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
         var tshirtSizeSelected = localStorage.getItem('tshirtSize');
         var imgname = localStorage.getItem('bgname')
-        console.log(playernamedetails);
+        // console.log(playernamedetails);
         setNameFontFamily(playernamedetails.NamefontFamily);
         setNameTextSize(playernamedetails.NametextSize);
         settshirtSize(tshirtSizeSelected);
@@ -192,10 +182,17 @@ function Variation() {
         // console.log(tshirtDetails);
         if (tshirtDetails != null) {
             setExcelData(tshirtDetails);
+            // for(let val of tshirtDetails)
+            // {
+            //     // console.log(val);
+            //     CharCount[val.indexSr] = {namecount:val['name'].length,nambercount:(val['number'].toString()).length}
+            //     console.log(CharCount);
+            // }
             setCount(tshirtDetails.length);
             setAppendingRow([]);
             setVariationCount(tshirtDetails.length);
-            console.log(tshirtDetails);
+            setGenerateDisable(false)
+            // console.log(tshirtDetails);
         }
     }, [])
     const [appendingRow, setAppendingRow] = useState([1]);
@@ -233,7 +230,7 @@ function Variation() {
     var selectFile = (ev) => {
         console.time('selectFile'); // Start measuring rendering time
         const startTime = performance.now(); // Define startTime
-        console.log(ev.target.files[0]);
+        // console.log(ev.target.files[0]);
         if (ev.target.files[0] === undefined || ev.target.files[0] === null) {
             setFileStatus(false);
         }
@@ -242,7 +239,7 @@ function Variation() {
             setErrFile(false);
             // setFileRecord(ev.target.files[0])
             fileRecord = ev.target.files[0]
-            console.log(fileRecord);
+            // console.log(fileRecord);
             setFileData(fileRecord)
 
             const fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'text/csv'];
@@ -258,13 +255,13 @@ function Variation() {
                     // setExcelFile(ev.target.result);
                     // console.log(ev.target.result);
                     const workbook = XLSX.read(ev.target.result, { type: 'buffer' });
-                    console.log(workbook);
+                    // console.log(workbook);
                     const workSheetName = workbook.SheetNames[0];
-                    console.log(workSheetName);
+                    // console.log(workSheetName);
                     const worksheet = workbook.Sheets[workSheetName];
-                    console.log(worksheet);
+                    // console.log(worksheet);
                     const data = XLSX.utils.sheet_to_json(worksheet);
-                    console.log(data);
+                    // console.log(data);
                     setCount(data.length);
                     setVariationCount(data.length);
                     setAppendingRow([]);
@@ -276,8 +273,11 @@ function Variation() {
                         // if(data['name'][i] != "" && data['size'][i] != "")
                         {
                             dataToPost = [...dataToPost, { indexSr: index + 1, name: val['name'], number: val['number'], size: val['size'] }];
+                            // CharCount = [...CharCount,{indexsr:index+1,namecount:val['name'].length,numbercount:val['number'].length}]
+                            CharCount[index+1] = {namecount:val['name'].length,numbercount:(val['name'].toString()).length};
                             index = index + 1
                         }
+                        // console.log(CharCount);
 
 
 
@@ -287,11 +287,12 @@ function Variation() {
                     const elapsedSeconds = elapsedMilliseconds / 1000;
                     setRenderingTime(elapsedSeconds);
 
-                    console.timeEnd('selectFile');
-                    console.log(dataToPost);
+                    // console.timeEnd('selectFile');
+                    // console.log(dataToPost);
                     localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
+                    setGenerateDisable(false);
                     const tshirtDetails = localStorage.getItem('tshirtDetails');
-        setLocalStorageValue(tshirtDetails);
+                    setLocalStorageValue(tshirtDetails);
                 };
             }
             else {
@@ -312,7 +313,7 @@ function Variation() {
         return () => {
             const endTime = new Date();
             const timeRendered = endTime - startTime;
-            console.log(typeof timeRendered); // Expect this to be a positive number
+            // console.log(typeof timeRendered); // Expect this to be a positive number
         };
     }, []);
     var addRow = (ev) => {
@@ -324,6 +325,7 @@ function Variation() {
         console.log(updatedList);
         setCount(count => count + 1);
         setVariationCount(variationcount => variationcount + 1);
+        setGenerateDisable(true)
 
     }
 
@@ -336,6 +338,8 @@ function Variation() {
         console.log(currentTarget);
         document.getElementById(currentTarget).remove();
         setVariationCount(variationcount => variationcount - 1);
+        setSaveDisabled(false)
+        setGenerateDisable(true)
     };
 
     var removeExcelRow = (ev, id) => {
@@ -351,11 +355,16 @@ function Variation() {
             console.log(result);
             setExcelData((result.length == 0) ? null : result);
             setVariationCount(variationcount => variationcount - 1);
+            setSaveDisabled(false);
+            setGenerateDisable(true)
 
         }
 
     }
-    useEffect(() => { console.log(excelData); }, [excelData])
+    useEffect(() => { 
+        
+        // console.log(excelData); 
+    }, [excelData])
 
     var upload_data = (e) => {
         e.preventDefault();
@@ -390,15 +399,17 @@ function Variation() {
         // }
         console.log(dataToPost);
         localStorage.setItem('tshirtDetails', JSON.stringify(dataToPost))
+        setSaveDisabled(true)
         const tshirtDetails = localStorage.getItem('tshirtDetails');
         setLocalStorageValue(tshirtDetails);
+        setGenerateDisable(false)
     }
     useEffect(() => {
         const tshirtDetails = localStorage.getItem('tshirtDetails');
         setLocalStorageValue(tshirtDetails);
     }, []);
 
-    const isDisabled = localStorageValue === '[]' || localStorageValue === '' || !localStorageValue;
+    var isDisabled = localStorageValue === '[]' || localStorageValue === '' || !localStorageValue;
 
     const handleInputChange = () => {
         const inputs = document.querySelectorAll('.tshirt-variant-data input, .tshirt-variant-data select');
@@ -411,6 +422,7 @@ function Variation() {
         });
 
         setSaveDisabled(isEmpty);
+        setGenerateDisable(true);
     };
 
     return (
@@ -465,12 +477,12 @@ function Variation() {
                     <div className="col-9">
                         <div className="row tab mt-3">
                             <ul className="d-flex col-6 custom-tabs">
-                                <li className="" onClick={() => { navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
-                                <li className="mx-2 active" onClick={() => { navigate('/Variation', { state: { selectedImage: selectedImage } }) }}>Variation</li>
-                                <li className="mx-2" onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }}>Export</li>
+                                <li className="" onClick={() => { navigate('/Design', { state: { selectedImage: selectedImage,side:state.side } }) }}>Design</li>
+                                <li className="mx-2 active" onClick={() => { navigate('/Variation', { state: { selectedImage: selectedImage,side:state.side } }) }}>Variation</li>
+                                <li className="mx-2" onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage,side:state.side } }) }}>Export</li>
                             </ul>
                             <div className="col-6 custom-btn">
-                                <Button onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }} className="float-end " variant="primary" disabled={isDisabled}>
+                                <Button onClick={() => { navigate('/Export', { state: { selectedImage: selectedImage } }) }} className="float-end " variant="primary" disabled={generateDisable}>
                                     <img src={switchImage} alt="home" style={{ width: '25px' }} /> Generate
                                 </Button>
                             </div>
@@ -545,12 +557,17 @@ function Variation() {
 
                                                             <tr key={index} id={(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']}>
 
-                                                                <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="name[]" Value={value['name']} ref={(ref) => {
+                                                                <td>
+                                                                <div style={{ position: 'relative', display: 'inline-block',width: '100%' }}><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="name[]" Value={value['name']} ref={(ref) => {
                                                                     if (ref) NameRef.current[(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']] = ref;
-                                                                }} /></td>
-                                                                <td><input type='text' className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="number[]" Value={value['number']} ref={(ref) => {
+                                                                }} onChange={(e) => handleInputTextChange(e, index)}/>
+                                                                 <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey',backgroundColor:'#EAEEF8' }}>  {charCount[index] || value['name'].length}/10</span></div></td>
+                                                                <td>
+                                                                <div style={{ position: 'relative', display: 'inline-block' }}>
+                                                                    <input type='number' className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="number[]" Value={value['number']} ref={(ref) => {
                                                                     if (ref) NumberRef.current[(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']] = ref;
-                                                                }} /></td>
+                                                                }} onChange={(e) => handleInputNumbeChange(e, index)}/>
+                                                                <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}> {numCount[index] || (value['number'].toString()).length || '0'}/3</span></div></td>
                                                                 <td>
                                                                     <select className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px', width: '100%' }} name="size[]" defaultValue={value['size']} ref={(ref) => {
                                                                         if (ref) SizeRef.current[(value['indexSr'] != undefined) ? value['indexSr'] : value['__rowNum__']] = ref;
@@ -577,7 +594,7 @@ function Variation() {
                                                                 </td>
 
                                                                 <td><div style={{ position: 'relative', display: 'inline-block' }}>
-                                                                    <input type='text' maxlength="3" className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
+                                                                    <input type='number' maxlength="3" className="form-control tshirt-variant-data" style={{ backgroundColor: '#EAEEF8', borderRadius: '52px' }} name="number[]" placeholder='00' ref={(ref) => {
                                                                         if (ref) NumberRef.current[val] = ref;
                                                                     }} onChange={(e) => handleInputNumbeChange(e, index)} onKeyPress={handleKeyPress} />
                                                                     <span className="count" style={{ position: 'absolute', right: '10px', bottom: '8px', color: 'grey' }}> {numCount[index] || '0'}/3</span></div>

@@ -7,10 +7,27 @@ import back from '../assets/img/Back.svg';
 // import { Dropdown } from 'react-bootstrap';
 import { BrowserRouter as Router, Link,useNavigate  } from "react-router-dom";
 import { Form, InputGroup } from 'react-bootstrap';
-
+import secureLocalStorage from 'react-secure-storage';
+import verifytoken from "../env/verifytoken";
 
 function Home(){
+    
+
     const navigate = useNavigate();
+    var token = secureLocalStorage.getItem('Login')
+    console.log(token);
+    if(token == null)
+    {
+        navigate('/');
+    }
+    else
+    {
+        var tokenExpired = verifytoken();
+        if(tokenExpired)
+        {
+            navigate('/')
+        }
+    }
     const [selectedValue, setSelectedValue] = useState(''); // Initialize the state
     localStorage.removeItem('bgImageDetails')
     localStorage.removeItem('playernamedetails')
@@ -47,7 +64,7 @@ function Home(){
             </div>
             <div className="container home-inner">
                 <div className="row home-col">
-                    <div className="col-6 tsselect" onClick={()=>{navigate('/Design')}}>
+                    <div className="col-6 tsselect" onClick={()=>{navigate('/Design',{state:{side:'front'}})}}>
                    
                         <img
                             src= {front}
@@ -72,16 +89,16 @@ function Home(){
                         
                   
                     </div>
-                    <div className="col-6 tsselect">
-                    <Link to="/TshirtFront" className="custom-link">
+                    <div className="col-6 tsselect" onClick={()=>{navigate('/Design',{state:{side:'back'}})}}>
+                    {/* <Link to="/TshirtFront" className="custom-link"> */}
 
                         <img
                             src= {back}
                             className="img-fluid mx-auto d-block"
                             alt="Responsive image"
                         />   
-                          </Link> 
-                        <p className="text-center text-dark">Tee Shirt Front Side</p>
+                          {/* </Link>  */}
+                        <p className="text-center text-dark">Tee Shirt Back Side</p>
                         {/* <Form.Select aria-label="Default select example" className="mb-2 custom-dropdown" onChange={handleBackSelectChange} value={selectedValue}>
                         <option>XS 34 (19 x 27 in)</option>
                             <option>S 36 (20 x 28 in)</option>  

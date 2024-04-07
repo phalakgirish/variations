@@ -8,10 +8,12 @@ import Google from '../assets/img/google.png'
 import Varient from '../assets/img/varient.png'
 import { useForm } from 'react-hook-form';
 import KEYS from "../env/env";
+import secureLocalStorage from 'react-secure-storage';
 
 function Login(){
   const [showPassword, setShowPassword] = useState(false);
   const [errmsg,setErrorMsg] = useState(null);
+  secureLocalStorage.removeItem('Login')
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -38,10 +40,11 @@ function Login(){
       })
       .then(response=>response.json())
       .then(val =>{
-          // console.log(val);
-        if(val.status == true)
+          console.log(val);
+        if(val.status == true) 
         {
             // localStorage.removeItem('token');
+            secureLocalStorage.setItem('Login',val.token)
             navigate('/Home');
             setErrorMsg(null);
         }

@@ -13,6 +13,7 @@ import * as htmlToImage from 'html-to-image';
 import undoblack from '../assets/img/undo_black_24dp.svg';
 import redoblack from '../assets/img/redo_black_24dp.svg';
 import backtshirt from '../assets/img/Plain TeeShirt.png';
+// import backtshirt from '../assets/img/homepage-first.png';
 import redo from '../assets/img/outline_undo_black_24dp.png';
 import undo from '../assets/img/outline_redo_black_24dp.png';
 import addfile from '../assets/img/upload_file_FILL0_wght400_GRAD0_opsz24.svg';
@@ -29,6 +30,9 @@ import { Stage, Layer, Rect, Circle, Image as KonvaImage, Text, Transformer, Sha
 import useImage from 'use-image';
 import usePopup from '../hook/usePopUp';
 import Popup from './Popup';
+import secureLocalStorage from 'react-secure-storage';
+import verifytoken from '../env/verifytoken';
+
 
 const fontStyles = {
   Arial: { fontFamily: 'Arial, sans-serif' },
@@ -154,16 +158,21 @@ const CustomOption = ({ innerProps, label, data }) => (
 );
 let historyStep = 0
 function Design() {
-  // const { state } = useLocation();
-  // var selectedValue
-  // if(state != null)
-  // {
-  //   selectedValue = state.selectedValue;
-  // }
-  // else
-  // {
-  //   selectedValue = localStorage.getItem('tshirtSize');
-  // }
+  const navigate = useNavigate()
+  var token = secureLocalStorage.getItem('Login');
+  if(token == null)
+  {
+      navigate('/');
+  }
+  else
+  {
+    var tokenExpired = verifytoken();
+    if(tokenExpired)
+    {
+      navigate('/')
+    }
+  }
+
   var Existingplayernamedetails = JSON.parse(localStorage.getItem('playernamedetails'));
   var Existingplayernumberdetails = JSON.parse(localStorage.getItem('playernumberdetails'));
   // var selectedBGImage = localStorage.getItem('bgImageDetails');
@@ -173,16 +182,10 @@ function Design() {
   const [view, setView] = useState('front');
   const [playerName, setPlayerName] = useState((Existingplayernamedetails != null) ? Existingplayernamedetails.Name : 'Sample text');
   const [playerNo, setPlayerNo] = useState((Existingplayernumberdetails != null) ? Existingplayernumberdetails.No : '00');
-  const navigate = useNavigate()
-
+  
   // localStorage.setItem('tshirtSize',selectedValue);
 
-
-
   // console.log(Existingplayernamedetails,Existingplayernumberdetails);
-
-
-
 
   //Player Number
   const [textSize, setTextSize] = useState((Existingplayernumberdetails != null) ? Existingplayernumberdetails.textSize : '32');
@@ -293,7 +296,8 @@ function Design() {
 
 
   const LoadImage = () => {
-    const [image] = useImage(fronttshirt);
+    // console.log(state.side);
+    const [image] = useImage((state?.side === 'front')?fronttshirt:backtshirt);
     return <KonvaImage image={image} width={500} height={500} />;
   };
   const LoadBGImage = () => {
@@ -337,21 +341,16 @@ function Design() {
     hideDiv3();
   };
   const handleTextSizeChange = (event) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setTextSize(event.target.value);
   };
   const handleTextColorChange = (color) => {
     setTextColor(color.target.value);
     hideDiv3();
-    // setTimeout(() => {
-    //   handleColorPickerClose();
-    // }, '1000');
+
   };
   const handleOutlineColorChange = (color) => {
     setOutLineColor(color.target.value)
-    // setTimeout(() => {
-    //   handleOutlineColorClick();
-    // }, '1000');
   }
   const handleNoBorderChange = (event) => {
 
@@ -440,17 +439,13 @@ function Design() {
   };
   const handlePlayerNameTextColorChange = (color) => {
     setNameTextColor(color.target.value);
-    // setTimeout(() => {
-    //   handlePlayerNameColorPickerClose();
-    // }, "1000");
+
 
   };
 
   const handlePlayerNameOutlineColorChange = (color) => {
     setNameOutLineColor(color.target.value)
-    // setTimeout(() => {
-    //   handlePlayerNameOutlineColorClick();
-    // }, "1000");
+
   }
 
   const handlePlayerNameFontFamilyChange = (selectedOption) => {
@@ -487,8 +482,7 @@ function Design() {
       const reader = new FileReader();
       reader.onload = () => {
         setSelectedImage(reader.result);
-        console.log(reader.result);
-        // localStorage.setItem('bgImageDetails',reader.result)
+        // console.log(reader.result);
         // localStorage.setItem('bgImageDetails',reader.result)
         localStorage.setItem('bgname', file.name);
         handleNameNumberDetails(0);
@@ -506,7 +500,7 @@ function Design() {
     setNoSelected(false);
     toggleAccordion1();
     setActiveAccordionItem("1");
-    console.log('accordion 1');// Open accordion item with eventkey 1
+    // console.log('accordion 1');// Open accordion item with eventkey 1
   };
 
   // Function to handle click or tap on number text
@@ -515,7 +509,7 @@ function Design() {
     setNameSelected(false);
     toggleAccordion2();
     setActiveAccordionItem("2");
-    console.log('accordion 2');// Open accordion item with eventkey 2
+    // console.log('accordion 2');// Open accordion item with eventkey 2
   };
   const handleNameNumberDetails = async (ev) => {
 
@@ -573,9 +567,9 @@ function Design() {
       NoScale: { x: TextNoRef.current.attrs.scaleX, y: TextNoRef.current.attrs.scaleY }
     }
 
-    console.log(playernamedetails);
+    // console.log(playernamedetails);
     setPlayersName(playernamedetails.Name);
-    console.log(playernumberdetails);
+    // console.log(playernumberdetails);
     if (history.length == 0) {
       historyStep = 0;
     }
@@ -585,11 +579,11 @@ function Design() {
     else {
       historyStep = historyStep + 1
     }
-    console.log(historyStep);
+    // console.log(historyStep);
     var historyrem = history.slice(0, historyStep + 1);
     var historydts = [...historyrem, { selectedImage: selectedImage, playernamedetails: playernamedetails, playernumberdetails: playernumberdetails }]
     setHistory(historydts)
-    console.log(history);
+    // console.log(history);
     if (ev === 1) {
       localStorage.setItem('playernamedetails', JSON.stringify(playernamedetails));
       localStorage.setItem('playernumberdetails', JSON.stringify(playernumberdetails));
@@ -667,7 +661,7 @@ function Design() {
   useEffect(() => {
     // document.addEventListener('mouseup',handleMouseKeyUp())
     if (IsNameSelected) {
-      console.log(TextNameRef.current);
+      // console.log(TextNameRef.current);
       TextNoTranRef.current.nodes([TextNameRef.current]);
     }
 
@@ -727,57 +721,6 @@ function Design() {
     //   window.removeEventListener('beforeunload', handleBeforeUnload);
     // };
 
-    // const canvas = canvasRef.current;
-    // var canvaseNameX = (NametextPosition.x/canvas.attrs.width)*100;
-    // var canvaseNameY =  (NametextPosition.y/canvas.attrs.height)*100;
-
-    // var canvaseNumberX = (textPosition.x/canvas.attrs.width)*100;
-    // var canvaseNumberY =  (textPosition.y/canvas.attrs.height)*100;
-
-    // const textName = TextNameRef.current;
-
-    // var TextWidthPer= (textName.textWidth/canvas.attrs.width)*100;
-
-
-    // setNametextPositionPer({x:canvaseNameX,y:canvaseNameY});
-    // setTextPositionPer({x:canvaseNumberX,y:canvaseNumberY});
-
-
-
-    // var playernamedetails = {
-    //   NametextSize:NametextSize,
-    //   NamefontFamily:NamefontFamily,
-    //   NametextPosition:NametextPosition,
-    //   NametextColor:NametextColor,
-    //   NameoutlineColor:NameoutlineColor,
-    //   NamerotationAngle:NamerotationAngle,
-    //   NametextBorder:NametextBorder,
-    //   NametextPositionPer:NametextPositionPer,
-    //   NametextSizePer:(NametextSize/canvas.attrs.width)*100,
-    //   NametextBorderPer:(NametextBorder/canvas.attrs.width)*100,
-    //   TextWidthPer:TextWidthPer
-
-    // }
-    // var playernumberdetails = {
-    //   textSize:textSize,
-    //   fontFamily:fontFamily,
-    //   textPosition:textPosition,
-    //   textColor:textColor,
-    //   outlineColor:outlineColor,
-    //   rotationAngle:rotationAngle,
-    //   NotextBorder:NotextBorder,
-    //   textPositionPer: textPositionPer,
-    //   textSizePer:(textSize/canvas.attrs.width)*100,
-    //   NotextBorderPer:(NotextBorder/canvas.attrs.width)*100,
-
-    // }
-
-    // // console.log(playernamedetails);
-    // // console.log(playernumberdetails);
-
-    // localStorage.setItem('playernamedetails',JSON.stringify(playernamedetails));
-    // localStorage.setItem('playernumberdetails',JSON.stringify(playernumberdetails));
-
 
 
   }, [view, playerNo, textPosition, textColor, textSize, fontFamily, outlineColor, NametextBorder, rotationAngle, playerName, NametextPosition, NametextColor, NametextSize, NamefontFamily, NotextBorder, NameoutlineColor, NamerotationAngle, IsNameSelected]);
@@ -804,7 +747,7 @@ function Design() {
     fontOptions = fontlistarr;
 
   }, [])
-  console.log(activeAccordionItem);
+  // console.log(activeAccordionItem);
 
   const navigateToVariation = () => {
     const playerNamedetails = localStorage.getItem('playernamedetails');
@@ -815,7 +758,7 @@ function Design() {
 
       // Navigate to Variation page
       handleNameNumberDetails(1);
-      navigate('/Variation', { state: { selectedImage: selectedImage } });
+      navigate('/Variation', { state: { selectedImage: selectedImage,side:state.side } });
     } else {
       // Display error messages based on conditions
       if (!playerNamedetails || JSON.parse(playerNamedetails).Name === 'Sample text') {
@@ -829,7 +772,7 @@ function Design() {
       openPopup('Add Variation');
     }
     else {
-      navigate('/Export', { state: { selectedImage: selectedImage } })
+      navigate('/Export', { state: { selectedImage: selectedImage,side:state.side } })
     }
 
   }
@@ -850,7 +793,7 @@ function Design() {
     }
   };
 
-  console.log(playersName);
+  // console.log(playersName);
   const hideDiv3 = () => {
     const div3 = document.getElementById('div3');
     if (playerNo !== '') {
@@ -1352,94 +1295,6 @@ function Design() {
                               />
                             </div>
                           </div>
-
-                          {/* <div className="mb-2 row custombackground">
-  <div className="col-3 d-flex align-items-center">
-    <InputGroup.Text
-      id="inputGroup-sizing-default"
-      className="custom-input-group-text"
-      style={{ background: 'white', height: '38px',fontSize:'12px', color:'gray'  }}
-    >
-      
-    </InputGroup.Text>
-  </div>
-  <div className="col-9 d-flex align-items-center">
-  <Form.Select
-                  aria-label="Default select example"
-                  value={textSize}  
-                   onChange={handleTextSizeChange}
-                  className="custom-select text-end"
-                  style={{ border: 'none' }}
-                >
-                         {fontSizes.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-
-                 
-                </Form.Select>
-  </div>
- 
-</div> */}
-
-
-
-
-                          {/* <InputGroup className="mb-2 custombackground">
-                                    <div className="col-3 d-flex align-items-center">
-    <InputGroup.Text
-      id="inputGroup-sizing-default"
-      className="custom-input-group-text"
-      style={{ background: 'white', height: '38px',fontSize:'12px', color:'gray'  }}
-    >
-      Font
-    </InputGroup.Text>
-  </div>
-  <div className="col-9 d-flex align-items-center">
-                <Form.Select
-                  aria-label="Default select example"
-                  value={fontFamily}
-                  onChange={handleFontFamilyChange}
-                  className="custom-select text-end"
-                  style={{ border: 'none' }}
-                >
-                  <option value="Arial">Arial</option>
-                  <option value="Times New Roman">Times New Roman</option>
-                 
-                </Form.Select>
-                </div>
-              </InputGroup> */}
-
-
-                          {/* <Form.Select aria-label="Default select example"  value={textColor}   onChange={handleTextColorChange} className="mb-2">
-                                    <option>Text Color</option>
-                                    <option value="black">Black</option>
-                                <option value="red">Red</option>
-                                <option value="blue">Blue</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" value={textSize}   onChange={handleTextSizeChange}  className="mb-2">
-                                    <option>Text Size</option>
-                                    <option value="12">12</option>
-                                <option value="14">14</option>
-                                <option value="16">16</option>
-                                <option value="18">18</option>
-                                <option value="22">22</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" className="mb-2">
-                                    <option>Outline</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" className="mb-2">
-                                    <option>Text Shape</option>
-                                
-                                </Form.Select> */}
-                          {/* <Form.Select aria-label="Default select example" className="mb-2">
-                                    <option>Rotation</option>
-                                
-                                </Form.Select> */}
                         </Form>
                       </div>          </div>
                   )}
@@ -1452,7 +1307,7 @@ function Design() {
           <div className="col-9">
             <div className="row tab mt-3">
               <ul className="d-flex col-6 custom-tabs">
-                <li className="active" onClick={() => { handleNameNumberDetails(1); navigate('/Design', { state: { selectedImage: selectedImage } }) }}>Design</li>
+                <li className="active" onClick={() => { handleNameNumberDetails(1); navigate('/Design', { state: { selectedImage: selectedImage,side:state.side } }) }}>Design</li>
                 <li className="mx-2" onClick={navigateToVariation}>Variation</li>
                 <li className="mx-2" onClick={() => { handleNameNumberDetails(1); addVariation() }}>Export</li>
               </ul>
